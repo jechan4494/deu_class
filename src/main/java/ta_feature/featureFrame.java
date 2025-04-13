@@ -3,13 +3,62 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package ta_feature;
-
+import java.io.*;
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import java.util.List;
+import java.util.ArrayList;
 /**
  *
  * @author rlarh
  */
 public class featureFrame extends javax.swing.JFrame {
+    
 
+// 임시 txt 파일로 강의실 예약 불러오기 시작 코드
+    private void loadReservationsFromTxt() {
+     DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+    model.setRowCount(0);
+
+    String path = "C:\\Users\\rlarh\\OneDrive\\바탕 화면\\reservations.txt";
+
+    try (BufferedReader br = new BufferedReader(new FileReader(path))) {
+        String line;
+        while ((line = br.readLine()) != null) {
+            String[] tokens = line.split(",");
+            if (tokens.length == 7 && tokens[6].equals("대기")) {
+                model.addRow(tokens); // 상태가 '대기'인 것만 추가
+            }
+        }
+    } catch (IOException e) {
+        JOptionPane.showMessageDialog(this, "파일 불러오기 오류!");
+        e.printStackTrace();
+    }
+}// 임시 txt 파일로 강의실 예약 불러오기 마무리 코드
+   private void appendLog(String beforeStatus, String afterStatus, //대기 승인 로그
+                       String name, String room, String date,
+                       String start, String end, String people) {
+    String timestamp = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new java.util.Date());
+
+    String action;
+    if (beforeStatus.equals("대기")) {
+        action = afterStatus + "됨";  // 승인됨, 거절됨
+    } else {
+        action = String.format("상태 변경: %s → %s", beforeStatus, afterStatus);
+    }
+
+    String line = String.format("[%s] %s - %s, %s, %s, %s~%s, %s명",
+                    timestamp, action, name, room, date, start, end, people);
+
+    String path = "C:\\Users\\rlarh\\OneDrive\\바탕 화면\\reservation_log.txt";
+
+    try (BufferedWriter bw = new BufferedWriter(new FileWriter(path, true))) {
+        bw.write(line);
+        bw.newLine();
+    } catch (IOException e) {
+        JOptionPane.showMessageDialog(this, "로그 저장 실패!");
+    }
+} // 대기 승인 로그
     /**
      * Creates new form featureFrame
      */
@@ -33,6 +82,8 @@ public class featureFrame extends javax.swing.JFrame {
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
+        jButton5 = new javax.swing.JButton();
+        jButton6 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -40,29 +91,54 @@ public class featureFrame extends javax.swing.JFrame {
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null}
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "이름", "강의실", "날짜", "시작 시간", "종료 시간", "인원 수", "상태"
             }
         ));
         jScrollPane1.setViewportView(jTable1);
 
-        jButton1.setText("jButton1");
+        jButton1.setText("승인");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
             }
         });
 
-        jButton2.setText("jButton1");
+        jButton2.setText("거절");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
-        jButton3.setText("jButton1");
+        jButton3.setText("예약 대기 새로 고침");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
 
-        jButton4.setText("jButton4");
+        jButton4.setText("이전");
+
+        jButton5.setText("예약 승인 내역");
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
+
+        jButton6.setText("예약 거절 내역");
+        jButton6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton6ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -71,23 +147,22 @@ public class featureFrame extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 0, Short.MAX_VALUE)))
-                        .addContainerGap())
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 10, Short.MAX_VALUE)
                         .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(jButton3)))
+                        .addGap(84, 84, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jButton4, javax.swing.GroupLayout.DEFAULT_SIZE, 110, Short.MAX_VALUE)
-                            .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGap(18, 18, 18)
-                        .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18))))
+                            .addComponent(jButton5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jButton6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -95,23 +170,152 @@ public class featureFrame extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jLabel1)
                 .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(31, 31, 31)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 188, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
+                    .addComponent(jButton2)
                     .addComponent(jButton3)
-                    .addComponent(jButton2))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 17, Short.MAX_VALUE)
-                .addComponent(jButton4)
-                .addContainerGap())
+                    .addComponent(jButton1)
+                    .addComponent(jButton5))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton4)
+                    .addComponent(jButton6))
+                .addContainerGap(19, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
+ int row = jTable1.getSelectedRow();
+    if (row == -1) {
+        JOptionPane.showMessageDialog(this, "예약을 선택하세요.");
+        return;
+    }
+
+    String name = jTable1.getValueAt(row, 0).toString();
+    String room = jTable1.getValueAt(row, 1).toString();
+    String date = jTable1.getValueAt(row, 2).toString();
+    String start = jTable1.getValueAt(row, 3).toString();
+    String end = jTable1.getValueAt(row, 4).toString();
+    String people = jTable1.getValueAt(row, 5).toString();
+    String status = "대기";
+
+    String targetLine = String.join(",", name, room, date, start, end, people, status);
+
+    String pendingPath = "C:\\Users\\rlarh\\OneDrive\\바탕 화면\\reservations.txt";
+    String approvedPath = "C:\\Users\\rlarh\\OneDrive\\바탕 화면\\reservations_approved.txt";
+
+    List<String> lines = new ArrayList<>();
+
+    try (BufferedReader br = new BufferedReader(new FileReader(pendingPath))) {
+        String line;
+        while ((line = br.readLine()) != null) {
+            if (!line.equals(targetLine)) {
+                lines.add(line); // 삭제 제외
+            }
+        }
+    } catch (IOException e) {
+        JOptionPane.showMessageDialog(this, "예약 파일 읽기 오류!");
+        return;
+    }
+
+    try (BufferedWriter bw = new BufferedWriter(new FileWriter(pendingPath))) {
+        for (String l : lines) {
+            bw.write(l);
+            bw.newLine();
+        }
+    } catch (IOException e) {
+        JOptionPane.showMessageDialog(this, "예약 파일 쓰기 오류!");
+        return;
+    }
+
+    // 승인 예약 저장
+    String approvedLine = String.join(",", name, room, date, start, end, people, "승인");
+    try (BufferedWriter bw = new BufferedWriter(new FileWriter(approvedPath, true))) {
+        bw.write(approvedLine);
+        bw.newLine();
+    } catch (IOException e) {
+        JOptionPane.showMessageDialog(this, "승인 내역 저장 실패!");
+        return;
+    }
+
+    JOptionPane.showMessageDialog(this, "예약이 승인되었습니다.");
+    loadReservationsFromTxt(); // 대기 목록 새로고침
+   appendLog("대기", "승인", name, room, date, start, end, people);
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+    loadReservationsFromTxt();      // TODO add your handling code here:
+    }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+   int row = jTable1.getSelectedRow();
+    if (row == -1) {
+        JOptionPane.showMessageDialog(this, "예약을 선택하세요.");
+        return;
+    }
+
+    String name = jTable1.getValueAt(row, 0).toString();
+    String room = jTable1.getValueAt(row, 1).toString();
+    String date = jTable1.getValueAt(row, 2).toString();
+    String start = jTable1.getValueAt(row, 3).toString();
+    String end = jTable1.getValueAt(row, 4).toString();
+    String people = jTable1.getValueAt(row, 5).toString();
+    String status = "대기";
+
+    String targetLine = String.join(",", name, room, date, start, end, people, status);
+
+    String pendingPath = "C:\\Users\\rlarh\\OneDrive\\바탕 화면\\reservations.txt";
+    String rejectedPath = "C:\\Users\\rlarh\\OneDrive\\바탕 화면\\reservations_rejected.txt";
+
+    List<String> lines = new ArrayList<>();
+
+    try (BufferedReader br = new BufferedReader(new FileReader(pendingPath))) {
+        String line;
+        while ((line = br.readLine()) != null) {
+            if (!line.equals(targetLine)) {
+                lines.add(line); // 삭제 제외
+            }
+        }
+    } catch (IOException e) {
+        JOptionPane.showMessageDialog(this, "예약 파일 읽기 오류!");
+        return;
+    }
+
+    try (BufferedWriter bw = new BufferedWriter(new FileWriter(pendingPath))) {
+        for (String l : lines) {
+            bw.write(l);
+            bw.newLine();
+        }
+    } catch (IOException e) {
+        JOptionPane.showMessageDialog(this, "예약 파일 쓰기 오류!");
+        return;
+    }
+
+    // 거절 예약 저장
+    String rejectedLine = String.join(",", name, room, date, start, end, people, "거절");
+    try (BufferedWriter bw = new BufferedWriter(new FileWriter(rejectedPath, true))) {
+        bw.write(rejectedLine);
+        bw.newLine();
+    } catch (IOException e) {
+        JOptionPane.showMessageDialog(this, "거절 내역 저장 실패!");
+        return;
+    }
+
+    JOptionPane.showMessageDialog(this, "예약이 거절되었습니다.");
+    loadReservationsFromTxt(); // 대기 목록 새로고침
+    appendLog("대기", "거절", name, room, date, start, end, people);
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+     new ApprovedFrame().setVisible(true);
+    }//GEN-LAST:event_jButton5ActionPerformed
+
+    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+      new RejectedFrame().setVisible(true);
+    }//GEN-LAST:event_jButton6ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -153,6 +357,8 @@ public class featureFrame extends javax.swing.JFrame {
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
+    private javax.swing.JButton jButton5;
+    private javax.swing.JButton jButton6;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
