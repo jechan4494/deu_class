@@ -24,7 +24,13 @@ public class ReservationController {
         
         loadPendingReservations(); // 처음 실행 시 대기 목록 로드
     }
-    
+    public void approveReservation(int rowIndex, JTable table) {
+    model.approveReservation(rowIndex, table);
+}
+
+public void rejectReservation(int rowIndex, JTable table) {
+    model.rejectReservation(rowIndex, table);
+}
    public void loadPendingReservations() {
     DefaultTableModel model = this.model.loadPendingReservations(); // ← 모델에서 데이터 가져옴
     view.setReservationTableModel(model); // ← 테이블에 적용
