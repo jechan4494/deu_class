@@ -9,24 +9,39 @@ import ta_feature.model.ReservationModel;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
-public class ApprovedFrame extends JFrame {
-    private JButton btnReject;
-    private JButton btnBack;
-
+public class ApprovedFrame extends javax.swing.JFrame {
     private ApprovedController controller;
+
     public ApprovedFrame() {
-        initComponents();
-        ReservationModel model = new ReservationModel();
-        controller = new ApprovedController(model, this);
-        controller.loadApprovedReservations();
+        initComponents();  // NetBeans GUI 초기화
+        controller = new ApprovedController(new ReservationModel(), this);
+        controller.loadApprovedReservations();  // 테이블 첫 로딩
+
+        // 🔽 승인된 예약 → 거절로 전환
+        jButton1.addActionListener(e -> {
+            int row = jTable1.getSelectedRow();
+            if (row == -1) {
+                JOptionPane.showMessageDialog(this, "예약을 선택하세요.");
+                return;
+            }
+            controller.rejectFromApproved(row);  // 컨트롤러에 위임
+        });
+
+        // 🔽 이전 버튼: 창 닫기
+        jButton2.addActionListener(e -> dispose());
     }
 
+    // ✅ 컨트롤러에서 테이블 접근 가능하도록 공개
     public JTable getApprovedTable() {
         return jTable1;
     }
 
     public void setApprovedTableModel(DefaultTableModel model) {
-        jTable1.setModel(model);
+        jTable1.setModel(model);  // 모델이 설정한 열 구조로 갱신
+    }
+
+    public void showRejectMessage() {
+        JOptionPane.showMessageDialog(this, "거절로 변경되었습니다.");
     }
 
     /**
@@ -123,12 +138,7 @@ public class ApprovedFrame extends JFrame {
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-    int row = jTable1.getSelectedRow();
-    if (row == -1) {
-        JOptionPane.showMessageDialog(this, "예약을 선택하세요.");
-        return;
-    }
-    controller.rejectFromApproved(row);
+
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**

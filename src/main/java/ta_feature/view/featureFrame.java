@@ -6,51 +6,63 @@ package ta_feature.view;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import java.util.List;
-
 import ta_feature.controller.ReservationController;
 import ta_feature.model.ReservationModel;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+
 public class FeatureFrame extends javax.swing.JFrame {
     
- private ReservationController controller;
- 
+    private ReservationController controller;
+    
     public FeatureFrame() {
-    initComponents(); 
-    ReservationModel model = new ReservationModel();
-    this.controller = new ReservationController(model, this); // 💡 먼저 연결
-    reloadTable(); 
+        initComponents(); 
+        jButton7.addActionListener(e -> openLogDialog());
+        ReservationModel model = new ReservationModel();
+        this.controller = new ReservationController(model, this);
+        reloadTable();  // 대기 테이블 초기 로딩
+    }
+
+    // ✅ JTable 접근자
+    public JTable getReservationTable() {
+        return jTable1;
+    }
+
+    private void openLogDialog() {
+    StringBuilder logContent = new StringBuilder();
+    String logPath = "C:\\Users\\rlarh\\OneDrive\\바탕 화면\\reservation_log.txt";
+
+    try (BufferedReader br = new BufferedReader(new FileReader(logPath))) {
+        String line;
+        while ((line = br.readLine()) != null) {
+            logContent.append(line).append("\n");
+        }
+    } catch (IOException e) {
+        JOptionPane.showMessageDialog(this, "로그 파일을 읽을 수 없습니다.");
+        return;
+    }
+
+    JTextArea textArea = new JTextArea(logContent.toString());
+    textArea.setEditable(false);
+    JScrollPane scrollPane = new JScrollPane(textArea);
+    scrollPane.setPreferredSize(new java.awt.Dimension(500, 300));
+
+    JOptionPane.showMessageDialog(this, scrollPane, "예약 로그", JOptionPane.INFORMATION_MESSAGE);
 }
-public JTable getReservationTable() {
-    return jTable1;
-}
-
-public void setReservationTableModel(DefaultTableModel model) {
-    jTable1.setModel(model);
-}
-    public JButton getApproveButton() {
-        return jButton1;
+    
+    public void setReservationTableModel(DefaultTableModel model) {
+        jTable1.setModel(model);  // 모델에서 설정한 열 구조 그대로 사용
     }
 
-    public JButton getRejectButton() {
-        return jButton2;
-    }
-
-    public JButton getRefreshButton() {
-        return jButton3;
-    }
-
-    public JButton getApprovedHistoryButton() {
-        return jButton5;
-    }
-
-    public JButton getRejectedHistoryButton() {
-        return jButton6;
-    }
-
-    public JButton getBackButton() {
-        return jButton4;
-    }
+    // ✅ 버튼 접근자들
+    public JButton getApproveButton() { return jButton1; }
+    public JButton getRejectButton() { return jButton2; }
+    public JButton getRefreshButton() { return jButton3; }
+    public JButton getApprovedHistoryButton() { return jButton5; }
+    public JButton getRejectedHistoryButton() { return jButton6; }
+    public JButton getBackButton() { return jButton4; }
 
     public void openApprovedFrame() {
         new ApprovedFrame().setVisible(true);
@@ -61,13 +73,15 @@ public void setReservationTableModel(DefaultTableModel model) {
     }
 
     private void reloadTable() {
-    controller.loadPendingReservations(); // ✅ 컨트롤러에 새로고침 요청
+        controller.loadPendingReservations();  // 컨트롤러 → 모델 → 테이블 갱신
     }
+
     public void showApprovalMessage() {
-    JOptionPane.showMessageDialog(this, "예약이 승인되었습니다.");
+        JOptionPane.showMessageDialog(this, "예약이 승인되었습니다.");
     }
+
     public void showRejectionMessage() {
-    JOptionPane.showMessageDialog(this, "예약이 거절되었습니다.");
+        JOptionPane.showMessageDialog(this, "예약이 거절되었습니다.");
     }
 
     /**
@@ -88,6 +102,7 @@ public void setReservationTableModel(DefaultTableModel model) {
         jButton4 = new javax.swing.JButton();
         jButton5 = new javax.swing.JButton();
         jButton6 = new javax.swing.JButton();
+        jButton7 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -144,6 +159,13 @@ public void setReservationTableModel(DefaultTableModel model) {
             }
         });
 
+        jButton7.setText("예약 로그");
+        jButton7.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton7ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -162,10 +184,11 @@ public void setReservationTableModel(DefaultTableModel model) {
                                 .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
                                 .addComponent(jButton3)))
-                        .addGap(84, 84, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 84, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jButton5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jButton6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                            .addComponent(jButton6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jButton7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -175,17 +198,23 @@ public void setReservationTableModel(DefaultTableModel model) {
                 .addComponent(jLabel1)
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 188, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton2)
-                    .addComponent(jButton3)
-                    .addComponent(jButton1)
-                    .addComponent(jButton5))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton4)
-                    .addComponent(jButton6))
-                .addContainerGap(19, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jButton2)
+                            .addComponent(jButton3)
+                            .addComponent(jButton1))
+                        .addGap(18, 18, 18)
+                        .addComponent(jButton4))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(12, 12, 12)
+                        .addComponent(jButton5)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton6)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton7)))
+                .addContainerGap(8, Short.MAX_VALUE))
         );
 
         pack();
@@ -220,6 +249,10 @@ public void setReservationTableModel(DefaultTableModel model) {
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
       openRejectedFrame();
     }//GEN-LAST:event_jButton6ActionPerformed
+
+    private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton7ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -264,6 +297,7 @@ public void setReservationTableModel(DefaultTableModel model) {
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
+    private javax.swing.JButton jButton7;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;

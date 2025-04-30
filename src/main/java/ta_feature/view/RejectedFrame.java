@@ -3,67 +3,49 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package ta_feature.view;
-import java.io.*;
+import ta_feature.controller.RejectedController;
+import ta_feature.model.ReservationModel;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import java.util.List;
-import java.util.ArrayList;
-/**
- *
- * @author rlarh
- */
+
 public class RejectedFrame extends javax.swing.JFrame {
-private void loadRejectedReservations() {
-    DefaultTableModel model = (DefaultTableModel) jTable1.getModel(); // 테이블 변수명 맞게!
-    model.setRowCount(0); // 기존 데이터 초기화
+    private RejectedController controller;
 
-    String path = "C:\\Users\\rlarh\\OneDrive\\바탕 화면\\reservations_rejected.txt";
-
-    try (BufferedReader br = new BufferedReader(new FileReader(path))) {
-        String line;
-        while ((line = br.readLine()) != null) {
-            String[] tokens = line.split(",");
-            if (tokens.length == 7 && tokens[6].equals("거절")) {
-                model.addRow(tokens); // 한 줄 추가
-            }
-        }
-    } catch (IOException e) {
-        JOptionPane.showMessageDialog(this, "거절 내역을 불러오는 중 오류 발생!");
-        e.printStackTrace();
-    }
-}
-private void appendLog(String beforeStatus, String afterStatus,
-                       String name, String room, String date,
-                       String start, String end, String people) {
-    String timestamp = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new java.util.Date());
-
-    String action;
-    if (beforeStatus.equals("대기")) {
-        action = afterStatus + "됨";  // 승인됨, 거절됨
-    } else {
-        action = String.format("상태 변경: %s → %s", beforeStatus, afterStatus);
-    }
-
-    String line = String.format("[%s] %s - %s, %s, %s, %s~%s, %s명",
-                    timestamp, action, name, room, date, start, end, people);
-
-    String path = "C:\\Users\\rlarh\\OneDrive\\바탕 화면\\reservation_log.txt";
-
-    try (BufferedWriter bw = new BufferedWriter(new FileWriter(path, true))) {
-        bw.write(line);
-        bw.newLine();
-    } catch (IOException e) {
-        JOptionPane.showMessageDialog(this, "로그 저장 실패!");
-    }
-}
-    /**
-     * Creates new form RejectedFrame
-     */
     public RejectedFrame() {
-        initComponents();
-        loadRejectedReservations();
+        initComponents(); // NetBeans 자동 생성
+        controller = new RejectedController(new ReservationModel(), this);
+        controller.loadRejectedReservations(); // 테이블 로딩
+
+        // 🔽 "승인으로 변경" 버튼
+        jButton1.addActionListener(e -> {
+            int row = jTable1.getSelectedRow();
+            if (row == -1) {
+                JOptionPane.showMessageDialog(this, "항목을 선택하세요.");
+                return;
+            }
+            controller.approveFromRejected(row); // 컨트롤러에 위임
+        });
+
+        // 🔽 "이전" 버튼
+        jButton2.addActionListener(e -> {
+            new FeatureFrame().setVisible(true);
+            dispose();
+        });
     }
 
+    // ✅ 컨트롤러에서 테이블 접근 가능하게 제공
+    public JTable getRejectedTable() {
+        return jTable1;
+    }
+
+    public void setRejectedTableModel(DefaultTableModel model) {
+        jTable1.setModel(model);  // 모델이 제공하는 열 구조 적용
+    }
+
+    public void showApproveMessage() {
+        JOptionPane.showMessageDialog(this, "승인으로 변경되었습니다.");
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -153,67 +135,11 @@ private void appendLog(String beforeStatus, String afterStatus,
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-    new FeatureFrame().setVisible(true); // 학사조교 창 다시 열기
-    this.dispose(); // 현재 창 닫기
+
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-     int row = jTable1.getSelectedRow();
-    if (row == -1) {
-        JOptionPane.showMessageDialog(this, "예약을 선택하세요.");
-        return;
-    }
-
-    String name = jTable1.getValueAt(row, 0).toString();
-    String room = jTable1.getValueAt(row, 1).toString();
-    String date = jTable1.getValueAt(row, 2).toString();
-    String start = jTable1.getValueAt(row, 3).toString();
-    String end = jTable1.getValueAt(row, 4).toString();
-    String people = jTable1.getValueAt(row, 5).toString();
-    String status = "거절";
-
-    String targetLine = String.join(",", name, room, date, start, end, people, status);
-
-    String rejectedPath = "C:\\Users\\rlarh\\OneDrive\\바탕 화면\\reservations_rejected.txt";
-    String approvedPath = "C:\\Users\\rlarh\\OneDrive\\바탕 화면\\reservations_approved.txt";
-
-    List<String> lines = new ArrayList<>();
-
-    try (BufferedReader br = new BufferedReader(new FileReader(rejectedPath))) {
-        String line;
-        while ((line = br.readLine()) != null) {
-            if (!line.equals(targetLine)) {
-                lines.add(line); // 삭제 제외
-            }
-        }
-    } catch (IOException e) {
-        JOptionPane.showMessageDialog(this, "거절 파일 읽기 오류!");
-        return;
-    }
-
-    try (BufferedWriter bw = new BufferedWriter(new FileWriter(rejectedPath))) {
-        for (String l : lines) {
-            bw.write(l);
-            bw.newLine();
-        }
-    } catch (IOException e) {
-        JOptionPane.showMessageDialog(this, "거절 파일 쓰기 오류!");
-        return;
-    }
-
-    // 승인 파일에 저장
-    String approvedLine = String.join(",", name, room, date, start, end, people, "승인");
-    try (BufferedWriter bw = new BufferedWriter(new FileWriter(approvedPath, true))) {
-        bw.write(approvedLine);
-        bw.newLine();
-    } catch (IOException e) {
-        JOptionPane.showMessageDialog(this, "승인 내역 저장 실패!");
-        return;
-    }
-
-    JOptionPane.showMessageDialog(this, "해당 예약이 승인으로 변경되었습니다.");
-    loadRejectedReservations(); // 테이블 새로고침
-    appendLog("거절", "승인", name, room, date, start, end, people);
+    
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
