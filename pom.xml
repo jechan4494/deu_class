@@ -14,8 +14,6 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
-<<<<<<< Updated upstream
-=======
 <dependencies>
         <dependency>
             <groupId>org.junit.jupiter</groupId>

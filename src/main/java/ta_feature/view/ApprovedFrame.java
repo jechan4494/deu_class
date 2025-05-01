@@ -9,17 +9,13 @@ import ta_feature.model.ReservationModel;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
-import ta_feature.controller.ApprovedController;
-import ta_feature.model.ReservationModel;
-
-import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
-
 public class ApprovedFrame extends javax.swing.JFrame {
     private ApprovedController controller;
+    private featureFrame parentFrame; // ✅ 학사조교 창 참조
 
-    public ApprovedFrame() {
+    public ApprovedFrame(featureFrame parentFrame) {
         initComponents();  // NetBeans GUI 초기화
+        this.parentFrame = parentFrame;
         controller = new ApprovedController(new ReservationModel(), this);
         controller.loadApprovedReservations(true);  // Lab room 기준으로 테이블 첫 로딩
 
@@ -33,13 +29,11 @@ public class ApprovedFrame extends javax.swing.JFrame {
             controller.rejectFromApproved(row, true);  // Lab room 기준
         });
 
-        // 🔽 이전 버튼: featureFrame 열기
-        jButton2.addActionListener(e -> jButton2ActionPerformed());
-    }
-
-    private void jButton2ActionPerformed() {
-        new featureFrame().setVisible(true); // 학사조교 창 다시 열기
-        this.dispose(); // 현재 창 닫기
+        // 🔽 이전 버튼: 학사조교 창 다시 보이기
+        jButton2.addActionListener(e -> {
+            this.dispose();                // 승인 창 닫기
+            parentFrame.setVisible(true);  // 학사조교 창 다시 보이기
+        });
     }
 
     // ✅ 컨트롤러에서 테이블 접근 가능하도록 공개
@@ -54,6 +48,8 @@ public class ApprovedFrame extends javax.swing.JFrame {
     public void showRejectMessage() {
         JOptionPane.showMessageDialog(this, "거절로 변경되었습니다.");
     }
+}
+
 
 
     /**
@@ -144,10 +140,7 @@ public class ApprovedFrame extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-    new featureFrame().setVisible(true); // 학사조교 창 다시 열기
-    this.dispose(); // 현재 창 닫기
-    }//GEN-LAST:event_jButton2ActionPerformed
+ 
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
 
