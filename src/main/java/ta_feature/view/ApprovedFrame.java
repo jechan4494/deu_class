@@ -133,7 +133,7 @@ public class ApprovedFrame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-    new FeatureFrame().setVisible(true); // 학사조교 창 다시 열기
+    new featureFrame().setVisible(true); // 학사조교 창 다시 열기
     this.dispose(); // 현재 창 닫기
     }//GEN-LAST:event_jButton2ActionPerformed
 

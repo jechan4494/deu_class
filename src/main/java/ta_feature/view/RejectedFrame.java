@@ -29,7 +29,7 @@ public class RejectedFrame extends javax.swing.JFrame {
 
         // 🔽 "이전" 버튼
         jButton2.addActionListener(e -> {
-            new FeatureFrame().setVisible(true);
+            new featureFrame().setVisible(true);
             dispose();
         });
     }

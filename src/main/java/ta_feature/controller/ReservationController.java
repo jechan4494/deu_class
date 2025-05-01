@@ -4,7 +4,7 @@
  */
 package ta_feature.controller;
 import ta_feature.model.ReservationModel;
-import ta_feature.view.FeatureFrame;
+import ta_feature.view.featureFrame;
 import javax.swing.*;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
@@ -14,9 +14,9 @@ import javax.swing.table.DefaultTableModel;
  */
 public class ReservationController {
      private final ReservationModel model;
-    private final FeatureFrame view;
+    private final featureFrame view;
 
-    public ReservationController(ReservationModel model, FeatureFrame view) {
+    public ReservationController(ReservationModel model, featureFrame view) {
         this.model = model;
         this.view = view;
 
