@@ -1,0 +1,16 @@
+[
+  {
+    "id": "ROOM101",
+    "name": "101호 강의실",
+    "capacity": 30,
+    "hasProjector": true,
+    "hasComputer": false
+  },
+  {
+    "id": "ROOM201",
+    "name": "201호 컴퓨터실",
+    "capacity": 20,
+    "hasProjector": true,
+    "hasComputer": true
+  }
+]

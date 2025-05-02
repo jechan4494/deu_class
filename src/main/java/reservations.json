@@ -1,0 +1,11 @@
+[
+  {
+    "id": "RES001",
+    "roomId": "ROOM101",
+    "userId": "PROF001",
+    "startTime": "2023-11-15T09:00:00",
+    "endTime": "2023-11-15T11:00:00",
+    "purpose": "수업",
+    "status": "APPROVED"
+  }
+]

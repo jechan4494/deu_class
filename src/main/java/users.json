@@ -1,0 +1,20 @@
+[
+  {
+    "id": "ADMIN001",
+    "password": "admin123",
+    "name": "관리자",
+    "role": "ADMIN"
+  },
+  {
+    "id": "PROF001",
+    "password": "prof123",
+    "name": "김교수",
+    "role": "PROFESSOR"
+  },
+  {
+    "id": "STUD001",
+    "password": "stud123",
+    "name": "이학생",
+    "role": "STUDENT"
+  }
+]
