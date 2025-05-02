@@ -1,0 +1,52 @@
+테스트 실행 방법
+프로젝트 루트 디렉토리에서 다음 명령 실행:
+./gradlew test
+
+특정 테스트 클래스만 실행:
+./gradlew test --tests "controller.ReservationControllerTest"
+
+테스트 리포트 확인:
+HTML 리포트: build/reports/tests/test/index.html
+JUnit 리포트: build/test-results/test
+
+테스트 커버리지 분석
+JaCoCo 플러그인을 추가하여 테스트 커버리지를 측정할 수 있습니다:
+
+build.gradle에 추가:
+
+groovy
+plugins {
+    id 'jacoco'
+}
+
+jacocoTestReport {
+    reports {
+        xml.required = true
+        html.required = true
+    }
+}
+
+test {
+    finalizedBy jacocoTestReport
+}
+
+
+커버리지 리포트 생성:
+./gradlew test jacocoTestReport
+
+리포트 확인:
+HTML 리포트: build/reports/jacoco/test/html/index.html
+
+이 테스트 코드는 다음과 같은 사항을 검증합니다:
+
+파일 시스템 기반 데이터 처리 (JSON 파일 저장/로드)
+
+사용자 역할(학생, 교수, 관리자)에 따른 승인 조건 자동 판단
+
+시간대 중복 검사 기능
+
+UI 상태 변화 (로그인 성공/실패 시 화면 전환)
+
+예약 생성 시 자동 승인 조건 적용 여부
+
+데이터 영속성 (파일 저장 후 다시 로드 시 데이터 무결성)

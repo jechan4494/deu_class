@@ -1,0 +1,23 @@
+빌드 및 실행 방법
+JDK 21 설치
+
+프로젝트 구조 생성 (위에서 설명한 디렉토리 구조)
+
+필요한 라이브러리 추가 (Jackson Databind for JSON 처리)
+
+Maven 의존성:
+
+xml
+<dependency>
+    <groupId>com.fasterxml.jackson.core</groupId>
+    <artifactId>jackson-databind</artifactId>
+    <version>2.15.2</version>
+</dependency>
+<dependency>
+    <groupId>com.fasterxml.jackson.datatype</groupId>
+    <artifactId>jackson-datatype-jsr310</artifactId>
+    <version>2.15.2</version>
+</dependency>
+AppMain 클래스 실행
+
+이 시스템은 사용자 역할(학생, 교수, 관리자)에 따라 다른 기능을 제공하며(F-01), 예약 가능 시간을 시각적으로 표시하고(F-02), 자동 승인 조건을 구현하며(F-03), 예약 정보를 테이블과 캘린더로 시각화하고(F-04), 예약 현황을 관리하며(F-05), 모든 예약 이력을 JSON 파일에 기록합니다(F-06).
