@@ -4,97 +4,28 @@
  */
 package ta_feature.view;
 
-import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
 import ta_feature.controller.ReservationController;
 import ta_feature.model.ReservationModel;
-import ta_feature.view.ApprovedFrame;
-import ta_feature.view.RejectedFrame;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 
 public class featureFrame extends javax.swing.JFrame {
 
     private ReservationController controller;
-    private ApprovedFrame approvedFrame; // ✅ 승인창 재사용
-    private RejectedFrame rejectedFrame; // ✅ 거절창 재사용
 
     public featureFrame() {
-        initComponents(); 
-        ReservationModel model = new ReservationModel();
-        this.controller = new ReservationController(model, this);
-        this.approvedFrame = new ApprovedFrame();
-        this.rejectedFrame = new RejectedFrame();
-
-        jButton1.addActionListener(e -> handleApprove());
-        jButton2.addActionListener(e -> handleReject());
-        jButton3.addActionListener(e -> reloadTable());
-        jButton5.addActionListener(e -> openApprovedFrame());
-        jButton6.addActionListener(e -> openRejectedFrame());
-
-        reloadTable();  // 대기 테이블 초기 로딩
+        initComponents(); // NetBeans 자동 생성된 UI 초기화
+        controller = new ReservationController(new ReservationModel(), this);
+        controller.loadReservedDataToTable(); // 예약 내역 테이블에 표시
+        
     }
 
-    public void showSelectReservationMessage() {
-        JOptionPane.showMessageDialog(this, "예약을 선택하세요.");
-    }
-
-    // ✅ JTable 접근자
+    // 🔽 JTable 접근용 getter
     public JTable getReservationTable() {
-        return jTable1;
+        return jTable1; // 이 이름이 NetBeans 테이블 컴포넌트 이름과 같아야 함
     }
-
-    public void setReservationTableModel(DefaultTableModel model) {
-        jTable1.setModel(model);  // 모델에서 설정한 열 구조 그대로 사용
-    }
-
-    // ✅ 버튼 접근자들
-    public JButton getApproveButton() { return jButton1; }
-    public JButton getRejectButton() { return jButton2; }
-    public JButton getRefreshButton() { return jButton3; }
-    public JButton getApprovedHistoryButton() { return jButton5; }
-    public JButton getRejectedHistoryButton() { return jButton6; }
-    public JButton getBackButton() { return jButton4; }
-
-    public void openApprovedFrame() {
-        approvedFrame.setVisible(true); // ✅ 중복 창 방지
-    }
-
-    public void openRejectedFrame() {
-        rejectedFrame.setVisible(true); // ✅ 중복 창 방지
-    }
-
-    private void reloadTable() {
-        controller.loadPendingReservations();  // 컨트롤러 → 모델 → 테이블 갱신
-    }
-
-    private void handleApprove() {
-        int selectedRow = jTable1.getSelectedRow();
-        if (selectedRow >= 0) {
-            controller.approveSelected(selectedRow);
-        } else {
-            JOptionPane.showMessageDialog(this, "승인할 예약을 선택하세요.");
-        }
-    }
-
-    private void handleReject() {
-        int selectedRow = jTable1.getSelectedRow();
-        if (selectedRow >= 0) {
-            controller.rejectSelected(selectedRow);
-        } else {
-            JOptionPane.showMessageDialog(this, "거절할 예약을 선택하세요.");
-        }
-    }
-
-    public void showApprovalMessage() {
-        JOptionPane.showMessageDialog(this, "예약이 승인되었습니다.");
-    }
-
-    public void showRejectionMessage() {
-        JOptionPane.showMessageDialog(this, "예약이 거절되었습니다.");
-    }
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -122,14 +53,14 @@ public class featureFrame extends javax.swing.JFrame {
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null}
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
             },
             new String [] {
-                "이름", "강의실", "날짜", "시작 시간", "종료 시간", "인원 수", "상태"
+                "강의실", "시작 시간", "종료 시간", "구분"
             }
         ));
         jScrollPane1.setViewportView(jTable1);
@@ -238,23 +169,25 @@ public class featureFrame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
- 
+    int row = getReservationTable().getSelectedRow();
+    controller.approveSelectedReservation(row);
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-    reloadTable();
+
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-
+int selectedRow = getReservationTable().getSelectedRow();
+    controller.rejectSelectedReservation(selectedRow);
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-     openApprovedFrame();
+ 
     }//GEN-LAST:event_jButton5ActionPerformed
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
-      openRejectedFrame();
+
     }//GEN-LAST:event_jButton6ActionPerformed
 
     private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
