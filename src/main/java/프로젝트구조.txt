@@ -1,0 +1,32 @@
+src/
+├── main/
+│   ├── java/
+│   │   ├── controller/
+│   │   │   ├── ReservationController.java
+│   │   │   └── UserController.java
+│   │   ├── model/
+│   │   │   ├── Reservation.java
+│   │   │   ├── Room.java
+│   │   │   └── User.java
+│   │   ├── service/
+│   │   │   ├── FileService.java
+│   │   │   ├── ReservationService.java
+│   │   │   └── UserService.java
+│   │   ├── view/
+│   │   │   ├── AdminView.java
+│   │   │   ├── LoginView.java
+│   │   │   ├── ProfessorView.java
+│   │   │   ├── StudentView.java
+│   │   │   └── components/
+│   │   │       ├── CalendarPanel.java
+│   │   │       ├── ReservationForm.java
+│   │   │       └── ReservationTable.java
+│   │   └── AppMain.java
+│   └── resources/
+│       ├── data/
+│       │   ├── reservations.json
+│       │   ├── rooms.json
+│       │   └── users.json
+│       └── images/
+└── test/
+    └── java/
