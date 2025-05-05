@@ -100,9 +100,8 @@ public class ReservationController {
 }
 
     // ✅ 테스트용 메서드도 유지 (선택사항)
-    public boolean testSaveApprovedReservationForTest(Reservation reservation) {
-        return saveApprovedReservation(reservation);
-    }
+   public boolean testSaveApprovedReservationForTest(Reservation r) { return saveApprovedReservation(r); }
+    public boolean testSaveRejectedReservationForTest(Reservation r) { return saveRejectedReservation(r); }
       // ✅ 예약 거절 메서드
     public void rejectSelectedReservation(int selectedRow) {
         if (selectedRow == -1) {
