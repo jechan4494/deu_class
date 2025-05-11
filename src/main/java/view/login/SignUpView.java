@@ -1,7 +1,7 @@
-package view;
+package view.login;
 
-import controller.AuthController;
-import model.User;
+import controller.login.AuthController;
+import model.login.User;
 
 import javax.swing.*;
 import java.awt.*;
