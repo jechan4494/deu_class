@@ -22,5 +22,17 @@
     "startTime": "13:00",
     "endTime": "13:50",
     "type": "일반실"
+  },
+  {
+    "roomNumber": 912,
+    "startTime": "13:00",
+    "endTime": "13:50",
+    "type": "일반실"
+  },
+  {
+    "roomNumber": 911,
+    "startTime": "09:00",
+    "endTime": "09:50",
+    "type": "실습실"
   }
 ]

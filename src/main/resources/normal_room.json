@@ -2,7 +2,7 @@
   "rooms": [{
     "schedule": {"화요일": [{
       "time": "13:00-13:50",
-      "state": "O"
+      "state": "x"
     }]},
     "roomNumber": 912
   }],
