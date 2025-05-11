@@ -1,4 +1,4 @@
-package model;
+package model.login;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;

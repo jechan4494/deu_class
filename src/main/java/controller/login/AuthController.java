@@ -1,7 +1,7 @@
-package controller;
+package controller.login;
 
-import model.User;
-import model.UserDAO;
+import model.login.User;
+import model.login.UserDAO;
 
 import javax.swing.*;
 

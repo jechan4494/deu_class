@@ -1,4 +1,4 @@
-package model;
+package model.login;
 
 public class User {
   private String id;
@@ -29,4 +29,7 @@ public class User {
 
   public String getRole() { return role; }
   public void setRole(String role) { this.role = role; }
+
+  public void addReservation(RoomReservation reservation) {
+  }
 }

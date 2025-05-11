@@ -1,7 +1,9 @@
 package view.login;
 
 import controller.login.AuthController;
+import controller.professor.ProfessorController;
 import model.login.User;
+import view.professor.ProfessorView;
 
 import javax.swing.*;
 import java.awt.*;
@@ -41,8 +43,36 @@ public class LoginView extends JFrame {
         // 역할별 화면 이동 (팀원 구현)
         switch (user.getRole()) {
           case "PROFESSOR":
-            // new ProfessorView().setVisible(true);
+            // 교수 페이지로 이동 (강의실 선택은 그 안에서 수행)
+            ProfessorView professorView = new ProfessorView();
+            ProfessorController controller = new ProfessorController(professorView, user); // user 객체 전체 전달
+
+            professorView.getBtnStartReservation().addActionListener(e1 -> {
+              String[] options = {"실습실", "일반실"};
+              int choice = JOptionPane.showOptionDialog(
+                      null,
+                      "예약할 강의실 유형을 선택하세요.",
+                      "강의실 유형 선택",
+                      JOptionPane.DEFAULT_OPTION,
+                      JOptionPane.QUESTION_MESSAGE,
+                      null,
+                      options,
+                      options[0]
+              );
+
+              if (choice != JOptionPane.CLOSED_OPTION) {
+                String jsonPath = (choice == 0) ? "Lab_room.json" : "normal_room.json";
+                String roomType = options[choice];
+                professorView.showReservationUI(jsonPath, roomType);
+              }
+            });
+
+
+           /* professorView.addCancelReservationListener(e1 -> {
+              JOptionPane.showMessageDialog(null, "예약 취소 기능은 추후 구현 예정입니다.");
+            });*/
             break;
+
           case "STUDENT":
             // new StudentView().setVisible(true);
             break;

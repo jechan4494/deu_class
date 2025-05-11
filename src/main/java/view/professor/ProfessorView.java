@@ -1,76 +1,135 @@
-package view;
+package view.professor;
 
-import java.util.ArrayList;
+import model.login.RoomModel;
+
+import javax.swing.*;
+import java.awt.*;
 import java.util.List;
-import java.util.Scanner;
+import java.util.Set;
 
-public class ProfessorView {
-    private Scanner scanner = new Scanner(System.in);
+public class ProfessorView extends JFrame {
+    private final JButton btnStartReservation;
+    private final JButton btnCancelReservation;
 
-    public String getProfessorName() {
-        System.out.print("교수 이름을 입력하세요: ");
-        return scanner.nextLine();
+    private JComboBox<Integer> roomCombo;
+    private JComboBox<String> dayCombo;
+    private JList<String> timeSlotList;
+
+    public RoomModel roomModel;
+    private String roomType;
+
+    public interface ReservationHandler {
+        void onReserve(Integer room, String day, List<String> timeSlots, String roomType);
     }
 
-    public int getProfessorId() {
-        System.out.print("교수 교번을 입력하세요: ");
-        return scanner.nextInt();
-    }
-    public String chooseRoomType() {
-        System.out.println("실습실과 일반실 중 선택하세요:");
-        System.out.println("1. 실습실");
-        System.out.println("2. 일반실");
-        System.out.print("선택하세요 (1 또는 2): ");
-        int choice = scanner.nextInt();
-        scanner.nextLine();  // 버퍼 클리어
-        return choice == 1 ? "실습실" : "일반실";  // 1이면 실습실, 2이면 일반실
+    private transient ReservationHandler reservationHandler;
+
+    public ProfessorView() {
+        setTitle("교수 메인 페이지");
+        setSize(300, 150);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setLocationRelativeTo(null);
+        setLayout(new GridLayout(2, 1));
+
+        btnStartReservation = new JButton("예약하기");
+        btnCancelReservation = new JButton("예약 취소하기");
+
+        add(btnStartReservation);
+        add(btnCancelReservation);
+
+        setVisible(true);
     }
 
-    public int chooseRoom(List<Integer> roomNumbers) {
-        System.out.println("실습실 목록:");
-        for (Integer room : roomNumbers) {
-            System.out.println("- " + room);
+    public JButton getBtnStartReservation() {
+        return btnStartReservation;
+    }
+
+    public JButton getBtnCancelReservation() {
+        return btnCancelReservation;
+    }
+
+    public void setReservationHandler(ReservationHandler handler) {
+        this.reservationHandler = handler;
+    }
+
+    public void showReservationUI(String jsonPath, String roomType) {
+        this.roomType = roomType;
+        this.roomModel = new RoomModel(jsonPath);
+
+        if (roomModel == null || roomModel.getRoomNumbers().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "예약 가능한 강의실이 없습니다.");
+            return;
         }
-        System.out.print("사용할 실습실 번호를 선택하세요: ");
-        return scanner.nextInt();
+
+        JFrame reservationFrame = new JFrame("강의실 예약 화면");
+        reservationFrame.setSize(400, 400);
+        reservationFrame.setLayout(new GridLayout(5, 1));
+
+        roomCombo = new JComboBox<>(roomModel.getRoomNumbers().toArray(new Integer[0]));
+        roomCombo.addActionListener(e -> updateDayCombo());
+        reservationFrame.add(labeledPanel("강의실 선택:", roomCombo));
+
+        dayCombo = new JComboBox<>();
+        dayCombo.addActionListener(e -> updateTimeSlots());
+        reservationFrame.add(labeledPanel("요일 선택:", dayCombo));
+
+        timeSlotList = new JList<>();
+        timeSlotList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        reservationFrame.add(labeledPanel("시간대 선택:", new JScrollPane(timeSlotList)));
+
+        JButton btnReserve = new JButton("예약하기");
+        btnReserve.addActionListener(e -> handleReservation());
+        reservationFrame.add(btnReserve);
+
+        updateDayCombo();
+        reservationFrame.setVisible(true);
     }
 
-    public String chooseDay(List<String> days) {
-        System.out.println("요일 목록:");
-        for (String day : days) {
-            System.out.println("- " + day);
-        }
-        System.out.print("요일을 선택하세요: ");
-        scanner.nextLine(); // 버퍼 클리어
-        return scanner.nextLine();
+    private JPanel labeledPanel(String label, Component component) {
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.add(new JLabel(label), BorderLayout.NORTH);
+        panel.add(component, BorderLayout.CENTER);
+        return panel;
     }
 
-    public List<String> chooseTimeSlots(List<String> slots) {
-        System.out.println("시간대 목록 (최대 3개 선택):");
-        for (int i = 0; i < slots.size(); i++) {
-            System.out.println((i + 1) + ". " + slots.get(i));
-        }
+    private void updateDayCombo() {
+        Integer room = (Integer) roomCombo.getSelectedItem();
+        if (room == null) return;
 
-        List<String> chosen = new ArrayList<>();
-        while (chosen.size() < 3) {
-            System.out.print("선택할 시간대 번호 (0 입력시 종료): ");
-            int choice = scanner.nextInt();
-            if (choice == 0) break;
-            if (choice > 0 && choice <= slots.size()) {
-                String time = slots.get(choice - 1);
-                if (!chosen.contains(time)) chosen.add(time);
-            }
-        }
-        return chosen;
+        Set<String> days = roomModel.getDays(room);
+        dayCombo.removeAllItems();
+        for (String day : days) dayCombo.addItem(day);
+
+        updateTimeSlots();
     }
 
-    public void displayReservation(model.RoomReservation reservation) {
-        System.out.println("\n====== 예약 정보 ======");
-        System.out.println("강의실 종류: " + reservation.getRoomType());
-        System.out.println("요일: " + reservation.getDay());
-        System.out.println("시간:");
-        for (String time : reservation.getperiod()) {
-            System.out.println("- " + time);
+    private void updateTimeSlots() {
+        Integer room = (Integer) roomCombo.getSelectedItem();
+        String day = (String) dayCombo.getSelectedItem();
+        if (room == null || day == null) return;
+
+        List<String> slots = roomModel.getTimeSlots(room, day);
+        timeSlotList.setListData(slots.toArray(new String[0]));
+    }
+
+    private void handleReservation() {
+        Integer room = (Integer) roomCombo.getSelectedItem();
+        if (room == null) {
+            JOptionPane.showMessageDialog(this, "강의실을 선택해주세요.");
+            return;
+        }
+
+        String day = (String) dayCombo.getSelectedItem();
+        List<String> selectedSlots = timeSlotList.getSelectedValuesList();
+
+        if (selectedSlots.size() > 3) {
+            JOptionPane.showMessageDialog(this, "최대 3개의 시간대만 선택할 수 있습니다.");
+            return;
+        }
+
+        if (reservationHandler != null) {
+            reservationHandler.onReserve(room, day, selectedSlots, roomType);
         }
     }
+
 }

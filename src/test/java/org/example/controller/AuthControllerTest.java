@@ -1,7 +1,7 @@
 package org.example.controller;
 
-import controller.AuthController;
-import model.User;
+import controller.login.AuthController;
+import model.login.User;
 import org.junit.jupiter.api.*;
 
 import java.nio.file.Files;
