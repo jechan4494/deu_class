@@ -30,5 +30,10 @@
             <artifactId>jackson-databind</artifactId>
             <version>2.15.0</version>  <!-- 최신 버전으로 바꿔주세요 -->
         </dependency>
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20210307</version>
+        </dependency>
     </dependencies>
 </project>
