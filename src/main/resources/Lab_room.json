@@ -3,11 +3,11 @@
     "schedule": {"월요일": [
       {
         "time": "09:00-09:50",
-        "status": "x"
+        "status": "o"
       },
       {
         "time": "10:00-10:50",
-        "status": "O"
+        "status": "x"
       }
     ]},
     "roomNumber": 911
