@@ -4,6 +4,8 @@
  */
 package ta_feature.model;
 
+import model.ta.Reservation;
+import model.ta.ReservationModel;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;

@@ -2,31 +2,33 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
-package ta_feature.view;
-import ta_feature.controller.ApprovedController;
-import ta_feature.model.ReservationModel;
+package view.ta;
+import controller.ta.RejectedController;
+import model.ta.ReservationModel;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
-public class approvedFrame extends javax.swing.JFrame {
+public class rejectedFrame extends javax.swing.JFrame {
 
-    private ApprovedController controller;
+    private RejectedController controller;
 
-    public approvedFrame() {
-        initComponents();  // NetBeans 자동 생성 GUI
-        controller = new ApprovedController(new ReservationModel(), this);
-        controller.loadApprovedReservations();  // 승인 데이터 로딩
+    public rejectedFrame() {
+        initComponents();  // NetBeans 자동 생성 메서드
+        controller = new RejectedController(new ReservationModel(), this);
+        controller.loadRejectedReservations();  // 거절 내역 불러오기
     }
 
-    // 👉 테이블 데이터 설정 (컨트롤러에서 호출)
-    public JTable getApprovedTable() {
-        return jTable1;
+    // 테이블 반환 (컨트롤러에서 사용)
+    public JTable getRejectedTable() {
+        return jTable1; // NetBeans에서 만든 테이블이 jTable1이라면 그대로
     }
 
-    public void setApprovedTableModel(DefaultTableModel model) {
-       jTable1.setModel(model);
+    // 테이블 모델 설정 (컨트롤러에서 데이터 주입 시 호출)
+    public void setRejectedTableModel(DefaultTableModel model) {
+        jTable1.setModel(model);
     }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -43,7 +45,7 @@ public class approvedFrame extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jLabel1.setText("예약 승인 내역");
+        jLabel1.setText("예약 거절 내역");
 
         jButton4.setText("이전");
         jButton4.addActionListener(new java.awt.event.ActionListener() {
@@ -81,7 +83,7 @@ public class approvedFrame extends javax.swing.JFrame {
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 588, Short.MAX_VALUE)))
                 .addContainerGap())
             .addGroup(layout.createSequentialGroup()
-                .addGap(239, 239, 239)
+                .addGap(240, 240, 240)
                 .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -101,8 +103,8 @@ public class approvedFrame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-    new featureFrame().setVisible(true);
-    this.dispose();
+        new featureFrame().setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_jButton4ActionPerformed
 
     /**
@@ -122,20 +124,20 @@ public class approvedFrame extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(approvedFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(rejectedFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(approvedFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(rejectedFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(approvedFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(rejectedFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(approvedFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(rejectedFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new approvedFrame().setVisible(true);
+                new rejectedFrame().setVisible(true);
             }
         });
     }

@@ -7,9 +7,9 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 import org.junit.jupiter.api.Test;
-import ta_feature.controller.ReservationController;
-import ta_feature.model.Reservation;
-import ta_feature.model.ReservationModel;
+import controller.ta.ReservationController;
+import model.ta.Reservation;
+import model.ta.ReservationModel;
 
 import javax.swing.table.DefaultTableModel;
 import java.io.FileInputStream;

@@ -2,11 +2,11 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package ta_feature.controller;
+package controller.ta;
 import org.json.*;
-import ta_feature.model.Reservation;
-import ta_feature.model.ReservationModel;
-import ta_feature.view.featureFrame;
+import model.ta.Reservation;
+import model.ta.ReservationModel;
+import view.ta.featureFrame;
 
 import java.io.File;
 import java.io.FileWriter;

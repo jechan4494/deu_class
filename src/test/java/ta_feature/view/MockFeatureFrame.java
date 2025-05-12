@@ -3,6 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package ta_feature.view;
+import view.ta.featureFrame;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 

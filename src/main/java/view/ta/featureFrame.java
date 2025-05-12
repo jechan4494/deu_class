@@ -2,10 +2,10 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
-package ta_feature.view;
+package view.ta;
 
-import ta_feature.controller.ReservationController;
-import ta_feature.model.ReservationModel;
+import controller.ta.ReservationController;
+import model.ta.ReservationModel;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
