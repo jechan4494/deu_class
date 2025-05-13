@@ -1,0 +1,13 @@
+[
+  {
+    "name": "정찬",
+    "role": "PROFESSOR",
+    "roomType": "실습실",
+    "roomNumber": "915",
+    "day": "화요일",
+    "timeSlots": [
+      "15:00-15:50"
+    ],
+    "state": "대기"
+  }
+]
