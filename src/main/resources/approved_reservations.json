@@ -19,5 +19,12 @@
     "endTime": "12:50",
     "type": "실습실",
     "day": "화요일"
+  },
+  {
+    "roomNumber": 911,
+    "startTime": "12:00",
+    "endTime": "12:50",
+    "type": "실습실",
+    "day": "화요일"
   }
 ]
