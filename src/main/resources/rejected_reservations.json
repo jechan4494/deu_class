@@ -40,5 +40,11 @@
     "startTime": "10:00",
     "endTime": "10:50",
     "type": "실습실"
+  },
+  {
+    "roomNumber": 911,
+    "startTime": "10:00",
+    "endTime": "10:50",
+    "type": "실습실"
   }
 ]
