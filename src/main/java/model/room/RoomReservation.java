@@ -1,4 +1,4 @@
-package model.login;
+package model.room;
 
 import java.util.List;
 
@@ -28,11 +28,4 @@ public class RoomReservation {
         return timeSlots;
     }
 
-    public String getRoomType() {
-        return roomType;
-    }
-
-    public String getState() {
-        return state;
-    }
 }

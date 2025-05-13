@@ -1,7 +1,7 @@
 package view.login;
 
 import controller.login.AuthController;
-import model.login.User;
+import model.user.User;
 
 import javax.swing.*;
 import java.awt.*;
@@ -18,7 +18,6 @@ public class SignUpView extends JFrame {
     setSize(400, 350);
     setLocationRelativeTo(null);
 
-    // Nimbus Look & Feel 적용
     try {
       for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
         if ("Nimbus".equals(info.getName())) {
@@ -28,7 +27,6 @@ public class SignUpView extends JFrame {
         }
       }
     } catch (Exception e) {
-      // 기본 Look & Feel 사용
     }
 
     JPanel panel = new JPanel();

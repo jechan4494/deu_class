@@ -1,9 +1,11 @@
-package model.login;
+package model.room;
 
+import model.user.User;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
+import javax.swing.*;
 import java.io.InputStream;
 import java.util.*;
 
@@ -18,7 +20,7 @@ public class RoomModel {
 
         try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream(jsonPath)) {
             if (inputStream == null) {
-                System.err.println("Error: JSON file not found at path: " + jsonPath);
+                System.err.println("Error: JSON파일이 경로를 못 찾았습니다.: " + jsonPath);
                 return;
             }
 
@@ -64,9 +66,9 @@ public class RoomModel {
             if (!already.contains(timeSlot)) {
                 JSONObject obj = new JSONObject();
                 obj.put("time", timeSlot);
-                obj.put("state", "waiting");
-                obj.put("name", user.getName());
-                obj.put("type", user.getRole());
+                obj.put("state", "대기");
+                obj.put("name", user != null ? user.getName() : ""); // null 체크
+                obj.put("type", user != null ? user.getRole() : "");
                 dayArray.put(obj);
             }
         }
@@ -102,5 +104,51 @@ public class RoomModel {
             }
         }
         return slots;
+    }
+
+    // 예약 가능 여부 확인
+    public boolean isReservable(int roomNumber, String day, String time) {
+        JSONObject room = roomMap.get(roomNumber);
+        if (room == null || !room.has("schedule")) return false;
+        JSONObject schedule = room.getJSONObject("schedule");
+        JSONArray dayArray = schedule.optJSONArray(day);
+        if (dayArray == null) return false;
+        for (int i = 0; i < dayArray.length(); i++) {
+            JSONObject timeSlot = dayArray.getJSONObject(i);
+            if (timeSlot.has("time") && timeSlot.has("state")) {
+                if (timeSlot.getString("time").equals(time) && !"O".equals(timeSlot.getString("state"))) {
+                    // 이미 예약된 상태("O"가 아님)
+                    return false;
+                }
+            }
+        }
+        // 아직 비어있거나, 모두 "O"라면 예약 가능
+        return true;
+    }
+
+    // 해당 시간의 state를 "X"로 변경한 뒤 파일에 저장
+    public void markReserved(int roomNumber, String day, String time, String jsonPath) {
+        JSONObject room = roomMap.get(roomNumber);
+        if (room == null || !room.has("schedule")) return;
+        JSONObject schedule = room.getJSONObject("schedule");
+        JSONArray dayArray = schedule.optJSONArray(day);
+        if (dayArray == null) return;
+        for (int i = 0; i < dayArray.length(); i++) {
+            JSONObject timeSlot = dayArray.getJSONObject(i);
+            if (timeSlot.has("time") && timeSlot.getString("time").equals(time)) {
+                timeSlot.put("state", "X");
+                break;
+            }
+        }
+        saveToFile(jsonPath); // 변경 후 파일에 저장
+    }
+
+    public void saveToFile(String jsonPath) {
+        try (java.io.FileWriter writer = new java.io.FileWriter(jsonPath, false)) {
+            writer.write(originalData.toString(4));
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "파일 저장에 실패했습니다: " + jsonPath);
+        }
     }
 }

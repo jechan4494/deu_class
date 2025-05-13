@@ -5,7 +5,7 @@
       "roomNumber": 911,
       "schedule": {
         "월요일": [
-          { "time": "09:00-09:50", "state": "O" },
+          { "time": "09:00-09:50", "state": "X" },
           { "time": "10:00-10:50", "state": "O" },
           { "time": "11:00-11:50", "state": "O" },
           { "time": "12:00-12:50", "state": "O" },

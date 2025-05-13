@@ -2,7 +2,7 @@ package view.login;
 
 import controller.login.AuthController;
 import controller.professor.ProfessorController;
-import model.login.User;
+import model.user.*;
 import view.professor.ProfessorView;
 
 import javax.swing.*;
@@ -40,17 +40,18 @@ public class LoginView extends JFrame {
       User user = AuthController.login(id, password);
       if (user != null) {
         JOptionPane.showMessageDialog(this, "로그인 성공! 역할: " + user.getRole());
-        // 역할별 화면 이동 (팀원 구현)
+        // 역할별 화면 이동
         switch (user.getRole()) {
           case "PROFESSOR":
-            // 교수 페이지로 이동 (강의실 선택은 그 안에서 수행)
+            // 교수 메인 뷰로 전환
             ProfessorView professorView = new ProfessorView();
-            ProfessorController controller = new ProfessorController(professorView, user); // user 객체 전체 전달
+            ProfessorController controller = new ProfessorController(professorView, user); // 교수 컨트롤러 연결
 
+            // (이벤트: 예약하기 버튼 클릭 시 강의실 종류 선택 및 UI 표시)
             professorView.getBtnStartReservation().addActionListener(e1 -> {
               String[] options = {"실습실", "일반실"};
               int choice = JOptionPane.showOptionDialog(
-                      null,
+                      professorView,
                       "예약할 강의실 유형을 선택하세요.",
                       "강의실 유형 선택",
                       JOptionPane.DEFAULT_OPTION,
@@ -67,20 +68,17 @@ public class LoginView extends JFrame {
               }
             });
 
-
-           /* professorView.addCancelReservationListener(e1 -> {
-              JOptionPane.showMessageDialog(null, "예약 취소 기능은 추후 구현 예정입니다.");
-            });*/
+            professorView.setVisible(true); // 교수 뷰를 보이게 함
             break;
 
           case "STUDENT":
-            // new StudentView().setVisible(true);
+            // 학생용 화면 전환 코드 (구현 시 추가)
             break;
           case "TA":
-            // new TaView().setVisible(true);
+            // 조교용 화면 전환 코드 (구현 시 추가)
             break;
         }
-        dispose();
+        dispose(); // 로그인 창 닫기
       } else {
         JOptionPane.showMessageDialog(this, "아이디 또는 비밀번호가 올바르지 않습니다.");
       }
@@ -91,5 +89,6 @@ public class LoginView extends JFrame {
       dispose();
       new SignUpView().setVisible(true);
     });
+    setVisible(true);
   }
 }
