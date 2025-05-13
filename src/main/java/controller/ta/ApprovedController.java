@@ -21,21 +21,24 @@ public class ApprovedController {
     }
 
     public void loadApprovedReservations() {
-        List<Reservation> approvedList = model.loadApprovedReservations();
+    List<Reservation> approvedList = model.loadApprovedReservations();
 
-        DefaultTableModel tableModel = new DefaultTableModel(
-            new String[] { "강의실", "시작 시간", "종료 시간", "구분" }, 0
-        );
+    // ✅ 요일 컬럼 추가
+    DefaultTableModel tableModel = new DefaultTableModel(
+        new String[] { "강의실", "요일", "시작 시간", "종료 시간", "구분" }, 0
+    );
 
-        for (Reservation r : approvedList) {
-            tableModel.addRow(new Object[] {
-                r.getRoomNumber(),
-                r.getStartTime(),
-                r.getEndTime(),
-                r.getType()
-            });
-        }
-
-        view.setApprovedTableModel(tableModel);
+    for (Reservation r : approvedList) {
+        // ✅ 요일 값도 추가
+        tableModel.addRow(new Object[] {
+            r.getRoomNumber(),
+            r.getDay(),
+            r.getStartTime(),
+            r.getEndTime(),
+            r.getType()
+        });
     }
+
+    view.setApprovedTableModel(tableModel);
+}
 }

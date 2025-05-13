@@ -52,13 +52,13 @@ public class featureFrame extends javax.swing.JFrame {
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
             },
             new String [] {
-                "강의실", "시작 시간", "종료 시간", "구분"
+                "강의실", "요일", "시작 시간", "종료 시간", "구분"
             }
         ));
         jScrollPane1.setViewportView(jTable1);
@@ -84,7 +84,12 @@ public class featureFrame extends javax.swing.JFrame {
             }
         });
 
-        jButton4.setText("이전");
+        jButton4.setText("닫기");
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
 
         jButton5.setText("승인 내역");
         jButton5.addActionListener(new java.awt.event.ActionListener() {
@@ -179,6 +184,10 @@ public class featureFrame extends javax.swing.JFrame {
     new rejectedFrame().setVisible(true);
     this.dispose();
     }//GEN-LAST:event_jButton7ActionPerformed
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+    this.dispose();
+    }//GEN-LAST:event_jButton4ActionPerformed
 
     /**
      * @param args the command line arguments

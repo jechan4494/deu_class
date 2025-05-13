@@ -8,12 +8,14 @@ public class Reservation {
     private String startTime;
     private String endTime;
     private String type;
-
-    public Reservation(int roomNumber, String startTime, String endTime, String type) {
+    private String day;
+    
+    public Reservation(int roomNumber, String startTime, String endTime, String type, String day) {
         this.roomNumber = roomNumber;
         this.startTime = startTime;
         this.endTime = endTime;
         this.type = type;
+        this.day = day;
     }
 
     public int getRoomNumber() {
@@ -30,5 +32,8 @@ public class Reservation {
 
     public String getType() {
         return type;
+    }
+    public String getDay() {
+        return day;
     }
 }

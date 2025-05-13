@@ -56,13 +56,13 @@ public class rejectedFrame extends javax.swing.JFrame {
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
             },
             new String [] {
-                "강의실", "시작 시간", "종료 시간", "구분"
+                "강의실", "요일", "시작 시간", "종료 시간", "구분"
             }
         ));
         jScrollPane1.setViewportView(jTable1);

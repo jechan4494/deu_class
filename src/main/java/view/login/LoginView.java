@@ -4,7 +4,7 @@ import controller.login.AuthController;
 import controller.professor.ProfessorController;
 import model.login.User;
 import view.professor.ProfessorView;
-
+import view.ta.featureFrame;
 import javax.swing.*;
 import java.awt.*;
 
@@ -77,7 +77,8 @@ public class LoginView extends JFrame {
             // new StudentView().setVisible(true);
             break;
           case "TA":
-            // new TaView().setVisible(true);
+            featureFrame taFrame = new featureFrame();
+            taFrame.setVisible(true);
             break;
         }
         dispose();

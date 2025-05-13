@@ -34,6 +34,7 @@ public class ReservationController {
         for (Reservation r : reservations) {
             Object[] row = {
                 r.getRoomNumber(),
+                r.getDay(),
                 r.getStartTime(),
                 r.getEndTime(),
                 r.getType()
@@ -52,11 +53,12 @@ public class ReservationController {
         DefaultTableModel model = (DefaultTableModel) table.getModel();
 
         int roomNumber = (int) model.getValueAt(selectedRow, 0);
-        String startTime = (String) model.getValueAt(selectedRow, 1);
-        String endTime = (String) model.getValueAt(selectedRow, 2);
-        String type = (String) model.getValueAt(selectedRow, 3);
+        String day = (String) model.getValueAt(selectedRow, 1);
+        String startTime = (String) model.getValueAt(selectedRow, 2);
+        String endTime = (String) model.getValueAt(selectedRow, 3);
+        String type = (String) model.getValueAt(selectedRow, 4);
 
-        Reservation approved = new Reservation(roomNumber, startTime, endTime, type);
+        Reservation approved = new Reservation(roomNumber, startTime, endTime, type, day);
         boolean success = saveApprovedReservation(approved);
 
         if (success) {
@@ -84,6 +86,7 @@ public class ReservationController {
     obj.put("startTime", reservation.getStartTime());
     obj.put("endTime", reservation.getEndTime());
     obj.put("type", reservation.getType());
+    obj.put("day", reservation.getDay());
     data.put(obj);
 
     try {
@@ -102,62 +105,65 @@ public class ReservationController {
     // ✅ 테스트용 메서드도 유지 (선택사항)
    public boolean testSaveApprovedReservationForTest(Reservation r) { return saveApprovedReservation(r); }
     public boolean testSaveRejectedReservationForTest(Reservation r) { return saveRejectedReservation(r); }
-      // ✅ 예약 거절 메서드
+     
+    // ✅ 예약 거절 메서드
     public void rejectSelectedReservation(int selectedRow) {
-        if (selectedRow == -1) {
-            JOptionPane.showMessageDialog(view, "예약을 선택하세요.");
-            return;
-        }
-
-        JTable table = view.getReservationTable();
-        DefaultTableModel model = (DefaultTableModel) table.getModel();
-
-        int roomNumber = (int) model.getValueAt(selectedRow, 0);
-        String startTime = (String) model.getValueAt(selectedRow, 1);
-        String endTime = (String) model.getValueAt(selectedRow, 2);
-        String type = (String) model.getValueAt(selectedRow, 3);
-
-        Reservation rejected = new Reservation(roomNumber, startTime, endTime, type);
-        boolean success = saveRejectedReservation(rejected);
-
-        if (success) {
-            this.model.removeReservationFromOriginalJson(rejected); // ✅ 원본 JSON에서 제거
-            model.removeRow(selectedRow);
-            JOptionPane.showMessageDialog(view, "예약이 거절되었습니다.");
-        } else {
-            JOptionPane.showMessageDialog(view, "거절 중 오류가 발생했습니다.");
-        }
+    if (selectedRow == -1) {
+        JOptionPane.showMessageDialog(view, "예약을 선택하세요.");
+        return;
     }
 
+    JTable table = view.getReservationTable();
+    DefaultTableModel model = (DefaultTableModel) table.getModel();
+
+    int roomNumber = (int) model.getValueAt(selectedRow, 0);
+    String day = (String) model.getValueAt(selectedRow, 1);
+    String startTime = (String) model.getValueAt(selectedRow, 2);
+    String endTime = (String) model.getValueAt(selectedRow, 3);
+    String type = (String) model.getValueAt(selectedRow, 4);
+
+    Reservation rejected = new Reservation(roomNumber, startTime, endTime, type, day);
+    boolean success = saveRejectedReservation(rejected);
+
+    if (success) {
+        this.model.removeReservationFromOriginalJson(rejected);  // ✅ 요일 포함 객체로 삭제
+        model.removeRow(selectedRow);
+        JOptionPane.showMessageDialog(view, "예약이 거절되었습니다.");
+    } else {
+        JOptionPane.showMessageDialog(view, "거절 중 오류가 발생했습니다.");
+    }
+}
+
     private boolean saveRejectedReservation(Reservation reservation) {
-        JSONArray data = new JSONArray();
+    JSONArray data = new JSONArray();
 
-        try (InputStream is = getClass().getClassLoader().getResourceAsStream("rejected_reservations.json")) {
-            if (is != null) {
-                data = new JSONArray(new JSONTokener(is));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+    try (InputStream is = getClass().getClassLoader().getResourceAsStream("rejected_reservations.json")) {
+        if (is != null) {
+            data = new JSONArray(new JSONTokener(is));
         }
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
 
-        JSONObject obj = new JSONObject();
-        obj.put("roomNumber", reservation.getRoomNumber());
-        obj.put("startTime", reservation.getStartTime());
-        obj.put("endTime", reservation.getEndTime());
-        obj.put("type", reservation.getType());
-        data.put(obj);
+    JSONObject obj = new JSONObject();
+    obj.put("roomNumber", reservation.getRoomNumber());
+    obj.put("startTime", reservation.getStartTime());
+    obj.put("endTime", reservation.getEndTime());
+    obj.put("type", reservation.getType());
+    obj.put("day", reservation.getDay());  // ✅ 요일 저장 추가
+    data.put(obj);
 
-        try {
-            File file = new File("src/main/resources/rejected_reservations.json");
-            try (FileWriter fw = new FileWriter(file)) {
-                fw.write(data.toString(2));
-                fw.flush();
-            }
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
+    try {
+        File file = new File("src/main/resources/rejected_reservations.json");
+        try (FileWriter fw = new FileWriter(file)) {
+            fw.write(data.toString(2));
+            fw.flush();
         }
+        return true;
+    } catch (Exception e) {
+        e.printStackTrace();
+        return false;
+    }
     }
 }
 

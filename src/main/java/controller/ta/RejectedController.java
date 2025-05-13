@@ -20,21 +20,23 @@ public class RejectedController {
     }
 
     public void loadRejectedReservations() {
-        List<Reservation> rejectedList = model.loadRejectedReservations();
+    List<Reservation> rejectedList = model.loadRejectedReservations();
 
-        DefaultTableModel tableModel = new DefaultTableModel(
-            new String[] { "강의실", "시작 시간", "종료 시간", "구분" }, 0
-        );
+    // ✅ 요일 컬럼 포함
+    DefaultTableModel tableModel = new DefaultTableModel(
+        new String[] { "강의실", "요일", "시작 시간", "종료 시간", "구분" }, 0
+    );
 
-        for (Reservation r : rejectedList) {
-            tableModel.addRow(new Object[] {
-                r.getRoomNumber(),
-                r.getStartTime(),
-                r.getEndTime(),
-                r.getType()
-            });
-        }
-
-        view.setRejectedTableModel(tableModel);
+    for (Reservation r : rejectedList) {
+        tableModel.addRow(new Object[] {
+            r.getRoomNumber(),
+            r.getDay(),            // ✅ 요일 추가
+            r.getStartTime(),
+            r.getEndTime(),
+            r.getType()
+        });
     }
+    System.out.println("📥 컨트롤러에서 받은 예약 수: " + rejectedList.size());
+    view.setRejectedTableModel(tableModel);
+}
 }
