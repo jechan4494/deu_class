@@ -6,6 +6,7 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import javax.swing.*;
+import java.io.FileInputStream; // 수정: 파일시스템에서 직접 읽기
 import java.io.InputStream;
 import java.util.*;
 
@@ -13,16 +14,10 @@ public class RoomModel {
     private JSONArray rooms;
     private JSONObject originalData;
     private final Map<Integer, JSONObject> roomMap = new HashMap<>();
-    private final User user;
+    private final User user = null;
 
     public RoomModel(String jsonPath) {
-        this.user = null; // 사용자 정보는 setUser 메서드로 따로 전달해야 함
-
-        try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream(jsonPath)) {
-            if (inputStream == null) {
-                System.err.println("Error: JSON파일이 경로를 못 찾았습니다.: " + jsonPath);
-                return;
-            }
+        try (InputStream inputStream = new FileInputStream(jsonPath)) { // 수정 부분
 
             JSONTokener tokener = new JSONTokener(inputStream);
             this.originalData = new JSONObject(tokener);
@@ -67,8 +62,9 @@ public class RoomModel {
                 JSONObject obj = new JSONObject();
                 obj.put("time", timeSlot);
                 obj.put("state", "대기");
-                obj.put("name", user != null ? user.getName() : ""); // null 체크
-                obj.put("type", user != null ? user.getRole() : "");
+                // user 정보 null 처리 주의 (현재 user 필드 사용 X 상태, setUser 도입 권장)
+                obj.put("name", ""); 
+                obj.put("type", "");
                 dayArray.put(obj);
             }
         }

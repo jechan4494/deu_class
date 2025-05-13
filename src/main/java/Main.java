@@ -13,9 +13,9 @@ public class Main {
 
             // 0을 선택하면 "Lab_room.json", 1을 선택하면 "normal_room.json"을 넘김
             if (choice == 0) {
-                view.showReservationUI("Lab_room.json", "실습실");
+                view.showReservationUI("src/Lab_room.json", "실습실");
             } else if (choice == 1) {
-                view.showReservationUI("normal_room.json", "일반실");
+                view.showReservationUI("src/normal_room.json", "일반실");
             }
         });
     }

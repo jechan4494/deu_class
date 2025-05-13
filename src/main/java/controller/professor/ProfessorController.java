@@ -27,7 +27,7 @@ public class ProfessorController {
     }
 
     public void reserveRoom(Integer room, String day, List<String> periods, String roomType) {
-        String jsonPath = roomType.equals("실습실") ? "Lab_room.json" : "normal_room.json";
+        String jsonPath = roomType.equals("실습실") ? "src/Lab_room.json" : "src/normal_room.json";
 
         // 하나라도 예약 불가인 시간대가 있으면 예약 중단
         for (String timeSlot : periods) {
@@ -75,7 +75,7 @@ public class ProfessorController {
             );
 
             if (choice != JOptionPane.CLOSED_OPTION) {
-                String jsonPath = (choice == 0) ? "Lab_room.json" : "normal_room.json";
+                String jsonPath = (choice == 0) ? "src/Lab_room.json" : "src/normal_room.json";
                 String roomType = options[choice];
                 startReservation(jsonPath, roomType);
             }
@@ -111,8 +111,8 @@ public class ProfessorController {
         return result;
     }
     public void startReservation(String jsonPath, String roomType) {
-        List<ReservationEntry> activeLabs = loadActiveReservations("Lab_room.json");
-        List<ReservationEntry> activeNormals = loadActiveReservations("normal_room.json");
+        List<ReservationEntry> activeLabs = loadActiveReservations("src/Lab_room.json");
+        List<ReservationEntry> activeNormals = loadActiveReservations("src/normal_room.json");
         professorView.showReservationUI(jsonPath, roomType);
     }
 

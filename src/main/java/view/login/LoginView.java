@@ -62,7 +62,7 @@ public class LoginView extends JFrame {
               );
 
               if (choice != JOptionPane.CLOSED_OPTION) {
-                String jsonPath = (choice == 0) ? "Lab_room.json" : "normal_room.json";
+                String jsonPath = (choice == 0) ? "src/Lab_room.json" : "src/normal_room.json";
                 String roomType = options[choice];
                 professorView.showReservationUI(jsonPath, roomType);
               }

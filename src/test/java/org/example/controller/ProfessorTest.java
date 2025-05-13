@@ -33,7 +33,7 @@ public class ProfessorTest {
     void tearDown() {
         System.out.println("[tearDown] 테스트 임시 파일을 정리합니다.");
         List<String> testFiles = Arrays.asList(
-                "Lab_room.json", "normal_room.json", "reservations.json",
+                "src/Lab_room.json", "src/normal_room.json", "reservations.json",
                 "Lab_room_Test.json", "normal_room_Test.json", "reservations_Test.json"
         );
         for (String fileName : testFiles) {
@@ -62,7 +62,7 @@ public class ProfessorTest {
 
         System.out.println("예약 가능 상태 세팅 완료");
 
-        professorController.reserveRoom(room, day, timeSlots, roomType);
+        professorController.reserveRoom(room,roomType, day, timeSlots);
 
         File labRoomFile = new File("Lab_room.json");
         System.out.println("예약 파일 생성 여부: " + labRoomFile.exists());
