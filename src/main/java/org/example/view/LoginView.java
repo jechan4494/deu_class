@@ -1,22 +1,25 @@
 package org.example.view;
 
-import org.example.controller.AuthController;
+import com.google.gson.Gson;
 import org.example.model.User;
-
 import javax.swing.*;
 import java.awt.*;
+import java.io.*;
+import java.net.Socket;
 
 public class LoginView extends JFrame {
   private JTextField tfId;
   private JPasswordField pfPassword;
   private JButton btnLogin, btnSignUp;
+  private static final String SERVER_IP = "localhost"; // 서버 IP 주소
+  private static final int SERVER_PORT = 12345; // 서버 포트 번호
 
   public LoginView() {
     setTitle("로그인");
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    setSize(300, 200);
+    setSize(350, 200);
     setLocationRelativeTo(null);
-    setLayout(new GridLayout(4, 2));
+    setLayout(new GridLayout(4, 2, 10, 10));
 
     add(new JLabel("아이디:"));
     tfId = new JTextField();
@@ -31,35 +34,82 @@ public class LoginView extends JFrame {
     add(btnLogin);
     add(btnSignUp);
 
-    // 로그인 버튼 이벤트
+    // 로그인 버튼 이벤트 리스너 수정 (서버와 통신)
     btnLogin.addActionListener(e -> {
       String id = tfId.getText();
       String password = new String(pfPassword.getPassword());
-      User user = AuthController.login(id, password);
-      if (user != null) {
-        JOptionPane.showMessageDialog(this, "로그인 성공! 역할: " + user.getRole());
-        // 역할별 화면 이동 (팀원 구현)
-        switch (user.getRole()) {
-          case "PROFESSOR":
-            // new ProfessorView().setVisible(true);
-            break;
-          case "STUDENT":
-            // new StudentView().setVisible(true);
-            break;
-          case "TA":
-            // new TaView().setVisible(true);
-            break;
+
+      // 서버에 로그인 요청을 비동기로 보냄 (UI가 멈추지 않게)
+      new SwingWorker<Void, Void>() {
+        @Override
+        protected Void doInBackground() throws Exception {
+          try (Socket socket = new Socket(SERVER_IP, SERVER_PORT);
+               PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+               BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
+
+            // 1. 서버에 JSON 요청 전송
+            String request = String.format(
+                "{\"type\":\"login\", \"id\":\"%s\", \"password\":\"%s\"}",
+                id, password
+            );
+            out.println(request);
+
+            // 2. 서버 응답 받기
+            String response = in.readLine();
+            Gson gson = new Gson();
+            ServerResponse serverResponse = gson.fromJson(response, ServerResponse.class);
+
+            // 3. 응답 처리
+            SwingUtilities.invokeLater(() -> {
+              if (serverResponse.result.equals("success")) {
+                JOptionPane.showMessageDialog(
+                    LoginView.this,
+                    "로그인 성공! 역할: " + serverResponse.role
+                );
+                // 역할에 따른 화면 이동 (예: 교수/학생 뷰)
+                switch (serverResponse.role) {
+                  case "PROFESSOR":
+                    // new ProfessorView().setVisible(true);
+                    break;
+                  case "STUDENT":
+                    // new StudentView().setVisible(true);
+                    break;
+                  case "TA":
+                    // new TaView().setVisible(true);
+                    break;
+                }
+                dispose(); // 현재 창 닫기
+              } else {
+                JOptionPane.showMessageDialog(
+                    LoginView.this,
+                    "아이디 또는 비밀번호가 올바르지 않습니다."
+                );
+              }
+            });
+          } catch (IOException ex) {
+            SwingUtilities.invokeLater(() -> {
+              JOptionPane.showMessageDialog(
+                  LoginView.this,
+                  "서버 연결에 실패했습니다."
+              );
+            });
+            ex.printStackTrace();
+          }
+          return null;
         }
-        dispose();
-      } else {
-        JOptionPane.showMessageDialog(this, "아이디 또는 비밀번호가 올바르지 않습니다.");
-      }
+      }.execute();
     });
 
-    // 회원가입 버튼 이벤트
+    // 회원가입 버튼은 기존과 동일
     btnSignUp.addActionListener(e -> {
       dispose();
       new SignUpView().setVisible(true);
     });
+  }
+
+  // 서버 응답을 파싱하기 위한 내부 클래스
+  private static class ServerResponse {
+    String result;
+    String role;
   }
 }

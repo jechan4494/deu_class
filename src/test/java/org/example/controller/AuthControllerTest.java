@@ -18,8 +18,17 @@ class AuthControllerTest {
 
   @Test
   void testRegisterUserAndLoginSuccess() {
-    User user = new User("testid", "testpw", "홍길동", "컴퓨터", "STUDENT");
-    assertTrue(AuthController.registerUser(user));
+    // 회원가입 (5개의 String 인자 전달)
+    boolean isRegistered = AuthController.registerUser(
+        "testid",
+        "testpw",
+        "홍길동",
+        "컴퓨터공학과",
+        "STUDENT"
+    );
+    assertTrue(isRegistered);
+
+    // 로그인 테스트
     User loggedIn = AuthController.login("testid", "testpw");
     assertNotNull(loggedIn);
     assertEquals("홍길동", loggedIn.getName());
@@ -27,17 +36,40 @@ class AuthControllerTest {
 
   @Test
   void testDuplicateId() {
-    User user1 = new User("dup", "pw1", "A", "컴공", "STUDENT");
-    User user2 = new User("dup", "pw2", "B", "전자", "PROFESSOR");
-    assertTrue(AuthController.registerUser(user1));
-    assertFalse(AuthController.registerUser(user2)); // 중복 ID로 실패해야 함
+    // 첫 번째 회원가입 (성공)
+    boolean firstRegister = AuthController.registerUser(
+        "dupId",
+        "pw1",
+        "김학생",
+        "전자공학과",
+        "STUDENT"
+    );
+    assertTrue(firstRegister);
+
+    // 같은 아이디로 두 번째 회원가입 (실패해야 함)
+    boolean secondRegister = AuthController.registerUser(
+        "dupId",
+        "pw2",
+        "이교수",
+        "컴퓨터공학과",
+        "PROFESSOR"
+    );
+    assertFalse(secondRegister);
   }
 
   @Test
   void testLoginFail() {
-    User user = new User("loginfail", "pw", "이름", "학과", "TA");
-    AuthController.registerUser(user);
-    User fail = AuthController.login("loginfail", "wrongpw");
-    assertNull(fail); // 비밀번호 틀렸으니 로그인 실패
+    // 회원가입
+    AuthController.registerUser(
+        "failUser",
+        "correctPw",
+        "이름",
+        "학과",
+        "TA"
+    );
+
+    // 잘못된 비밀번호로 로그인 시도
+    User result = AuthController.login("failUser", "wrongPw");
+    assertNull(result);
   }
 }
