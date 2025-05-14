@@ -1,0 +1,20 @@
+[
+  {
+    "role": "PROFESSOR",
+    "roomNumber": 915,
+    "name": "정찬",
+    "timeSlots": ["10:00-10:50"],
+    "state": "승인",
+    "day": "화요일",
+    "roomType": "실습실"
+  },
+  {
+    "role": "PROFESSOR",
+    "roomNumber": 914,
+    "name": "ㄱㄱㅎ",
+    "timeSlots": ["10:00-10:50"],
+    "state": "승인",
+    "day": "목요일",
+    "roomType": "일반실"
+  }
+]

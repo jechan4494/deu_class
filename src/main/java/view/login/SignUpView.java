@@ -1,6 +1,6 @@
 package view.login;
 
-import org.example.client.ServerConnector;
+import client.ServerConnector;
 
 import javax.swing.*;
 import java.awt.*;
