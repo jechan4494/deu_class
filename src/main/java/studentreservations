@@ -1,0 +1,58 @@
+[
+    "name": "정찬",
+    "role": "PROFESSOR",
+    "roomType": "실습실",
+    "roomNumber": "915",
+    "day": "화요일",
+    "timeSlots": [
+      "15:00-15:50"
+    ],
+    "state": "대기"
+  },
+
+  {
+    "name": "이나겸",
+    "role": "STUDENT",
+    "roomType": "강의실",
+    "roomNumber": "912",
+    "day": "월요일",
+    "timeSlots": [
+      "10:00-11:50"
+    ],
+    "state": "대기"
+  },
+  {
+    "name": "김철수",
+    "role": "STUDENT",
+    "roomType": "실습실",
+    "roomNumber": "916",
+    "day": "수요일",
+    "timeSlots": [
+      "14:00-14:50",
+      "15:00-15:50"
+    ],
+    "state": "승인"
+  },
+  {
+    "name": "박영희",
+    "role": "STUDENT",
+    "roomType": "강의실",
+    "roomNumber": "913",
+    "day": "금요일",
+    "timeSlots": [
+      "09:00-10:50"
+    ],
+    "state": "취소됨(학생)"
+  },
+  {
+    "name": "오나미",
+    "role": "STUDENT",
+    "roomType": "실습실",
+    "roomNumber": "915",
+    "day": "월요일",
+    "timeSlots": [
+      "16:00-17:50"
+    ],
+    "state": "대기"
+  }
+]
