@@ -33,5 +33,12 @@
     "endTime": "12:50",
     "type": "실습실",
     "day": "화요일"
+  },
+  {
+    "roomNumber": 913,
+    "startTime": "17:00",
+    "endTime": "17:50",
+    "type": "일반실",
+    "day": "화요일"
   }
 ]

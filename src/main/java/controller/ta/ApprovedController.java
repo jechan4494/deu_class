@@ -23,22 +23,23 @@ public class ApprovedController {
     public void loadApprovedReservations() {
     List<Reservation> approvedList = model.loadApprovedReservations();
 
-    // ✅ 요일 컬럼 추가
     DefaultTableModel tableModel = new DefaultTableModel(
-        new String[] { "강의실", "요일", "시작 시간", "종료 시간", "구분" }, 0
-    );
+    new String[] { "이름", "역할", "강의실 유형", "강의실 번호", "요일", "시간대", "상태" }, 0
+);
 
     for (Reservation r : approvedList) {
-        // ✅ 요일 값도 추가
-        tableModel.addRow(new Object[] {
-            r.getRoomNumber(),
-            r.getDay(),
-            r.getStartTime(),
-            r.getEndTime(),
-            r.getType()
-        });
+    tableModel.addRow(new Object[] {
+        r.getName(),
+        r.getRole(),
+        r.getType(),
+        r.getRoomNumber(),
+        r.getDay(),
+        String.join(", ", r.getTimeSlots()),
+        r.getState()
+    });
     }
 
+    System.out.println("✅ 컨트롤러에서 받은 예약 수: " + approvedList.size());
     view.setApprovedTableModel(tableModel);
 }
 }

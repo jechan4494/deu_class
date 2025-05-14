@@ -24,6 +24,9 @@ public class featureFrame extends javax.swing.JFrame {
     public JTable getReservationTable() {
         return jTable1; // 이 이름이 NetBeans 테이블 컴포넌트 이름과 같아야 함
     }
+    public void setReservationTableModel(DefaultTableModel model) {
+        jTable1.setModel(model);
+    }
 
 
     /**
@@ -52,13 +55,13 @@ public class featureFrame extends javax.swing.JFrame {
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null}
             },
             new String [] {
-                "강의실", "요일", "시작 시간", "종료 시간", "구분"
+                "이름", "역할", "강의실 유형", "강의실 번호", "요일", "시간대", "상태"
             }
         ));
         jScrollPane1.setViewportView(jTable1);
@@ -106,6 +109,11 @@ public class featureFrame extends javax.swing.JFrame {
         });
 
         jButton8.setText("조교 로그");
+        jButton8.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton8ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -188,6 +196,11 @@ public class featureFrame extends javax.swing.JFrame {
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
     this.dispose();
     }//GEN-LAST:event_jButton4ActionPerformed
+
+    private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
+    new LogFrame().setVisible(true);
+    this.dispose();
+    }//GEN-LAST:event_jButton8ActionPerformed
 
     /**
      * @param args the command line arguments
