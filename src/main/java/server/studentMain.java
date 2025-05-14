@@ -1,3 +1,4 @@
+package server;
 import view.login.LoginView;
 
 public class studentMain {

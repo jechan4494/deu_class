@@ -2,7 +2,6 @@ package controller.professor;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
 import model.room.RoomReservation;
 import model.user.User;
 import view.login.LoginView;
@@ -96,12 +95,16 @@ public class ProfessorController {
         Gson gson = new Gson();
         List<ReservationEntry> result = new ArrayList<>();
         try (FileReader reader = new FileReader(filePath)) {
-            java.lang.reflect.Type listType = new TypeToken<List<ReservationEntry>>() {}.getType();
+            java.lang.reflect.Type listType = new com.google.gson.reflect.TypeToken<List<ReservationEntry>>() {}.getType();
+            // 배열 시도
             List<ReservationEntry> all = gson.fromJson(reader, listType);
-            if (all != null) {
-                for (ReservationEntry reservation : all) {
-                    if ("O".equals(reservation.state)) { // state가 "O"인 것만 저장
-                        result.add(reservation);
+            if (all == null) {
+                // 파일을 새로 열어서 단일 객체로 파싱
+                try (FileReader singleReader = new FileReader(filePath)) {
+                    ReservationEntry single = gson.fromJson(singleReader, ReservationEntry.class);
+                    if (single != null) {
+                        all = new ArrayList<>();
+                        all.add(single);
                     }
                 }
             }

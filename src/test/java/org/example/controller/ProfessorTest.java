@@ -62,7 +62,7 @@ public class ProfessorTest {
 
         System.out.println("예약 가능 상태 세팅 완료");
 
-        professorController.reserveRoom(room,roomType, day, timeSlots);
+        professorController.reserveRoom(room, day, timeSlots, roomType);
 
         File labRoomFile = new File("Lab_room.json");
         System.out.println("예약 파일 생성 여부: " + labRoomFile.exists());

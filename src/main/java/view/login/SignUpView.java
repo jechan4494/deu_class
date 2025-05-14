@@ -1,126 +1,78 @@
 package view.login;
 
-import controller.login.AuthController;
-import model.user.User;
+import org.example.client.ServerConnector;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Map;
 
 public class SignUpView extends JFrame {
   private JTextField tfId, tfName, tfDepartment;
   private JPasswordField pfPassword;
   private JComboBox<String> cbRole;
-  private JButton btnCheckId, btnSignUp;
+  private JButton btnSignUp, btnCancel;
 
   public SignUpView() {
     setTitle("회원가입");
     setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-    setSize(400, 350);
+    setSize(400, 300);
     setLocationRelativeTo(null);
+    setLayout(new GridLayout(6, 2, 10, 10));
 
-    try {
-      for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
-        if ("Nimbus".equals(info.getName())) {
-          UIManager.setLookAndFeel(info.getClassName());
-          SwingUtilities.updateComponentTreeUI(this);
-          break;
-        }
-      }
-    } catch (Exception e) {
-    }
-
-    JPanel panel = new JPanel();
-    panel.setBorder(BorderFactory.createEmptyBorder(20, 30, 20, 30));
-    panel.setLayout(new GridBagLayout());
-    GridBagConstraints gbc = new GridBagConstraints();
-    gbc.insets = new Insets(8, 8, 8, 8);
-    gbc.fill = GridBagConstraints.HORIZONTAL;
-
-    gbc.gridx = 0; gbc.gridy = 0;
-    panel.add(new JLabel("아이디"), gbc);
-    gbc.gridx = 1;
+    add(new JLabel("아이디:"));
     tfId = new JTextField();
-    tfId.setPreferredSize(new Dimension(200, 30)); // 입력칸 넓게
-    gbc.weightx = 1.5; // <<< 추가: 가로 공간을 더 많이 차지
-    panel.add(tfId, gbc);
+    add(tfId);
 
-    gbc.weightx = 0; // 다음 컴포넌트에 영향 안 주게 초기화
-
-    gbc.gridx = 2;
-    btnCheckId = new JButton("중복확인");
-    panel.add(btnCheckId, gbc);
-
-    gbc.gridx = 0; gbc.gridy = 1;
-    panel.add(new JLabel("비밀번호"), gbc);
-    gbc.gridx = 1; gbc.gridwidth = 2;
+    add(new JLabel("비밀번호:"));
     pfPassword = new JPasswordField();
-    pfPassword.setPreferredSize(new Dimension(200, 30));
-    panel.add(pfPassword, gbc);
-    gbc.gridwidth = 1;
+    add(pfPassword);
 
-    gbc.gridx = 0; gbc.gridy = 2;
-    panel.add(new JLabel("이름"), gbc);
-    gbc.gridx = 1; gbc.gridwidth = 2;
+    add(new JLabel("이름:"));
     tfName = new JTextField();
-    tfName.setPreferredSize(new Dimension(200, 30));
-    panel.add(tfName, gbc);
-    gbc.gridwidth = 1;
+    add(tfName);
 
-    gbc.gridx = 0; gbc.gridy = 3;
-    panel.add(new JLabel("학과"), gbc);
-    gbc.gridx = 1; gbc.gridwidth = 2;
+    add(new JLabel("학과:"));
     tfDepartment = new JTextField();
-    tfDepartment.setPreferredSize(new Dimension(200, 30));
-    panel.add(tfDepartment, gbc);
-    gbc.gridwidth = 1;
+    add(tfDepartment);
 
-    gbc.gridx = 0; gbc.gridy = 4;
-    panel.add(new JLabel("역할"), gbc);
-    gbc.gridx = 1; gbc.gridwidth = 2;
-    String[] roles = {"학생", "교수", "조교"};
-    cbRole = new JComboBox<>(roles);
-    panel.add(cbRole, gbc);
-    gbc.gridwidth = 1;
+    add(new JLabel("역할:"));
+    cbRole = new JComboBox<>(new String[]{"STUDENT", "PROFESSOR", "TA"});
+    add(cbRole);
 
-    gbc.gridx = 1; gbc.gridy = 5; gbc.gridwidth = 2;
     btnSignUp = new JButton("회원가입");
-    panel.add(btnSignUp, gbc);
-
-    add(panel);
-
-    btnCheckId.addActionListener(e -> {
-      String id = tfId.getText();
-      if (AuthController.checkDuplicateId(id)) {
-        JOptionPane.showMessageDialog(this, "중복된 아이디가 있습니다.");
-      } else {
-        JOptionPane.showMessageDialog(this, "사용 가능한 아이디입니다.");
-      }
-    });
+    btnCancel = new JButton("취소");
+    add(btnSignUp);
+    add(btnCancel);
 
     btnSignUp.addActionListener(e -> {
-      String id = tfId.getText();
-      String password = new String(pfPassword.getPassword());
-      String name = tfName.getText();
-      String department = tfDepartment.getText();
-      String roleKor = (String)cbRole.getSelectedItem();
+      String id = tfId.getText().trim();
+      String pw = new String(pfPassword.getPassword()).trim();
+      String name = tfName.getText().trim();
+      String dept = tfDepartment.getText().trim();
+      String role = (String) cbRole.getSelectedItem();
 
-      String roleEng = switch (roleKor) {
-        case "학생" -> "STUDENT";
-        case "교수" -> "PROFESSOR";
-        case "조교" -> "TA";
-        default -> "STUDENT";
-      };
-
-      if (id.isEmpty() || password.isEmpty() || name.isEmpty() || department.isEmpty()) {
-        JOptionPane.showMessageDialog(this, "모든 정보를 입력해주세요.");
+      if (id.isEmpty() || pw.isEmpty() || name.isEmpty() || dept.isEmpty()) {
+        JOptionPane.showMessageDialog(this, "모든 항목을 입력하세요.");
         return;
       }
 
-      User newUser = new User(id, password, name, department, roleEng);
-      if (AuthController.registerUser(newUser)) {
+      Map<String, String> resp = ServerConnector.signup(id, pw, name, dept, role);
+      if (resp == null) {
+        JOptionPane.showMessageDialog(this, "서버 연결에 실패했습니다. 서버가 실행 중인지 관리자에게 문의하세요.");
+      } else if ("success".equals(resp.get("result"))) {
+        JOptionPane.showMessageDialog(this, "회원가입 성공!");
         dispose();
         new LoginView().setVisible(true);
+      } else if ("fail".equals(resp.get("result"))) {
+        JOptionPane.showMessageDialog(this, "이미 존재하는 아이디입니다.");
+      } else {
+        JOptionPane.showMessageDialog(this, "알 수 없는 오류");
       }
+    });
+
+    btnCancel.addActionListener(e -> {
+      dispose();
+      new LoginView().setVisible(true);
     });
   }
 }

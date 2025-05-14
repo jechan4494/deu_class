@@ -13,19 +13,36 @@ import java.util.*;
 public class RoomModel {
     private JSONArray rooms;
     private JSONObject originalData;
-    private final Map<Integer, JSONObject> roomMap = new HashMap<>();
+    private Map<Integer, JSONObject> roomMap = new HashMap<>();
     private final User user = null;
 
     public RoomModel(String jsonPath) {
-        try (InputStream inputStream = new FileInputStream(jsonPath)) { // 수정 부분
-
+        try (InputStream inputStream = new FileInputStream(jsonPath)) {
             JSONTokener tokener = new JSONTokener(inputStream);
-            this.originalData = new JSONObject(tokener);
-            this.rooms = originalData.getJSONArray("rooms");
+            Object parsed = tokener.nextValue();
 
-            for (int i = 0; i < rooms.length(); i++) {
-                JSONObject room = rooms.getJSONObject(i);
-                roomMap.put(room.getInt("roomNumber"), room);
+            this.rooms = new org.json.JSONArray();
+            this.originalData = new JSONObject();
+            this.roomMap = new java.util.HashMap<>();
+
+            if (parsed instanceof org.json.JSONArray) {
+                org.json.JSONArray arr = (org.json.JSONArray) parsed;
+                // 각 배열 원소의 rooms를 모두 합치기
+                for (int i = 0; i < arr.length(); i++) {
+                    JSONObject obj = arr.getJSONObject(i);
+                    if (obj.has("rooms")) {
+                        org.json.JSONArray subRooms = obj.getJSONArray("rooms");
+                        for (int j = 0; j < subRooms.length(); j++) {
+                            JSONObject room = subRooms.getJSONObject(j);
+                            this.rooms.put(room);
+                            // 룸 넘버 맵에 등록
+                            this.roomMap.put(room.getInt("roomNumber"), room);
+                        }
+                    }
+                }
+                this.originalData.put("rooms", this.rooms);
+            } else {
+                throw new org.json.JSONException("최상위 JSON은 반드시 배열이어야 합니다.");
             }
         } catch (Exception e) {
             e.printStackTrace();

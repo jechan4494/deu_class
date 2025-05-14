@@ -1,7 +1,9 @@
+package server;
+
 import javax.swing.*;
 import view.professor.ProfessorView;
 
-public class Main {
+public class professorMain {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             ProfessorView view = new ProfessorView();
