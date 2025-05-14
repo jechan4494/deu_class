@@ -64,5 +64,27 @@
       "13:00-13:50"
     ],
     "state": "대기"
+  },
+  {
+    "name": "ㄱㄱㅎ",
+    "role": "PROFESSOR",
+    "roomType": "실습실",
+    "roomNumber": "918",
+    "day": "금요일",
+    "timeSlots": [
+      "11:00-11:50"
+    ],
+    "state": "대기"
+  },
+  {
+    "name": "ㄱㄱㅎ",
+    "role": "PROFESSOR",
+    "roomType": "일반실",
+    "roomNumber": "913",
+    "day": "수요일",
+    "timeSlots": [
+      "17:00-17:50"
+    ],
+    "state": "대기"
   }
 ]

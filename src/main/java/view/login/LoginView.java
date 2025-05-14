@@ -4,6 +4,7 @@ import controller.login.AuthController;
 import controller.professor.ProfessorController;
 import model.user.*;
 import view.professor.ProfessorView;
+import view.ta.featureFrame;
 
 import javax.swing.*;
 import java.awt.*;
@@ -76,6 +77,7 @@ public class LoginView extends JFrame {
             break;
           case "TA":
             // 조교용 화면 전환 코드 (구현 시 추가)
+            new featureFrame().setVisible(true);
             break;
         }
         dispose(); // 로그인 창 닫기
