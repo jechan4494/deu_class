@@ -9,3 +9,5 @@
 {"role":"PROFESSOR","roomNumber":"918","name":"rrg","timeSlots":["17:00-17:50"],"state":"승인","day":"금요일","roomType":"실습실"}
 {"role":"PROFESSOR","roomNumber":"914","name":"rrg","timeSlots":["10:00-10:50"],"state":"승인","day":"목요일","roomType":"일반실"}
 {"role":"PROFESSOR","roomNumber":"918","name":"rrg","timeSlots":["16:00-16:50"],"state":"승인","day":"목요일","roomType":"실습실"}
+{"role":"PROFESSOR","roomNumber":"916","name":"rrg","timeSlots":["09:00-09:50"],"state":"승인","day":"목요일","roomType":"실습실"}
+{"role":"PROFESSOR","roomNumber":"913","name":"rrg","timeSlots":["15:00-15:50"],"state":"거절","day":"화요일","roomType":"일반실"}
