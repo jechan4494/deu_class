@@ -112,35 +112,29 @@ public class ReservationController {
 
     private boolean saveApprovedReservation(Reservation reservation) {
     JSONArray data = new JSONArray();
+    File file = new File("approved_reservations.json");
 
-    try (BufferedReader reader = new BufferedReader(new FileReader("approved_reservations.json"))) {
-        String line;
-        while ((line = reader.readLine()) != null) {
-            data.put(new JSONObject(line));
-        }
+    // 기존 데이터 배열 불러오기
+    try (FileReader reader = new FileReader(file)) {
+        data = new JSONArray(new JSONTokener(reader));
     } catch (Exception e) {
-        // 최초 생성 시 파일이 없을 수 있으므로 무시
+        // 파일이 없을 경우 처음 생성 → 무시
     }
 
-        String[] timeParts = reservation.getTimeSlots().get(0).split("-");
-        String startTime = timeParts[0];
-        String endTime = timeParts.length > 1 ? timeParts[1] : "";
+    // 새 예약 정보 추가
+    JSONObject obj = new JSONObject();
+    obj.put("name", reservation.getName());
+    obj.put("role", reservation.getRole());
+    obj.put("roomType", reservation.getType());
+    obj.put("roomNumber", reservation.getRoomNumber());
+    obj.put("day", reservation.getDay());
+    obj.put("timeSlots", reservation.getTimeSlots());
+    obj.put("state", reservation.getState());
+    data.put(obj);
 
-        JSONObject obj = new JSONObject();
-        obj.put("name", reservation.getName());
-        obj.put("role", reservation.getRole());
-        obj.put("roomType", reservation.getType());
-        obj.put("roomNumber", reservation.getRoomNumber());
-        obj.put("day", reservation.getDay());
-        obj.put("timeSlots", reservation.getTimeSlots());
-        obj.put("state", reservation.getState());
-        data.put(obj);
-
-    try (BufferedWriter writer = new BufferedWriter(new FileWriter("approved_reservations.json"))) {
-        for (int i = 0; i < data.length(); i++) {
-            writer.write(data.getJSONObject(i).toString());
-            writer.newLine();
-        }
+    // 파일에 전체 JSONArray 저장
+    try (FileWriter writer = new FileWriter(file)) {
+        writer.write(data.toString(2)); // 2는 pretty print indent
         return true;
     } catch (Exception e) {
         e.printStackTrace();
@@ -150,35 +144,30 @@ public class ReservationController {
 
     private boolean saveRejectedReservation(Reservation reservation) {
     JSONArray data = new JSONArray();
+    File file = new File("rejected_reservations.json");
 
-    try (BufferedReader reader = new BufferedReader(new FileReader("rejected_reservations.json"))) {
-        String line;
-        while ((line = reader.readLine()) != null) {
-            data.put(new JSONObject(line));
-        }
+    // 기존 데이터 읽어오기 (없으면 새로 생성)
+    try (FileReader reader = new FileReader(file)) {
+        data = new JSONArray(new JSONTokener(reader));
     } catch (Exception e) {
-        // 처음 실행 시 파일이 없을 수도 있음 → 무시
+        // 파일 없으면 무시 (처음 생성 시)
     }
 
-        String[] timeParts = reservation.getTimeSlots().get(0).split("-");
-        String startTime = timeParts[0];
-        String endTime = timeParts.length > 1 ? timeParts[1] : "";
+    // 새 예약 정보 JSON 객체로 변환
+    JSONObject obj = new JSONObject();
+    obj.put("name", reservation.getName());
+    obj.put("role", reservation.getRole());
+    obj.put("roomType", reservation.getType());
+    obj.put("roomNumber", reservation.getRoomNumber());
+    obj.put("day", reservation.getDay());
+    obj.put("timeSlots", reservation.getTimeSlots());
+    obj.put("state", reservation.getState());
 
-        JSONObject obj = new JSONObject();
-        obj.put("name", reservation.getName());
-        obj.put("role", reservation.getRole());
-        obj.put("roomType", reservation.getType());
-        obj.put("roomNumber", reservation.getRoomNumber());
-        obj.put("day", reservation.getDay());
-        obj.put("timeSlots", reservation.getTimeSlots());
-        obj.put("state", reservation.getState());
-        data.put(obj);
+    data.put(obj); // 배열에 추가
 
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("rejected_reservations.json"))) {
-        for (int i = 0; i < data.length(); i++) {
-            writer.write(data.getJSONObject(i).toString());
-            writer.newLine();
-        }
+    // 파일에 저장 (덮어쓰기)
+    try (FileWriter writer = new FileWriter(file)) {
+        writer.write(data.toString(2)); // 예쁘게 출력
         return true;
     } catch (Exception e) {
         e.printStackTrace();
@@ -187,37 +176,30 @@ public class ReservationController {
 }
 
     public void updateReservationState(Reservation reservation, String newState) {
-    File file = new File("reservations.json"); // 또는 위 절대 경로
+    File file = new File("reservations.json");
 
-    List<String> lines = new ArrayList<>();
+    try (FileReader reader = new FileReader(file)) {
+        JSONArray arr = new JSONArray(new JSONTokener(reader));
 
-    try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
-        String line;
-        while ((line = reader.readLine()) != null) {
-            JSONObject obj = new JSONObject(line);
+        for (int i = 0; i < arr.length(); i++) {
+            JSONObject obj = arr.getJSONObject(i);
 
             if (
                 obj.getInt("roomNumber") == reservation.getRoomNumber()
                 && obj.getString("day").equals(reservation.getDay())
-                && obj.getJSONArray("timeSlots").length() > 0
-                && obj.getJSONArray("timeSlots").getString(0).equals(reservation.getTimeSlots().get(0))
+                && obj.getJSONArray("timeSlots").toString().equals(new JSONArray(reservation.getTimeSlots()).toString())
             ) {
-                obj.put("state", newState); // ✅ 상태 변경
+                obj.put("state", newState);
                 System.out.println("✅ 상태 변경됨 → " + newState);
+                break;
             }
-
-            lines.add(obj.toString());
         }
-    } catch (Exception e) {
-        e.printStackTrace();
-        return;
-    }
 
-    try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
-        for (String l : lines) {
-            writer.write(l);
-            writer.newLine();
+        // 다시 파일에 전체 저장
+        try (FileWriter writer = new FileWriter(file, false)) {
+            writer.write(arr.toString(2)); // pretty print
         }
+
     } catch (Exception e) {
         e.printStackTrace();
     }

@@ -21,10 +21,10 @@ public class approvedFrame extends javax.swing.JFrame {
 
     // 👉 테이블 데이터 설정 (컨트롤러에서 호출)
     public JTable getApprovedTable() {
-        return jTable1;
+        return jTable2;
     }
     public void setApprovedTableModel(DefaultTableModel model) {
-       jTable1.setModel(model);
+       jTable2.setModel(model);
     }
 
 
