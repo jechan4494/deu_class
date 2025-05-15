@@ -9,6 +9,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.*;
 import java.net.Socket;
+import view.ta.featureFrame;
+import model.ta.ReservationModel;
+import controller.ta.ReservationController;
 
 public class LoginView extends JFrame {
   private JTextField tfId;
@@ -77,11 +80,16 @@ public class LoginView extends JFrame {
                     new ProfessorController(profView, new User(id, password, null, null, "PROFESSOR"));
 
                     break;
+                    
+                  case "TA":
+                    featureFrame view = new featureFrame();
+                    ReservationModel model = new ReservationModel();
+                    new ReservationController(model, view);
+                    view.setVisible(true);
+                    
+                    break;
                   case "STUDENT":
                     // new StudentView().setVisible(true);
-                    break;
-                  case "TA":
-                    // new TaView().setVisible(true);
                     break;
                   default:
                     JOptionPane.showMessageDialog(
