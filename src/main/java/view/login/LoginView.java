@@ -2,7 +2,7 @@ package view.login;
 
 import com.google.gson.Gson;
 // ProfessorView import 추가
-import controller.professor.ProfessorController;
+import controller.professor.ProfessorReserveController;
 import view.professor.ProfessorView;
 import model.user.User;
 import javax.swing.*;
@@ -69,14 +69,22 @@ public class LoginView extends JFrame {
                     LoginView.this,
                     "로그인 성공! 역할: " + serverResponse.role
                 );
+                User loginUser = new User(
+                        id,
+                        password,
+                        serverResponse.name,
+                        serverResponse.dept,
+                        serverResponse.role
+                );
+
                 // 역할에 따른 화면 이동
                 switch (serverResponse.role) {
                   case "PROFESSOR":
-                    new ProfessorView().setVisible(true);
-                    ProfessorView profView = new ProfessorView();
-                    new ProfessorController(profView, new User(id, password, null, null, "PROFESSOR"));
-
+                    ProfessorView profView = new ProfessorView(loginUser);
+                    new ProfessorReserveController(profView, loginUser);
+                    profView.setVisible(true);
                     break;
+
                   case "STUDENT":
                     // new StudentView().setVisible(true);
                     break;
@@ -121,6 +129,8 @@ public class LoginView extends JFrame {
 
   // 서버 응답을 파싱하기 위한 내부 클래스
   private static class ServerResponse {
+    String dept;
+    public String name;
     String result;
     String role;
   }

@@ -1,6 +1,7 @@
 package view.professor;
 
 import model.room.RoomModel;
+import model.user.User;
 import view.login.LoginView;
 
 import javax.swing.*;
@@ -11,7 +12,9 @@ import java.util.Set;
 public class ProfessorView extends JFrame {
     private final JButton btnStartReservation;
     private final JButton btnCancelReservation;
+    private final JButton btnViewReservation; // 추가
     private final JButton btnLogout;
+    // ... (기존 필드 동일)
 
     private JComboBox<Integer> roomCombo;
     private JComboBox<String> dayCombo;
@@ -19,6 +22,7 @@ public class ProfessorView extends JFrame {
 
     public RoomModel roomModel;
     private String roomType;
+    private final User loginUser;
 
     public interface ReservationHandler {
         void onReserve(Integer room, String day, List<String> timeSlots, String roomType);
@@ -26,7 +30,9 @@ public class ProfessorView extends JFrame {
 
     private transient ReservationHandler reservationHandler;
 
-    public ProfessorView() {
+    public ProfessorView(User loginUser) {
+        this.loginUser = loginUser;
+
         setTitle("교수 메인 페이지");
         setSize(500, 500);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -34,34 +40,40 @@ public class ProfessorView extends JFrame {
         setLayout(new BorderLayout());
 
         // 상단: 환영 메시지
-        JLabel lblWelcome = new JLabel("\"교수님\" 안녕하세요", SwingConstants.CENTER);
+        String welcomeMsg = (loginUser != null && loginUser.getName() != null)
+                ? loginUser.getName() + " 교수님 안녕하세요"
+                : "\"교수님\" 안녕하세요";
+        JLabel lblWelcome = new JLabel(welcomeMsg, SwingConstants.CENTER);
         add(lblWelcome, BorderLayout.NORTH);
 
-// 중앙: 버튼 2개를 가로로 좌우에 배치
+        // 중앙: 버튼 3개를 가로로 좌우에 배치
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
 
         btnStartReservation = new JButton("예약하기");
         btnCancelReservation = new JButton("예약 취소하기");
+        btnViewReservation = new JButton("예약 내역 조회");
 
-        Dimension btnSize = new Dimension(180, 60);
+        Dimension btnSize = new Dimension(150, 60);
         btnStartReservation.setPreferredSize(btnSize);
         btnStartReservation.setMaximumSize(btnSize);
         btnStartReservation.setMinimumSize(btnSize);
         btnCancelReservation.setPreferredSize(btnSize);
         btnCancelReservation.setMaximumSize(btnSize);
         btnCancelReservation.setMinimumSize(btnSize);
+        btnViewReservation.setPreferredSize(btnSize);
+        btnViewReservation.setMaximumSize(btnSize);
+        btnViewReservation.setMinimumSize(btnSize);
 
-        // 좌우로 벌어지도록 수평 글루 추가
         buttonPanel.add(btnStartReservation);
         buttonPanel.add(Box.createHorizontalGlue());
         buttonPanel.add(btnCancelReservation);
+        buttonPanel.add(Box.createHorizontalGlue());
+        buttonPanel.add(btnViewReservation);
 
-        buttonPanel.setBorder(BorderFactory.createEmptyBorder(40, 30, 40, 30)); // 상하좌우 여백
-
+        buttonPanel.setBorder(BorderFactory.createEmptyBorder(40, 20, 40, 20));
         add(buttonPanel, BorderLayout.CENTER);
 
-        // 아래쪽: 로그아웃 버튼 (오른쪽 정렬)
         JPanel logoutPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         btnLogout = new JButton("로그아웃");
         logoutPanel.add(btnLogout);
@@ -71,12 +83,17 @@ public class ProfessorView extends JFrame {
         Dimension btnDim = new Dimension(240, 50);
         btnStartReservation.setPreferredSize(btnDim);
         btnCancelReservation.setPreferredSize(btnDim);
+        btnViewReservation.setPreferredSize(btnDim); // 추가
         btnLogout.setPreferredSize(btnDim);
+
+        btnViewReservation.addActionListener(e -> {
+            controller.professor.ProfessorapprovedController.openUserReservation(loginUser);
+        });
 
         // 로그아웃 액션
         btnLogout.addActionListener(e -> {
-            dispose(); // 현재 창 닫기
-            new LoginView().setVisible(true); // 로그인 창 다시 열기
+            dispose();
+            new view.login.LoginView().setVisible(true);
         });
 
         setVisible(true);
@@ -85,11 +102,12 @@ public class ProfessorView extends JFrame {
     public JButton getBtnStartReservation() {
         return btnStartReservation;
     }
-
     public JButton getBtnCancelReservation() {
         return btnCancelReservation;
     }
-
+    public JButton getBtnViewReservation() {
+        return btnViewReservation;
+    }
     public JButton getBtnLogout() {
         return btnLogout;
     }
@@ -126,6 +144,11 @@ public class ProfessorView extends JFrame {
         JButton btnReserve = new JButton("예약하기");
         btnReserve.addActionListener(e -> handleReservation());
         reservationFrame.add(btnReserve);
+
+        JButton btnMyReservations = new JButton("예약 내역 조회");
+        btnMyReservations.addActionListener(e -> {
+            controller.professor.ProfessorapprovedController.openUserReservation(loginUser);
+        });
 
         updateDayCombo();
         reservationFrame.setVisible(true);

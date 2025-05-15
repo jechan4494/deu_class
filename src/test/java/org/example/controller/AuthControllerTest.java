@@ -1,6 +1,6 @@
 package org.example.controller;
 
-import controller.AuthController;
+import controller.login.AuthController;
 import model.user.User;
 import org.junit.jupiter.api.*;
 

@@ -79,8 +79,7 @@ public class RoomModel {
                 JSONObject obj = new JSONObject();
                 obj.put("time", timeSlot);
                 obj.put("state", "대기");
-                // user 정보 null 처리 주의 (현재 user 필드 사용 X 상태, setUser 도입 권장)
-                obj.put("name", ""); 
+                obj.put("name", "");
                 obj.put("type", "");
                 dayArray.put(obj);
             }
@@ -158,7 +157,9 @@ public class RoomModel {
 
     public void saveToFile(String jsonPath) {
         try (java.io.FileWriter writer = new java.io.FileWriter(jsonPath, false)) {
-            writer.write(originalData.toString(4));
+            JSONArray outArr = new JSONArray();
+            outArr.put(this.originalData); // originalData는 항상 { "rooms": [...] } 형태임
+            writer.write(outArr.toString(4));
         } catch (Exception e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(null, "파일 저장에 실패했습니다: " + jsonPath);

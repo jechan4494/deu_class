@@ -13,11 +13,11 @@ import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProfessorController {
+public class ProfessorReserveController {
     private final ProfessorView professorView;
     private final User user;
 
-    public ProfessorController(ProfessorView professorView, User user) {
+    public ProfessorReserveController(ProfessorView professorView, User user) {
         this.professorView = professorView;
         this.user = user;
 

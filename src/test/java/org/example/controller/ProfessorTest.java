@@ -1,6 +1,6 @@
 package org.example.controller;
 
-import controller.professor.ProfessorController;
+import controller.professor.ProfessorReserveController;
 import model.user.User;
 import org.junit.jupiter.api.*;
 import view.professor.ProfessorView;
@@ -15,17 +15,19 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class ProfessorTest {
-    private ProfessorController professorController;
+    private ProfessorReserveController professorReserveController;
     private ProfessorView professorView;
+    private User user; // 테스트용 교수 User
 
     @BeforeEach
     void setUp() {
         System.out.println("[setUp] 테스트 준비 시작");
-        professorView = new ProfessorView();
-        professorView.roomModel = new model.room.RoomModel("lab_room.json");
-        var user = new User("P1234", "1234", "정찬", "컴소", "교수");
+        user = new User("P1234", "1234", "정찬", "컴소", "교수");
+        professorView = new ProfessorView(user);
 
-        professorController = new ProfessorController(professorView, user);
+        professorView.roomModel = new model.room.RoomModel("lab_room.json");
+
+        professorReserveController = new ProfessorReserveController(professorView, user);
         System.out.println("[setUp] 테스트 준비 완료");
     }
 
@@ -62,7 +64,7 @@ public class ProfessorTest {
 
         System.out.println("예약 가능 상태 세팅 완료");
 
-        professorController.reserveRoom(room, day, timeSlots, roomType);
+        professorReserveController.reserveRoom(room, day, timeSlots, roomType);
 
         File labRoomFile = new File("Lab_room.json");
         System.out.println("예약 파일 생성 여부: " + labRoomFile.exists());
@@ -81,11 +83,11 @@ public class ProfessorTest {
     void testSaveReservationEntry() {
         System.out.println("[testSaveReservationEntry] 시작");
 
-        ProfessorController.ReservationEntry entry = new ProfessorController.ReservationEntry(
+        ProfessorReserveController.ReservationEntry entry = new ProfessorReserveController.ReservationEntry(
                 "정찬", "Professor", "실습실", "911", "월요일", Arrays.asList("09:00~09:50", "10:00~10:50"), "대기"
         );
 
-        professorController.saveReservationEntry(entry);
+        professorReserveController.saveReservationEntry(entry);
 
         File reservationFile = new File("reservations.json");
         System.out.println("예약 파일 생성 여부: " + reservationFile.exists());
@@ -117,7 +119,7 @@ public class ProfessorTest {
             fail("테스트 JSON 파일 생성 실패: " + e.getMessage());
         }
 
-        List<ProfessorController.ReservationEntry> entries = professorController.loadActiveReservations(filePath);
+        List<ProfessorReserveController.ReservationEntry> entries = professorReserveController.loadActiveReservations(filePath);
 
         System.out.println("로드된 예약 수: " + entries.size());
 
@@ -128,5 +130,4 @@ public class ProfessorTest {
 
         System.out.println("[testLoadActiveReservations] 완료");
     }
-
 }
