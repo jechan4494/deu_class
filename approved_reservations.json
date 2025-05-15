@@ -16,5 +16,14 @@
     "state": "승인",
     "day": "목요일",
     "roomType": "일반실"
+  },
+  {
+    "role": "PROFESSOR",
+    "roomNumber": 918,
+    "name": "ㄱㄱㅎ",
+    "timeSlots": ["11:00-11:50"],
+    "state": "승인",
+    "day": "금요일",
+    "roomType": "실습실"
   }
 ]

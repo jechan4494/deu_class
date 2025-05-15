@@ -37,7 +37,10 @@ public class ReservationModel {
             String name = obj.getString("name");
             String role = obj.getString("role");
             String type = obj.getString("roomType");
-            int roomNumber = Integer.parseInt(obj.getString("roomNumber"));
+            Object roomObj = obj.get("roomNumber");
+            int roomNumber = (roomObj instanceof Integer)
+            ? (int) roomObj
+            : Integer.parseInt(roomObj.toString());
             String day = obj.getString("day");
 
             JSONArray slotArray = obj.getJSONArray("timeSlots");

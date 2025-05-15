@@ -1,1 +1,1 @@
-[{"id":"testid","password":"testpw","name":"홍길동","department":"컴퓨터","role":"STUDENT"}]
+[{"id":"testid","password":"testpw","name":"홍길동","department":"컴퓨터","role":"STUDENT"},{"id":"po12","password":"1234","name":"ㄱㄱㅎ","department":"ㅋㅅ","role":"PROFESSOR"},{"id":"ta12","password":"1234","name":"rrg","department":"zt","role":"TA"}]
