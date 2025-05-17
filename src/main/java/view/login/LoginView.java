@@ -12,6 +12,7 @@ import java.net.Socket;
 import view.ta.featureFrame;
 import model.ta.ReservationModel;
 import controller.ta.ReservationController;
+import view.student.StudentReservationFrame;
 
 public class LoginView extends JFrame {
   private JTextField tfId;
@@ -75,28 +76,25 @@ public class LoginView extends JFrame {
                 // 역할에 따른 화면 이동
                 switch (serverResponse.role) {
                   case "PROFESSOR":
-                    new ProfessorView().setVisible(true);
                     ProfessorView profView = new ProfessorView();
                     new ProfessorController(profView, new User(id, password, null, null, "PROFESSOR"));
-
+                    profView.setVisible(true);
                     break;
-                    
                   case "TA":
                     featureFrame view = new featureFrame();
                     ReservationModel model = new ReservationModel();
                     new ReservationController(model, view);
                     view.setVisible(true);
-                    
                     break;
                   case "STUDENT":
-                    // new StudentView().setVisible(true);
+                    new StudentReservationFrame(serverResponse.name).setVisible(true);
                     break;
                   default:
                     JOptionPane.showMessageDialog(
                         LoginView.this,
                         "지원하지 않는 역할입니다: " + serverResponse.role
                     );
-                    break;
+                    return;
                 }
                 dispose(); // 현재 창 닫기
               } else {
@@ -106,7 +104,7 @@ public class LoginView extends JFrame {
                 );
               }
             });
-          } catch (IOException ex) {
+          } catch (Exception ex) {
             SwingUtilities.invokeLater(() -> {
               JOptionPane.showMessageDialog(
                   LoginView.this,
@@ -131,5 +129,6 @@ public class LoginView extends JFrame {
   private static class ServerResponse {
     String result;
     String role;
+    String name;
   }
 }

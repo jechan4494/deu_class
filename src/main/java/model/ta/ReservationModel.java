@@ -3,125 +3,85 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package model.ta;
-import org.json.JSONArray;
-import org.json.JSONObject;
-import org.json.JSONTokener;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
-import java.io.InputStream;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ReservationModel {
+    private static final String RESERVATIONS_PATH = "deu_class/src/main/resources/reservations.json";
+    private static final String APPROVED_RESERVATIONS_PATH = "deu_class/src/main/resources/approved_reservations.json";
+    private static final String REJECTED_RESERVATIONS_PATH = "deu_class/src/main/resources/rejected_reservations.json";
+    private final Gson gson;
+    private static final Type RESERVATION_LIST_TYPE = new TypeToken<List<Reservation>>(){}.getType();
 
-    // ✅ reservation.json에서 대기 상태만 읽도록 변경
+    public ReservationModel() {
+        this.gson = new GsonBuilder().setPrettyPrinting().create();
+    }
+
     public List<Reservation> loadReservedReservations() {
         return readFromReservationJson("대기");
     }
 
     public List<Reservation> readFromReservationJson(String targetState) {
-    List<Reservation> list = new ArrayList<>();
-    File file = new File("reservations.json");
+        List<Reservation> list = new ArrayList<>();
+        File file = new File(RESERVATIONS_PATH);
 
-    try (FileReader reader = new FileReader(file)) {
-        JSONArray arr = new JSONArray(new JSONTokener(reader));
-
-        for (int i = 0; i < arr.length(); i++) {
-            JSONObject obj = arr.getJSONObject(i);
-
-            if (!obj.getString("state").equals(targetState)) continue;
-
-            String name = obj.getString("name");
-            String role = obj.getString("role");
-            String type = obj.getString("roomType");
-            Object roomObj = obj.get("roomNumber");
-            int roomNumber = (roomObj instanceof Integer)
-            ? (int) roomObj
-            : Integer.parseInt(roomObj.toString());
-            String day = obj.getString("day");
-
-            JSONArray slotArray = obj.getJSONArray("timeSlots");
-            List<String> timeSlots = new ArrayList<>();
-            for (int j = 0; j < slotArray.length(); j++) {
-                timeSlots.add(slotArray.getString(j));
+        try (FileReader reader = new FileReader(file)) {
+            List<Reservation> reservations = gson.fromJson(reader, RESERVATION_LIST_TYPE);
+            
+            if (reservations != null) {
+                for (Reservation r : reservations) {
+                    if (r.getState().equals(targetState)) {
+                        list.add(r);
+                    }
+                }
             }
-
-            list.add(new Reservation(name, role, type, roomNumber, day, timeSlots, targetState));
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-    } catch (Exception e) {
-        e.printStackTrace();
-    }
 
-    return list;
-}
+        return list;
+    }
 
     public List<Reservation> loadApprovedReservations() {
-    List<Reservation> list = new ArrayList<>();
-    File file = new File("approved_reservations.json");
+        List<Reservation> list = new ArrayList<>();
+        File file = new File(APPROVED_RESERVATIONS_PATH);
 
-    try (FileReader reader = new FileReader(file)) {
-        JSONArray arr = new JSONArray(new JSONTokener(reader));
-
-        for (int i = 0; i < arr.length(); i++) {
-            JSONObject obj = arr.getJSONObject(i);
-
-            String name = obj.optString("name", "");
-            String role = obj.optString("role", "");
-            String type = obj.getString("roomType");
-            int roomNumber = obj.getInt("roomNumber");
-            String day = obj.getString("day");
-
-            JSONArray timeArray = obj.getJSONArray("timeSlots");
-            List<String> timeSlots = new ArrayList<>();
-            for (int j = 0; j < timeArray.length(); j++) {
-                timeSlots.add(timeArray.getString(j));
+        try (FileReader reader = new FileReader(file)) {
+            List<Reservation> reservations = gson.fromJson(reader, RESERVATION_LIST_TYPE);
+            
+            if (reservations != null) {
+                list.addAll(reservations);
             }
-
-            String state = obj.optString("state", "승인");
-
-            list.add(new Reservation(name, role, type, roomNumber, day, timeSlots, state));
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-    } catch (Exception e) {
-        e.printStackTrace();
-    }
 
-    return list;
-}
+        return list;
+    }
 
     public List<Reservation> loadRejectedReservations() {
-    List<Reservation> list = new ArrayList<>();
-    File file = new File("rejected_reservations.json");
+        List<Reservation> list = new ArrayList<>();
+        File file = new File(REJECTED_RESERVATIONS_PATH);
 
-    try (FileReader reader = new FileReader(file)) {
-        JSONArray arr = new JSONArray(new JSONTokener(reader));
-
-        for (int i = 0; i < arr.length(); i++) {
-            JSONObject obj = arr.getJSONObject(i);
-
-            String name = obj.optString("name", "");
-            String role = obj.optString("role", "");
-            String type = obj.getString("roomType");
-            int roomNumber = obj.getInt("roomNumber");
-            String day = obj.getString("day");
-
-            JSONArray timeArray = obj.getJSONArray("timeSlots");
-            List<String> timeSlots = new ArrayList<>();
-            for (int j = 0; j < timeArray.length(); j++) {
-                timeSlots.add(timeArray.getString(j));
+        try (FileReader reader = new FileReader(file)) {
+            List<Reservation> reservations = gson.fromJson(reader, RESERVATION_LIST_TYPE);
+            
+            if (reservations != null) {
+                list.addAll(reservations);
             }
-
-            String state = obj.optString("state", "거절");
-
-            list.add(new Reservation(name, role, type, roomNumber, day, timeSlots, state));
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-    } catch (Exception e) {
-        e.printStackTrace();
-    }
 
-    System.out.println("✅ rejected_reservations.json 항목 수: " + list.size());
-    return list;
-}
+        System.out.println("✅ rejected_reservations.json 항목 수: " + list.size());
+        return list;
+    }
 }

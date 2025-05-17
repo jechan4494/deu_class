@@ -2,68 +2,84 @@ package controller.professor;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import model.room.RoomReservation;
+import com.google.gson.reflect.TypeToken;
+import model.ta.Reservation;
 import model.user.User;
 import view.login.LoginView;
 import view.professor.ProfessorView;
 
 import javax.swing.*;
-import java.io.FileReader;
-import java.io.FileWriter;
+import java.awt.event.ActionListener;
+import java.io.*;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProfessorController {
-    private final ProfessorView professorView;
-    private final User user;
+public class ProfessorController implements Serializable {
+    private static final long serialVersionUID = 1L;
+    
+    private static final String LAB_ROOM_PATH = "deu_class/src/main/resources/Lab_room.json";
+    private static final String NORMAL_ROOM_PATH = "deu_class/src/main/resources/normal_room.json";
+    private static final String RESERVATIONS_PATH = "deu_class/src/main/resources/reservations.json";
+    private static final Type RESERVATION_LIST_TYPE = new TypeToken<List<Reservation>>(){}.getType();
+
+    private final transient ProfessorView professorView;
+    private final transient User user;
+    private final transient Gson gson;
 
     public ProfessorController(ProfessorView professorView, User user) {
         this.professorView = professorView;
         this.user = user;
+        this.gson = new GsonBuilder().setPrettyPrinting().create();
 
         professorView.setReservationHandler(this::reserveRoom);
         initListeners();
     }
 
     public void reserveRoom(Integer room, String day, List<String> periods, String roomType) {
-        String jsonPath = roomType.equals("실습실") ? "src/Lab_room.json" : "src/normal_room.json";
+        String jsonPath = roomType.equals("실습실") ? LAB_ROOM_PATH : NORMAL_ROOM_PATH;
 
         // 하나라도 예약 불가인 시간대가 있으면 예약 중단
         for (String timeSlot : periods) {
-            if (!professorView.roomModel.isReservable(room, day, timeSlot)) {
-                JOptionPane.showMessageDialog(null, "이미 예약된 시간대를 포함하고 있습니다.\n예약할 수 없습니다.");
+            if (!professorView.getRoomModel().isReservable(room, day, timeSlot)) {
+                showMessage("이미 예약된 시간대를 포함하고 있습니다.\n예약할 수 없습니다.",
+                    "예약 불가", JOptionPane.WARNING_MESSAGE);
                 return;
             }
         }
-        String state = "대기";
-        RoomReservation reservation = new RoomReservation(
-                room, day, periods, roomType, state, user.getName(), user.getRole()
+        
+        // Reservation 객체 생성
+        Reservation reservation = new Reservation(
+            user.getName(),
+            user.getRole(),
+            roomType,
+            room,
+            day,
+            periods,
+            "대기"
         );
-        professorView.roomModel.saveReservation(reservation);
+        
+        professorView.getRoomModel().saveReservation(reservation);
 
         // 예약이 완료된 모든 시간대를 "X"로 변경하고 파일에 바로 저장
         for (String timeSlot : periods) {
-            professorView.roomModel.markReserved(room, day, timeSlot, jsonPath);
+            professorView.getRoomModel().markReserved(room, day, timeSlot, jsonPath);
         }
 
-        saveReservationEntry(new ReservationEntry(
-                user.getName(),
-                user.getRole(),
-                roomType,
-                room.toString(),
-                day,
-                periods,
-                state
-        ));
+        saveReservationEntry(reservation);
+    }
 
-        JOptionPane.showMessageDialog(null, "예약이 완료되었습니다.");
+    private void showMessage(String message, String title, int messageType) {
+        SwingUtilities.invokeLater(() -> 
+            JOptionPane.showMessageDialog(professorView, message, title, messageType)
+        );
     }
 
     private void initListeners() {
-        professorView.getBtnStartReservation().addActionListener(e -> {
+        ActionListener startReservationListener = e -> {
             String[] options = {"실습실", "일반실"};
             int choice = JOptionPane.showOptionDialog(
-                    null,
+                    professorView,
                     "예약할 강의실 유형을 선택하세요.",
                     "강의실 유형 선택",
                     JOptionPane.DEFAULT_OPTION,
@@ -74,95 +90,81 @@ public class ProfessorController {
             );
 
             if (choice != JOptionPane.CLOSED_OPTION) {
-                String jsonPath = (choice == 0) ? "src/Lab_room.json" : "src/normal_room.json";
+                String jsonPath = (choice == 0) ? LAB_ROOM_PATH : NORMAL_ROOM_PATH;
                 String roomType = options[choice];
                 startReservation(jsonPath, roomType);
             }
-        });
+        };
 
-        professorView.getBtnCancelReservation().addActionListener(e -> {
-            JOptionPane.showMessageDialog(null, "예약 취소 기능은 아직 구현되지 않았습니다.");
-        });
-        professorView.getBtnLogout().addActionListener(e -> {
-            int confirm = JOptionPane.showConfirmDialog(null, "로그아웃하시겠습니까?", "로그아웃", JOptionPane.YES_NO_OPTION);
+        ActionListener cancelReservationListener = e -> 
+            showMessage("예약 취소 기능은 아직 구현되지 않았습니다.", 
+                "기능 미구현", JOptionPane.INFORMATION_MESSAGE);
+
+        ActionListener logoutListener = e -> {
+            int confirm = JOptionPane.showConfirmDialog(professorView, 
+                "로그아웃하시겠습니까?", 
+                "로그아웃", 
+                JOptionPane.YES_NO_OPTION);
             if (confirm == JOptionPane.YES_OPTION) {
-                professorView.dispose(); // 현재 창 닫기
-                new LoginView();         // 로그인 창 열기
+                professorView.dispose();
+                SwingUtilities.invokeLater(() -> new LoginView().setVisible(true));
             }
-        });
+        };
+
+        professorView.getBtnStartReservation().addActionListener(startReservationListener);
+        professorView.getBtnCancelReservation().addActionListener(cancelReservationListener);
+        professorView.getBtnLogout().addActionListener(logoutListener);
     }
-    public List<ReservationEntry> loadActiveReservations(String filePath) {
-        Gson gson = new Gson();
-        List<ReservationEntry> result = new ArrayList<>();
+
+    public List<Reservation> loadActiveReservations(String filePath) {
+        List<Reservation> result = new ArrayList<>();
         try (FileReader reader = new FileReader(filePath)) {
-            java.lang.reflect.Type listType = new com.google.gson.reflect.TypeToken<List<ReservationEntry>>() {}.getType();
-            // 배열 시도
-            List<ReservationEntry> all = gson.fromJson(reader, listType);
+            List<Reservation> all = gson.fromJson(reader, RESERVATION_LIST_TYPE);
             if (all == null) {
-                // 파일을 새로 열어서 단일 객체로 파싱
                 try (FileReader singleReader = new FileReader(filePath)) {
-                    ReservationEntry single = gson.fromJson(singleReader, ReservationEntry.class);
+                    Reservation single = gson.fromJson(singleReader, Reservation.class);
                     if (single != null) {
-                        all = new ArrayList<>();
-                        all.add(single);
+                        result.add(single);
                     }
                 }
+            } else {
+                result.addAll(all);
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (IOException e) {
+            showMessage("예약 정보를 불러오는 중 오류가 발생했습니다: " + e.getMessage(),
+                "오류", JOptionPane.ERROR_MESSAGE);
         }
         return result;
     }
+
     public void startReservation(String jsonPath, String roomType) {
-        List<ReservationEntry> activeLabs = loadActiveReservations("src/Lab_room.json");
-        List<ReservationEntry> activeNormals = loadActiveReservations("src/normal_room.json");
         professorView.showReservationUI(jsonPath, roomType);
     }
 
-    public void saveReservationEntry(ReservationEntry entry) {
-        String filePath = "reservations.json";
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    public void saveReservationEntry(Reservation reservation) {
         try {
-            java.io.File file = new java.io.File(filePath);
-            java.util.List<ReservationEntry> entries = new java.util.ArrayList<>();
+            File file = new File(RESERVATIONS_PATH);
+            List<Reservation> entries = new ArrayList<>();
+            
             if (file.exists() && file.length() > 0) {
-                try (java.io.FileReader reader = new java.io.FileReader(file)) {
-                    ReservationEntry[] array = gson.fromJson(reader, ReservationEntry[].class);
-                    if (array != null) {
-                        entries = new java.util.ArrayList<>(java.util.Arrays.asList(array));
+                try (FileReader reader = new FileReader(file)) {
+                    List<Reservation> existingEntries = gson.fromJson(reader, RESERVATION_LIST_TYPE);
+                    if (existingEntries != null) {
+                        entries.addAll(existingEntries);
                     }
                 }
             }
-
-            entries.add(entry);
-
-            try (FileWriter writer = new FileWriter(filePath, false)) {
+            
+            entries.add(reservation);
+            
+            try (FileWriter writer = new FileWriter(file)) {
                 gson.toJson(entries, writer);
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+            
+            showMessage("예약이 완료되었습니다.", "예약 성공", JOptionPane.INFORMATION_MESSAGE);
+        } catch (IOException e) {
+            showMessage("예약 저장 중 오류가 발생했습니다: " + e.getMessage(),
+                "오류", JOptionPane.ERROR_MESSAGE);
         }
     }
-
-    public static class ReservationEntry {
-        public String name;
-        private String role;
-        private String roomType;
-        private String roomNumber;
-        private String day;
-        private List<String> timeSlots;
-        public String state;
-
-        public ReservationEntry(String name, String role, String roomType, String roomNumber,
-                                String day, List<String> timeSlots, String state) {
-            this.name = name;
-            this.role = role;
-            this.roomType = roomType;
-            this.roomNumber = roomNumber;
-            this.day = day;
-            this.timeSlots = timeSlots;
-            this.state = state;
-        }
-    }
-
 }

@@ -3,31 +3,41 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package view.ta;
+
 import controller.ta.ReservationController;
+import controller.ta.LogController;
 import model.ta.ReservationModel;
+import model.ta.Reservation;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.util.List;
 
-public class featureFrame extends javax.swing.JFrame {
+public class featureFrame extends JFrame {
 
     private ReservationController controller;
+    private final JTable reservationTable;
 
     public featureFrame() {
-        initComponents(); // NetBeans 자동 생성된 UI 초기화
+        initComponents();
+        this.reservationTable = jTable2;
         controller = new ReservationController(new ReservationModel(), this);
         controller.loadReservedDataToTable(); // 예약 내역 테이블에 표시
-        
     }
 
-    // 🔽 JTable 접근용 getter
+    public void setController(ReservationController controller) {
+        this.controller = controller;
+    }
+
     public JTable getReservationTable() {
-        return jTable2; // 이 이름이 NetBeans 테이블 컴포넌트 이름과 같아야 함
-    }
-    public void setReservationTableModel(DefaultTableModel model) {
-        jTable2.setModel(model);
+        return reservationTable;
     }
 
+    public void setReservationTableModel(javax.swing.table.TableModel model) {
+        reservationTable.setModel(model);
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -54,52 +64,39 @@ public class featureFrame extends javax.swing.JFrame {
         jLabel1.setText("학사 조교");
 
         jButton1.setText("승인");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
-            }
+        jButton1.addActionListener(e -> {
+            int row = getReservationTable().getSelectedRow();
+            controller.approveSelectedReservation(row);
         });
 
         jButton2.setText("거절");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
-            }
+        jButton2.addActionListener(e -> {
+            int selectedRow = getReservationTable().getSelectedRow();
+            controller.rejectSelectedReservation(selectedRow);
         });
 
         jButton3.setText("새로고침");
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
-            }
-        });
+        jButton3.addActionListener(e -> controller.loadReservedDataToTable());
 
         jButton4.setText("닫기");
-        jButton4.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton4ActionPerformed(evt);
-            }
-        });
+        jButton4.addActionListener(e -> dispose());
 
         jButton5.setText("승인 내역");
-        jButton5.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton5ActionPerformed(evt);
-            }
+        jButton5.addActionListener(e -> {
+            new approvedFrame().setVisible(true);
+            dispose();
         });
 
         jButton6.setText("거절 내역");
-        jButton6.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton6ActionPerformed(evt);
-            }
+        jButton6.addActionListener(e -> {
+            new rejectedFrame().setVisible(true);
+            dispose();
         });
 
-        jButton7.setText("조교 로그");
-        jButton7.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton7ActionPerformed(evt);
-            }
+        jButton7.setText("로그 보기");
+        jButton7.addActionListener(e -> {
+            new LogFrame().setVisible(true);
+            dispose();
         });
 
         jTable2.setModel(new javax.swing.table.DefaultTableModel(
@@ -167,39 +164,6 @@ public class featureFrame extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-    int row = getReservationTable().getSelectedRow();
-    controller.approveSelectedReservation(row);
-    }//GEN-LAST:event_jButton1ActionPerformed
-
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-    int selectedRow = getReservationTable().getSelectedRow();
-    controller.rejectSelectedReservation(selectedRow);
-    }//GEN-LAST:event_jButton2ActionPerformed
-
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-    controller.loadReservedDataToTable();
-    }//GEN-LAST:event_jButton3ActionPerformed
-
-    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-    this.dispose();
-    }//GEN-LAST:event_jButton4ActionPerformed
-
-    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-    new approvedFrame().setVisible(true);
-    this.dispose(); // 현재 창 닫기
-    }//GEN-LAST:event_jButton5ActionPerformed
-
-    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
-    new rejectedFrame().setVisible(true);
-    this.dispose();
-    }//GEN-LAST:event_jButton6ActionPerformed
-
-    private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
-    new LogFrame().setVisible(true);
-    this.dispose();
-    }//GEN-LAST:event_jButton7ActionPerformed
 
     /**
      * @param args the command line arguments

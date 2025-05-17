@@ -4,7 +4,9 @@
  */
 package controller.ta;
 import model.ta.Reservation;
-import org.json.JSONObject;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 
 import javax.swing.*;
 import java.io.*;
@@ -14,54 +16,76 @@ import java.util.*;
 public class LogController {
 
     // ✅ GitHub 공유 폴더에 있는 로그 파일 경로로 변경
-    private static final String LOG_PATH = "ta_log.json";  // 같은 디렉토리에 있는 경우
+    private static final String LOG_FILE = "deu_class/src/main/resources/ta_log.json";
+    private final Gson gson;
+
+    public LogController() {
+        this.gson = new GsonBuilder().setPrettyPrinting().create();
+    }
 
     // 로그 저장 메서드
     public void saveTaLog(String transition, Reservation reservation) {
-    JSONObject log = new JSONObject();
-    log.put("transition", transition);
-    log.put("targetUser", reservation.getName());
-    log.put("room", reservation.getType() + " " + reservation.getRoomNumber());
-    log.put("time", reservation.getDay() + " " + reservation.getTimeSlots().get(0));
-    log.put("timestamp", java.time.LocalDateTime.now().toString());
+        JsonObject log = new JsonObject();
+        log.addProperty("transition", transition);
+        log.addProperty("targetUser", reservation.getName());
+        log.addProperty("room", reservation.getType() + " " + reservation.getRoomNumber());
+        log.addProperty("time", reservation.getDay() + " " + String.join(", ", reservation.getTimeSlots()));
+        log.addProperty("timestamp", LocalDateTime.now().toString());
 
-    File file = new File("ta_log.json");
-    try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, true))) {
-        writer.write(log.toString());
-        writer.newLine();
-    } catch (IOException e) {
-        e.printStackTrace();
+        try {
+            File file = new File(LOG_FILE);
+            if (!file.exists()) {
+                file.getParentFile().mkdirs();
+                file.createNewFile();
+            }
+            
+            List<JsonObject> logs = new ArrayList<>();
+            if (file.length() > 0) {
+                try (Reader reader = new FileReader(file)) {
+                    JsonObject[] existingLogs = gson.fromJson(reader, JsonObject[].class);
+                    if (existingLogs != null) {
+                        logs.addAll(Arrays.asList(existingLogs));
+                    }
+                }
+            }
+            
+            logs.add(log);
+            
+            try (Writer writer = new FileWriter(file)) {
+                gson.toJson(logs, writer);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
-}
 
     // 로그 불러와서 JTextArea에 출력
     public void loadTaLog(JTextArea textArea) {
-        File file = new File(LOG_PATH);
+        File file = new File(LOG_FILE);
         StringBuilder logText = new StringBuilder();
 
-        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
-            String line;
-
-            while ((line = reader.readLine()) != null) {
-                JSONObject obj = new JSONObject(line);
-
-                String entry = String.format(
-                    "%s | %s | %s | %s | %s\n",
-                    obj.optString("timestamp"),
-                    obj.optString("transition"),
-                    obj.optString("targetUser"),
-                    obj.optString("room"),
-                    obj.optString("time")
-                );
-
-                logText.append(entry);
+        if (file.exists() && file.length() > 0) {
+            try (Reader reader = new FileReader(file)) {
+                JsonObject[] logs = gson.fromJson(reader, JsonObject[].class);
+                if (logs != null) {
+                    for (JsonObject log : logs) {
+                        logText.append(String.format("[%s] %s - %s (%s) %s\n",
+                            log.get("timestamp").getAsString(),
+                            log.get("transition").getAsString(),
+                            log.get("targetUser").getAsString(),
+                            log.get("room").getAsString(),
+                            log.get("time").getAsString()
+                        ));
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+                logText.append("로그를 불러오는 중 오류가 발생했습니다.");
             }
-
-            textArea.setText(logText.toString());
-
-        } catch (IOException e) {
-            textArea.setText("❌ 로그 불러오는 중 오류: " + e.getMessage());
-            e.printStackTrace();
+        } else {
+            logText.append("로그가 없습니다.");
         }
+
+        textArea.setText(logText.toString());
     }
 }

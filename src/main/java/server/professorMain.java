@@ -13,11 +13,11 @@ public class professorMain {
                     "강의실 선택", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE,
                     null, options, options[0]);
 
-            // 0을 선택하면 "Lab_room.json", 1을 선택하면 "normal_room.json"을 넘김
+            // resources 디렉토리의 JSON 파일 경로 사용
             if (choice == 0) {
-                view.showReservationUI("src/Lab_room.json", "실습실");
+                view.showReservationUI("src/main/resources/Lab_room.json", "실습실");
             } else if (choice == 1) {
-                view.showReservationUI("src/normal_room.json", "일반실");
+                view.showReservationUI("src/main/resources/normal_room.json", "일반실");
             }
         });
     }

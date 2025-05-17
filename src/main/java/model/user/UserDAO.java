@@ -6,9 +6,12 @@ import com.google.gson.reflect.TypeToken;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.lang.reflect.Type;
 
 public class UserDAO {
-  private static final String FILE_PATH = "users.json";
+  private static final String FILE_PATH = "deu_class/src/main/resources/users.json";
+  private static final Gson gson = new Gson();
+  private static final Type USER_LIST_TYPE = new TypeToken<List<User>>(){}.getType();
 
   // 파일이 비어 있을 때만 테스트 데이터 추가
   static {
@@ -22,7 +25,7 @@ public class UserDAO {
   // 기존 코드 유지 (아래는 변경 없음)
   public static List<User> getAllUsers() {
     try (Reader reader = new FileReader(FILE_PATH)) {
-      List<User> users = new Gson().fromJson(reader, new TypeToken<List<User>>(){}.getType());
+      List<User> users = gson.fromJson(reader, USER_LIST_TYPE);
       return users == null ? new ArrayList<>() : users;
     } catch (IOException e) {
       return new ArrayList<>();
@@ -33,7 +36,7 @@ public class UserDAO {
     List<User> users = getAllUsers();
     users.add(user);
     try (Writer writer = new FileWriter(FILE_PATH)) {
-      new Gson().toJson(users, writer);
+      gson.toJson(users, writer);
     } catch (IOException e) {
       e.printStackTrace();
     }

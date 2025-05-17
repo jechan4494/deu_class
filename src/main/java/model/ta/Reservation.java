@@ -3,9 +3,12 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package model.ta;
+import java.io.Serializable;
 import java.util.List;
 
-public class Reservation {
+public class Reservation implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     private String name;
     private String role;
     private String type;              // roomType
@@ -52,5 +55,10 @@ public class Reservation {
 
     public String getState() {
         return state;
+    }
+
+    // Setter 추가
+    public void setState(String state) {
+        this.state = state;
     }
 }

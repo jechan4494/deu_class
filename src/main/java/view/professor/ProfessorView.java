@@ -5,21 +5,25 @@ import view.login.LoginView;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
 
-public class ProfessorView extends JFrame {
-    private final JButton btnStartReservation;
-    private final JButton btnCancelReservation;
-    private final JButton btnLogout;
+public class ProfessorView extends JFrame implements Serializable {
+    private static final long serialVersionUID = 1L;
 
-    private JComboBox<Integer> roomCombo;
-    private JComboBox<String> dayCombo;
-    private JList<String> timeSlotList;
+    private final transient JButton btnStartReservation;
+    private final transient JButton btnCancelReservation;
+    private final transient JButton btnLogout;
 
-    public RoomModel roomModel;
-    private String roomType;
+    private transient JComboBox<Integer> roomCombo;
+    private transient JComboBox<String> dayCombo;
+    private transient JList<String> timeSlotList;
 
+    private transient RoomModel roomModel;
+    private transient String roomType;
+
+    @FunctionalInterface
     public interface ReservationHandler {
         void onReserve(Integer room, String day, List<String> timeSlots, String roomType);
     }
@@ -102,7 +106,7 @@ public class ProfessorView extends JFrame {
         this.roomType = roomType;
         this.roomModel = new RoomModel(jsonPath);
 
-        if (roomModel == null || roomModel.getRoomNumbers().isEmpty()) {
+        if (roomModel.getRoomNumbers().isEmpty()) {
             JOptionPane.showMessageDialog(this, "예약 가능한 강의실이 없습니다.");
             return;
         }
@@ -176,5 +180,13 @@ public class ProfessorView extends JFrame {
         if (reservationHandler != null) {
             reservationHandler.onReserve(room, day, selectedSlots, roomType);
         }
+    }
+
+    public RoomModel getRoomModel() {
+        return roomModel;
+    }
+
+    public void setRoomModel(RoomModel model) {
+        this.roomModel = model;
     }
 }

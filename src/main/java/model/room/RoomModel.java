@@ -1,167 +1,205 @@
 package model.room;
 
-import model.user.User;
-import org.json.JSONArray;
-import org.json.JSONObject;
-import org.json.JSONTokener;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonArray;
+import model.ta.Reservation;
 
-import javax.swing.*;
-import java.io.FileInputStream; // 수정: 파일시스템에서 직접 읽기
-import java.io.InputStream;
+import java.io.*;
 import java.util.*;
 
 public class RoomModel {
-    private JSONArray rooms;
-    private JSONObject originalData;
-    private Map<Integer, JSONObject> roomMap = new HashMap<>();
-    private final User user = null;
+    private Map<Integer, JsonObject> roomMap;
+    private final Gson gson;
+    private final String jsonPath;
 
     public RoomModel(String jsonPath) {
-        try (InputStream inputStream = new FileInputStream(jsonPath)) {
-            JSONTokener tokener = new JSONTokener(inputStream);
-            Object parsed = tokener.nextValue();
+        this.jsonPath = jsonPath;
+        this.gson = new GsonBuilder().setPrettyPrinting().create();
+        loadRooms();
+    }
 
-            this.rooms = new org.json.JSONArray();
-            this.originalData = new JSONObject();
-            this.roomMap = new java.util.HashMap<>();
-
-            if (parsed instanceof org.json.JSONArray) {
-                org.json.JSONArray arr = (org.json.JSONArray) parsed;
-                // 각 배열 원소의 rooms를 모두 합치기
-                for (int i = 0; i < arr.length(); i++) {
-                    JSONObject obj = arr.getJSONObject(i);
-                    if (obj.has("rooms")) {
-                        org.json.JSONArray subRooms = obj.getJSONArray("rooms");
-                        for (int j = 0; j < subRooms.length(); j++) {
-                            JSONObject room = subRooms.getJSONObject(j);
-                            this.rooms.put(room);
-                            // 룸 넘버 맵에 등록
-                            this.roomMap.put(room.getInt("roomNumber"), room);
-                        }
+    private void loadRooms() {
+        roomMap = new HashMap<>();
+        try (FileReader reader = new FileReader(jsonPath)) {
+            JsonObject[] rooms = gson.fromJson(reader, JsonObject[].class);
+            if (rooms != null) {
+                for (JsonObject room : rooms) {
+                    if (room != null && room.has("roomNumber")) {
+                        int roomNumber = room.get("roomNumber").getAsInt();
+                        roomMap.put(roomNumber, room);
                     }
                 }
-                this.originalData.put("rooms", this.rooms);
-            } else {
-                throw new org.json.JSONException("최상위 JSON은 반드시 배열이어야 합니다.");
             }
         } catch (Exception e) {
             e.printStackTrace();
-            rooms = null;
+            roomMap = new HashMap<>();
         }
     }
 
-    public void saveReservation(RoomReservation reservation) {
-        JSONObject room = roomMap.get(reservation.getRoomNumber());
+    public void saveReservation(Reservation reservation) {
+        JsonObject room = roomMap.get(reservation.getRoomNumber());
         if (room == null) return;
 
-        JSONObject schedule = room.optJSONObject("schedule");
+        JsonObject schedule = room.getAsJsonObject("schedule");
         if (schedule == null) {
-            schedule = new JSONObject();
-            room.put("schedule", schedule);
+            schedule = new JsonObject();
+            room.add("schedule", schedule);
         }
 
-        JSONArray dayArray = schedule.optJSONArray(reservation.getDay());
+        JsonArray dayArray = schedule.getAsJsonArray(reservation.getDay());
         if (dayArray == null) {
-            dayArray = new JSONArray();
-            schedule.put(reservation.getDay(), dayArray);
+            dayArray = new JsonArray();
+            schedule.add(reservation.getDay(), dayArray);
         }
 
-        Set<String> already = new HashSet<>();
-        for (int j = 0; j < dayArray.length(); j++) {
-            JSONObject timeSlot = dayArray.getJSONObject(j);
-            if (timeSlot.has("time")) {
-                already.add(timeSlot.getString("time"));
-            }
-        }
-
+        // 예약하려는 시간대가 이미 예약되어 있는지 확인
         for (String timeSlot : reservation.getTimeSlots()) {
-            if (!already.contains(timeSlot)) {
-                JSONObject obj = new JSONObject();
-                obj.put("time", timeSlot);
-                obj.put("state", "대기");
-                // user 정보 null 처리 주의 (현재 user 필드 사용 X 상태, setUser 도입 권장)
-                obj.put("name", ""); 
-                obj.put("type", "");
-                dayArray.put(obj);
+            if (!isReservable(reservation.getRoomNumber(), reservation.getDay(), timeSlot)) {
+                throw new IllegalStateException("이미 예약된 시간대가 포함되어 있습니다: " + timeSlot);
             }
         }
-    }
 
-    public List<Integer> getRoomNumbers() {
-        return new ArrayList<>(roomMap.keySet());
-    }
-
-    public Set<String> getDays(int roomNumber) {
-        JSONObject room = roomMap.get(roomNumber);
-        Set<String> days = new HashSet<>();
-        if (room != null && room.has("schedule")) {
-            JSONObject schedule = room.getJSONObject("schedule");
-            days.addAll(schedule.keySet());
+        // 예약 정보 저장
+        for (String timeSlot : reservation.getTimeSlots()) {
+            JsonObject obj = new JsonObject();
+            obj.addProperty("time", timeSlot);
+            obj.addProperty("state", "X");  // 예약된 상태
+            obj.addProperty("name", reservation.getName());
+            obj.addProperty("role", reservation.getRole());
+            obj.addProperty("type", reservation.getType());
+            dayArray.add(obj);
         }
-        return days;
+
+        // 파일에 저장
+        try (FileWriter writer = new FileWriter(jsonPath)) {
+            gson.toJson(roomMap.values(), writer);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-    public List<String> getTimeSlots(int roomNumber, String day) {
-        JSONObject room = roomMap.get(roomNumber);
-        List<String> slots = new ArrayList<>();
-        if (room != null && room.has("schedule")) {
-            JSONObject schedule = room.getJSONObject("schedule");
-            JSONArray timeArray = schedule.optJSONArray(day);
-            if (timeArray != null) {
-                for (int i = 0; i < timeArray.length(); i++) {
-                    JSONObject obj = timeArray.getJSONObject(i);
-                    if (obj.has("time")) {
-                        slots.add(obj.getString("time"));
-                    }
-                }
+    public boolean isReservable(int roomNumber, String day, String timeSlot) {
+        JsonObject room = roomMap.get(roomNumber);
+        if (room == null) return false;
+
+        JsonObject schedule = room.getAsJsonObject("schedule");
+        if (schedule == null) return true;
+
+        JsonArray dayArray = schedule.getAsJsonArray(day);
+        if (dayArray == null) return true;
+
+        for (int i = 0; i < dayArray.size(); i++) {
+            JsonObject slot = dayArray.get(i).getAsJsonObject();
+            if (slot.get("time").getAsString().equals(timeSlot)) {
+                return slot.get("state").getAsString().equals("O");
             }
         }
-        return slots;
-    }
-
-    // 예약 가능 여부 확인
-    public boolean isReservable(int roomNumber, String day, String time) {
-        JSONObject room = roomMap.get(roomNumber);
-        if (room == null || !room.has("schedule")) return false;
-        JSONObject schedule = room.getJSONObject("schedule");
-        JSONArray dayArray = schedule.optJSONArray(day);
-        if (dayArray == null) return false;
-        for (int i = 0; i < dayArray.length(); i++) {
-            JSONObject timeSlot = dayArray.getJSONObject(i);
-            if (timeSlot.has("time") && timeSlot.has("state")) {
-                if (timeSlot.getString("time").equals(time) && !"O".equals(timeSlot.getString("state"))) {
-                    // 이미 예약된 상태("O"가 아님)
-                    return false;
-                }
-            }
-        }
-        // 아직 비어있거나, 모두 "O"라면 예약 가능
         return true;
     }
 
-    // 해당 시간의 state를 "X"로 변경한 뒤 파일에 저장
-    public void markReserved(int roomNumber, String day, String time, String jsonPath) {
-        JSONObject room = roomMap.get(roomNumber);
-        if (room == null || !room.has("schedule")) return;
-        JSONObject schedule = room.getJSONObject("schedule");
-        JSONArray dayArray = schedule.optJSONArray(day);
-        if (dayArray == null) return;
-        for (int i = 0; i < dayArray.length(); i++) {
-            JSONObject timeSlot = dayArray.getJSONObject(i);
-            if (timeSlot.has("time") && timeSlot.getString("time").equals(time)) {
-                timeSlot.put("state", "X");
+    public void markReserved(int roomNumber, String day, String timeSlot, String jsonPath) {
+        JsonObject room = roomMap.get(roomNumber);
+        if (room == null) return;
+
+        JsonObject schedule = room.getAsJsonObject("schedule");
+        if (schedule == null) {
+            schedule = new JsonObject();
+            room.add("schedule", schedule);
+        }
+
+        JsonArray dayArray = schedule.getAsJsonArray(day);
+        if (dayArray == null) {
+            dayArray = new JsonArray();
+            schedule.add(day, dayArray);
+        }
+
+        // 해당 시간대 찾기
+        boolean found = false;
+        for (int i = 0; i < dayArray.size(); i++) {
+            JsonObject slot = dayArray.get(i).getAsJsonObject();
+            if (slot.get("time").getAsString().equals(timeSlot)) {
+                // 기존 정보 보존하면서 상태만 변경
+                slot.addProperty("state", "X");
+                found = true;
                 break;
             }
         }
-        saveToFile(jsonPath); // 변경 후 파일에 저장
+
+        // 해당 시간대가 없으면 새로 추가
+        if (!found) {
+            JsonObject newSlot = new JsonObject();
+            newSlot.addProperty("time", timeSlot);
+            newSlot.addProperty("state", "X");
+            newSlot.addProperty("name", "");
+            newSlot.addProperty("role", "");
+            newSlot.addProperty("type", "");
+            dayArray.add(newSlot);
+        }
+
+        // 파일에 저장
+        try (FileWriter writer = new FileWriter(jsonPath)) {
+            gson.toJson(roomMap.values(), writer);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-    public void saveToFile(String jsonPath) {
-        try (java.io.FileWriter writer = new java.io.FileWriter(jsonPath, false)) {
-            writer.write(originalData.toString(4));
-        } catch (Exception e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(null, "파일 저장에 실패했습니다: " + jsonPath);
+    public List<String> getTimeSlots(int roomNumber, String day) {
+        List<String> slots = new ArrayList<>();
+        JsonObject room = roomMap.get(roomNumber);
+        if (room == null) return slots;
+
+        JsonObject schedule = room.getAsJsonObject("schedule");
+        if (schedule == null) return slots;
+
+        JsonArray dayArray = schedule.getAsJsonArray(day);
+        if (dayArray == null) return slots;
+
+        for (int i = 0; i < dayArray.size(); i++) {
+            JsonObject slot = dayArray.get(i).getAsJsonObject();
+            if (slot.get("state").getAsString().equals("O")) {  // 예약 가능한 시간대만 추가
+                slots.add(slot.get("time").getAsString());
+            }
         }
+
+        return slots;
+    }
+
+    public Set<Integer> getRoomNumbers() {
+        return roomMap.keySet();
+    }
+
+    public Set<String> getDays(int roomNumber) {
+        JsonObject room = roomMap.get(roomNumber);
+        if (room == null) return Collections.emptySet();
+
+        JsonObject schedule = room.getAsJsonObject("schedule");
+        if (schedule == null) return Collections.emptySet();
+
+        Set<String> days = new HashSet<>();
+        schedule.keySet().forEach(days::add);
+        return days;
+    }
+
+    public List<String> getAvailableTimeSlots(int roomNumber, String day) {
+        JsonObject room = roomMap.get(roomNumber);
+        if (room == null) return Collections.emptyList();
+
+        JsonObject schedule = room.getAsJsonObject("schedule");
+        if (schedule == null) return Collections.emptyList();
+
+        JsonArray dayArray = schedule.getAsJsonArray(day);
+        if (dayArray == null) return Collections.emptyList();
+
+        List<String> availableSlots = new ArrayList<>();
+        for (int i = 0; i < dayArray.size(); i++) {
+            JsonObject slot = dayArray.get(i).getAsJsonObject();
+            if (slot.get("state").getAsString().equals("O")) {
+                availableSlots.add(slot.get("time").getAsString());
+            }
+        }
+        return availableSlots;
     }
 }
