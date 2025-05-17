@@ -15,12 +15,12 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.util.List;
 
-public class featureFrame extends JFrame {
+public class FeatureFrame extends JFrame {
 
     private ReservationController controller;
     private final JTable reservationTable;
 
-    public featureFrame() {
+    public FeatureFrame() {
         initComponents();
         this.reservationTable = jTable2;
         controller = new ReservationController(new ReservationModel(), this);
@@ -59,7 +59,7 @@ public class featureFrame extends JFrame {
         jScrollPane2 = new javax.swing.JScrollPane();
         jTable2 = new javax.swing.JTable();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jLabel1.setText("학사 조교");
 
@@ -83,13 +83,13 @@ public class featureFrame extends JFrame {
 
         jButton5.setText("승인 내역");
         jButton5.addActionListener(e -> {
-            new approvedFrame().setVisible(true);
+            new ApprovedFrame().setVisible(true);
             dispose();
         });
 
         jButton6.setText("거절 내역");
         jButton6.addActionListener(e -> {
-            new rejectedFrame().setVisible(true);
+            new RejectedFrame().setVisible(true);
             dispose();
         });
 
@@ -182,20 +182,20 @@ public class featureFrame extends JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(featureFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(FeatureFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(featureFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(FeatureFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(featureFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(FeatureFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(featureFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(FeatureFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new featureFrame().setVisible(true);
+                new FeatureFrame().setVisible(true);
             }
         });
     }

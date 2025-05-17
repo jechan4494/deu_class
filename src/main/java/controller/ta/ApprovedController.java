@@ -5,7 +5,7 @@
 package controller.ta;
 import model.ta.Reservation;
 import model.ta.ReservationModel;
-import view.ta.approvedFrame;
+import view.ta.ApprovedFrame;
 
 import javax.swing.table.DefaultTableModel;
 import java.util.List;
@@ -13,9 +13,9 @@ import java.util.List;
 public class ApprovedController {
 
     private ReservationModel model;
-    private approvedFrame view;
+    private ApprovedFrame view;
 
-    public ApprovedController(ReservationModel model, approvedFrame view) {
+    public ApprovedController(ReservationModel model, ApprovedFrame view) {
         this.model = model;
         this.view = view;
     }

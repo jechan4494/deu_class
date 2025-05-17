@@ -11,13 +11,14 @@ import java.util.List;
 import java.util.Set;
 
 public class StudentReservationFrame extends JFrame {
-    private final ReservationService reservationService;
+    private static final long serialVersionUID = 1L;
     private final String userName;
     private transient RoomModel roomModel;
     private transient JComboBox<String> roomTypeCombo;
     private transient JComboBox<Integer> roomNumberCombo;
     private transient JComboBox<String> dayCombo;
     private transient JList<String> timeSlotsList;
+    private final ReservationService reservationService;
     
     public StudentReservationFrame(String userName) {
         this.userName = userName;
@@ -26,8 +27,13 @@ public class StudentReservationFrame extends JFrame {
         updateRoomModel();
     }
     
+    /**
+     * 테스트 전용 생성자입니다.
+     * 실제 운영 환경에서는 사용하지 마세요.
+     */
+    @Deprecated
     public StudentReservationFrame() {
-        this("이나겸"); // 기본 생성자는 테스트용으로만 사용
+        this("TEST_USER");
     }
     
     private void initComponents() {

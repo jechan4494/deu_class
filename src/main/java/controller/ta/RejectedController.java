@@ -5,16 +5,16 @@
 package controller.ta;
 import model.ta.Reservation;
 import model.ta.ReservationModel;
-import view.ta.rejectedFrame;
+import view.ta.RejectedFrame;
 
 import javax.swing.table.DefaultTableModel;
 import java.util.List;
 
 public class RejectedController {
     private ReservationModel model;
-    private rejectedFrame view;
+    private RejectedFrame view;
 
-    public RejectedController(ReservationModel model, rejectedFrame view) {
+    public RejectedController(ReservationModel model, RejectedFrame view) {
         this.model = model;
         this.view = view;
     }

@@ -9,7 +9,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import model.ta.Reservation;
 import model.ta.ReservationModel;
-import view.ta.featureFrame;
+import view.ta.FeatureFrame;
 
 import java.io.*;
 import javax.swing.*;
@@ -25,11 +25,11 @@ public class ReservationController {
     private static final Type RESERVATION_LIST_TYPE = new TypeToken<List<Reservation>>(){}.getType();
 
     private final ReservationModel model;
-    private final featureFrame view;
+    private final FeatureFrame view;
     private final LogController logController;
     private final Gson gson;
 
-    public ReservationController(ReservationModel model, featureFrame view) {
+    public ReservationController(ReservationModel model, FeatureFrame view) {
         this.model = model;
         this.view = view;
         this.logController = new LogController();

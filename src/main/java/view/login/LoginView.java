@@ -9,7 +9,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.*;
 import java.net.Socket;
-import view.ta.featureFrame;
+import view.ta.FeatureFrame;
 import model.ta.ReservationModel;
 import controller.ta.ReservationController;
 import view.student.StudentReservationFrame;
@@ -81,7 +81,7 @@ public class LoginView extends JFrame {
                     profView.setVisible(true);
                     break;
                   case "TA":
-                    featureFrame view = new featureFrame();
+                    FeatureFrame view = new FeatureFrame();
                     ReservationModel model = new ReservationModel();
                     new ReservationController(model, view);
                     view.setVisible(true);

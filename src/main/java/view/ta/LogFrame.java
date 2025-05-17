@@ -7,14 +7,17 @@ import controller.ta.LogController;
 import javax.swing.*;
 
 public class LogFrame extends javax.swing.JFrame {
-
+    private static final long serialVersionUID = 1L;
     private LogController logController;
+    private javax.swing.JButton jButton4;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTextArea jTextArea1;
 
     public LogFrame() {
-        initComponents();  // 🔹 NetBeans가 자동 생성한 UI 초기화
-
+        initComponents();  // NetBeans가 자동 생성한 UI 초기화
         logController = new LogController();
-        logController.loadTaLog(jTextArea1);  // 🔸 로그 출력 (jTextArea1 이름 그대로 사용 시)
+        logController.loadTaLog(jTextArea1);
     }
 
 
@@ -32,7 +35,7 @@ public class LogFrame extends javax.swing.JFrame {
         jTextArea1 = new javax.swing.JTextArea();
         jButton4 = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jLabel1.setText("조교 로그");
 
@@ -80,7 +83,7 @@ public class LogFrame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        new featureFrame().setVisible(true);
+        new FeatureFrame().setVisible(true);
         this.dispose();
     }//GEN-LAST:event_jButton4ActionPerformed
 
@@ -120,9 +123,5 @@ public class LogFrame extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton4;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextArea jTextArea1;
     // End of variables declaration//GEN-END:variables
 }
