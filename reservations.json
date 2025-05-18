@@ -34,5 +34,23 @@
     "state": "대기",
     "day": "목요일",
     "roomType": "일반실"
+  },
+  {
+    "role": "PROFESSOR",
+    "roomNumber": "916",
+    "name": "ㄱㄱㅎ",
+    "timeSlots": [],
+    "state": "대기",
+    "day": "목요일",
+    "roomType": "실습실"
+  },
+  {
+    "role": "PROFESSOR",
+    "roomNumber": "916",
+    "name": "ㄱㄱㅎ",
+    "timeSlots": ["14:00-14:50"],
+    "state": "승인",
+    "day": "목요일",
+    "roomType": "실습실"
   }
 ]
