@@ -64,4 +64,19 @@ public class LogController {
             e.printStackTrace();
         }
     }
+    public void saveLog(String role, String message) {
+    String logFile = "ta_log.json";
+
+    JSONObject obj = new JSONObject();
+    obj.put("timestamp", java.time.LocalDateTime.now().toString());
+    obj.put("targetUser", role);
+    obj.put("transition", message);
+    obj.put("time", "테스트용");
+
+    try (FileWriter writer = new FileWriter(logFile, true)) {
+        writer.write(obj.toString() + System.lineSeparator()); // NDJSON 형식
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
+    }
 }

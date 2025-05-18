@@ -8,3 +8,6 @@
 {"time":"목요일 10:00-10:50","targetUser":"ㄱㄱㅎ","transition":"[대기->승인]","room":"일반실 914","timestamp":"2025-05-14T15:49:31.168518800"}
 {"time":"금요일 11:00-11:50","targetUser":"ㄱㄱㅎ","transition":"[대기->승인]","room":"실습실 918","timestamp":"2025-05-15T10:06:54.321422700"}
 {"time":"금요일 17:00-17:50","targetUser":"ㄱㄱㅎ","transition":"[대기->거절]","room":"실습실 916","timestamp":"2025-05-15T10:07:00.674212900"}
+{"time":"테스트용","targetUser":"TA","transition":"테스트 로그 저장","timestamp":"2025-05-18T23:42:34.511172200"}
+{"time":"테스트용","targetUser":"TA","transition":"테스트 로그 저장","timestamp":"2025-05-18T23:45:24.297623600"}
+{"time":"테스트용","targetUser":"TA","transition":"테스트 로그 저장","timestamp":"2025-05-18T23:50:15.848627100"}

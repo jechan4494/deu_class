@@ -176,4 +176,55 @@ public class ReservationModel {
         return false;
     }
     }
+    public void saveApprovedReservation(Reservation reservation) {
+    try {
+        File file = new File("approved_reservations.json");
+        JSONArray arr = file.exists()
+            ? new JSONArray(new JSONTokener(new FileReader(file)))
+            : new JSONArray();
+
+        JSONObject obj = new JSONObject();
+        obj.put("name", reservation.getName());
+        obj.put("role", reservation.getRole());
+        obj.put("roomType", reservation.getType());
+        obj.put("roomNumber", reservation.getRoomNumber());
+        obj.put("day", reservation.getDay());
+        obj.put("timeSlots", reservation.getTimeSlots());
+        obj.put("state", reservation.getState());
+
+        arr.put(obj);
+
+        try (FileWriter writer = new FileWriter(file)) {
+            writer.write(arr.toString(4)); // pretty print
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+}
+
+public void saveRejectedReservation(Reservation reservation) {
+    try {
+        File file = new File("rejected_reservations.json");
+        JSONArray arr = file.exists()
+            ? new JSONArray(new JSONTokener(new FileReader(file)))
+            : new JSONArray();
+
+        JSONObject obj = new JSONObject();
+        obj.put("name", reservation.getName());
+        obj.put("role", reservation.getRole());
+        obj.put("roomType", reservation.getType());
+        obj.put("roomNumber", reservation.getRoomNumber());
+        obj.put("day", reservation.getDay());
+        obj.put("timeSlots", reservation.getTimeSlots());
+        obj.put("state", reservation.getState());
+
+        arr.put(obj);
+
+        try (FileWriter writer = new FileWriter(file)) {
+            writer.write(arr.toString(4));
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+}
 }
