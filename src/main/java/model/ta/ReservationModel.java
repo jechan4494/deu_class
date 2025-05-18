@@ -124,4 +124,56 @@ public class ReservationModel {
     System.out.println("✅ rejected_reservations.json 항목 수: " + list.size());
     return list;
 }
+    public List<String[]> loadUsers() {
+    List<String[]> users = new ArrayList<>();
+    File file = new File("users.json");
+
+    try (FileReader reader = new FileReader(file)) {
+        JSONArray arr = new JSONArray(new JSONTokener(reader));
+        for (int i = 0; i < arr.length(); i++) {
+            JSONObject obj = arr.getJSONObject(i);
+            String[] row = {
+                obj.optString("id", ""),
+                obj.optString("name", ""),
+                obj.optString("department", ""),
+                obj.optString("role", "")
+            };
+            users.add(row);
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+
+    return users;
+}
+    public boolean deleteUser(String userId) {
+    File file = new File("users.json");
+
+    try (FileReader reader = new FileReader(file)) {
+        JSONArray arr = new JSONArray(new JSONTokener(reader));
+        JSONArray updated = new JSONArray();
+
+        boolean deleted = false;
+
+        for (int i = 0; i < arr.length(); i++) {
+            JSONObject user = arr.getJSONObject(i);
+            if (!user.getString("id").equals(userId)) {
+                updated.put(user);
+            } else {
+                deleted = true;
+            }
+        }
+
+        if (deleted) {
+            try (FileWriter writer = new FileWriter(file)) {
+                writer.write(updated.toString(4)); // pretty print
+            }
+        }
+
+        return deleted;
+    } catch (Exception e) {
+        e.printStackTrace();
+        return false;
+    }
+    }
 }

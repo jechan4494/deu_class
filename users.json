@@ -1,1 +1,16 @@
-[{"id":"testid","password":"testpw","name":"홍길동","department":"컴퓨터","role":"STUDENT"},{"id":"po12","password":"1234","name":"ㄱㄱㅎ","department":"ㅋㅅ","role":"PROFESSOR"},{"id":"ta12","password":"1234","name":"rrg","department":"zt","role":"TA"}]
+[
+    {
+        "password": "1234",
+        "role": "PROFESSOR",
+        "name": "ㄱㄱㅎ",
+        "id": "po12",
+        "department": "ㅋㅅ"
+    },
+    {
+        "password": "1234",
+        "role": "TA",
+        "name": "김광훈",
+        "id": "ta12",
+        "department": "컴소"
+    }
+]
