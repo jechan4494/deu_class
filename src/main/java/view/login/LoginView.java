@@ -9,6 +9,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.*;
 import java.net.Socket;
+import view.ta.featureFrame;
+import controller.ta.ReservationController;
+import model.ta.ReservationModel;
 
 public class LoginView extends JFrame {
   private JTextField tfId;
@@ -81,14 +84,15 @@ public class LoginView extends JFrame {
                     // new StudentView().setVisible(true);
                     break;
                   case "TA":
-                    // new TaView().setVisible(true);
+                    featureFrame taView = new featureFrame();
+                    new ReservationController(new ReservationModel(), taView);
+                    taView.setVisible(true);
                     break;
                   default:
                     JOptionPane.showMessageDialog(
                         LoginView.this,
                         "지원하지 않는 역할입니다: " + serverResponse.role
-                    );
-                    break;
+                    );;
                 }
                 dispose(); // 현재 창 닫기
               } else {

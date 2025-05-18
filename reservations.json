@@ -1,145 +1,79 @@
 [
   {
-    "name": "정찬",
     "role": "PROFESSOR",
-    "roomType": "일반실",
     "roomNumber": "912",
-    "day": "월요일",
-    "timeSlots": [
-      "09:00-09:50"
-    ],
-    "state": "대기"
-  },
-  {
     "name": "정찬",
-    "role": "PROFESSOR",
-    "roomType": "일반실",
-    "roomNumber": "912",
-    "day": "월요일",
-    "timeSlots": [
-      "12:00-12:50"
-    ],
-    "state": "대기"
-  },
-  {
-    "name": "정찬",
-    "role": "PROFESSOR",
-    "roomType": "실습실",
-    "roomNumber": "915",
-    "day": "화요일",
-    "timeSlots": [
-      "09:00-09:50"
-    ],
-    "state": "대기"
-  },
-  {
-    "name": "정찬",
-    "role": "PROFESSOR",
-    "roomType": "실습실",
-    "roomNumber": "915",
-    "day": "화요일",
-    "timeSlots": [
-      "10:00-10:50"
-    ],
-    "state": "대기"
-  },
-  {
-    "name": "정찬",
-    "role": "PROFESSOR",
-    "roomType": "실습실",
-    "roomNumber": "911",
-    "day": "화요일",
-    "timeSlots": [
-      "12:00-12:50"
-    ],
-    "state": "대기"
-  },
-  {
-    "name": "정찬",
-    "role": "PROFESSOR",
-    "roomType": "실습실",
-    "roomNumber": "911",
-    "day": "화요일",
-    "timeSlots": [
-      "13:00-13:50"
-    ],
-    "state": "대기"
-  },
-  {
-    "role": "PROFESSOR",
-    "roomType": "실습실",
-    "roomNumber": "915",
-    "day": "화요일",
-    "timeSlots": [
-      "12:00-12:50"
-    ],
-    "state": "대기"
-  },
-  {
-    "role": "PROFESSOR",
-    "roomType": "실습실",
-    "roomNumber": "915",
-    "day": "화요일",
-    "timeSlots": [
-      "14:00-14:50"
-    ],
-    "state": "대기"
-  },
-  {
-    "role": "PROFESSOR",
-    "roomType": "실습실",
-    "roomNumber": "915",
-    "day": "화요일",
-    "timeSlots": [
-      "17:00-17:50"
-    ],
-    "state": "대기"
-  },
-  {
-    "role": "PROFESSOR",
-    "roomType": "실습실",
-    "roomNumber": "915",
-    "day": "화요일",
-    "timeSlots": [
-      "15:00-15:50"
-    ],
-    "state": "대기"
-    "roomType": "실습실"
-  },
-  {
-    "role": "PROFESSOR",
-    "roomNumber": "918",
-    "name": "ㄱㄱㅎ",
-    "timeSlots": ["11:00-11:50"],
+    "timeSlots": ["09:00-09:50"],
     "state": "승인",
-    "day": "금요일",
-    "roomType": "실습실"
-  },
-  {
-    "role": "PROFESSOR",
-    "roomNumber": "913",
-    "name": "ㄱㄱㅎ",
-    "timeSlots": ["17:00-17:50"],
-    "state": "거절",
-    "day": "수요일",
+    "day": "월요일",
     "roomType": "일반실"
   },
   {
     "role": "PROFESSOR",
-    "roomNumber": "916",
-    "name": "ㄱㄱㅎ",
-    "timeSlots": ["17:00-17:50"],
+    "roomNumber": "912",
+    "name": "정찬",
+    "timeSlots": ["12:00-12:50"],
     "state": "거절",
-    "day": "금요일",
+    "day": "월요일",
+    "roomType": "일반실"
+  },
+  {
+    "role": "PROFESSOR",
+    "roomNumber": "915",
+    "name": "정찬",
+    "timeSlots": ["09:00-09:50"],
+    "state": "승인",
+    "day": "화요일",
+    "roomType": "실습실"
+  },
+  {
+    "role": "PROFESSOR",
+    "roomNumber": "915",
+    "name": "정찬",
+    "timeSlots": ["10:00-10:50"],
+    "state": "거절",
+    "day": "화요일",
+    "roomType": "실습실"
+  },
+  {
+    "role": "PROFESSOR",
+    "roomNumber": "911",
+    "name": "ㄱㄱㅎ",
+    "timeSlots": ["12:00-12:50"],
+    "state": "승인",
+    "day": "화요일",
+    "roomType": "실습실"
+  },
+  {
+    "role": "PROFESSOR",
+    "roomNumber": "916",
+    "timeSlots": ["09:00-09:50"],
+    "state": "대기",
+    "day": "화요일",
+    "roomType": "실습실"
+  },
+  {
+    "role": "PROFESSOR",
+    "roomNumber": "916",
+    "timeSlots": ["14:00-14:50"],
+    "state": "대기",
+    "day": "화요일",
     "roomType": "실습실"
   },
   {
     "role": "PROFESSOR",
     "roomNumber": "914",
-    "name": "ㄱㄱㅎ",
-    "timeSlots": ["10:00-10:50"],
-    "state": "승인",
-    "day": "목요일",
+    "timeSlots": ["09:00-09:50"],
+    "state": "대기",
+    "day": "화요일",
     "roomType": "일반실"
+  },
+  {
+    "role": "PROFESSOR",
+    "roomNumber": "918",
+    "timeSlots": ["16:00-16:50"],
+    "state": "대기",
+    "day": "목요일",
+    "roomType": "실습실"
   }
 ]
