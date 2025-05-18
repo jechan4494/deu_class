@@ -9,7 +9,7 @@ import java.util.List;
 import java.lang.reflect.Type;
 
 public class UserDAO {
-  private static final String FILE_PATH = "deu_class/src/main/resources/users.json";
+  private static final String FILE_PATH = "src/main/resources/users.json";
   private static final Gson gson = new Gson();
   private static final Type USER_LIST_TYPE = new TypeToken<List<User>>(){}.getType();
 

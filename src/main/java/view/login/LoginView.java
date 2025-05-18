@@ -131,4 +131,10 @@ public class LoginView extends JFrame {
     String role;
     String name;
   }
+
+  public static void main(String[] args) {
+    SwingUtilities.invokeLater(() -> {
+      new LoginView().setVisible(true);
+    });
+  }
 }

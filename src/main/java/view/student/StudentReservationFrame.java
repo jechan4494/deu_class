@@ -96,8 +96,8 @@ public class StudentReservationFrame extends JFrame {
     private void updateRoomModel() {
         String selectedType = roomTypeCombo.getSelectedItem().toString();
         String jsonPath = selectedType.equals("실습실") 
-            ? "deu_class/src/main/resources/Lab_room.json" 
-            : "deu_class/src/main/resources/normal_room.json";
+            ? "Lab_room.json" 
+            : "normal_room.json";
         roomModel = new RoomModel(jsonPath);
     }
     
@@ -138,7 +138,7 @@ public class StudentReservationFrame extends JFrame {
         }
         
         Reservation reservation = new Reservation(
-            userName, // 로그인한 사용자의 이름 사용
+            userName,
             "STUDENT",
             roomTypeCombo.getSelectedItem().toString(),
             roomNumber,
@@ -151,8 +151,8 @@ public class StudentReservationFrame extends JFrame {
         
         // 예약된 시간 표시 업데이트
         String jsonPath = roomTypeCombo.getSelectedItem().toString().equals("실습실") 
-            ? "deu_class/src/main/resources/Lab_room.json" 
-            : "deu_class/src/main/resources/normal_room.json";
+            ? "Lab_room.json" 
+            : "normal_room.json";
             
         for (String timeSlot : selectedTimes) {
             roomModel.markReserved(roomNumber, day, timeSlot, jsonPath);

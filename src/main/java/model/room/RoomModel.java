@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import model.ta.Reservation;
 
 import java.io.*;
@@ -22,13 +23,20 @@ public class RoomModel {
 
     private void loadRooms() {
         roomMap = new HashMap<>();
-        try (FileReader reader = new FileReader(jsonPath)) {
-            JsonObject[] rooms = gson.fromJson(reader, JsonObject[].class);
-            if (rooms != null) {
-                for (JsonObject room : rooms) {
-                    if (room != null && room.has("roomNumber")) {
-                        int roomNumber = room.get("roomNumber").getAsInt();
-                        roomMap.put(roomNumber, room);
+        try (InputStream is = getClass().getClassLoader().getResourceAsStream(jsonPath)) {
+            if (is == null) {
+                System.err.println("리소스 파일을 찾을 수 없습니다: " + jsonPath);
+                return;
+            }
+            try (InputStreamReader reader = new InputStreamReader(is)) {
+                JsonArray rootArray = gson.fromJson(reader, JsonArray.class);
+                if (rootArray != null) {
+                    for (JsonElement roomElement : rootArray) {
+                        JsonObject room = roomElement.getAsJsonObject();
+                        if (room.has("roomNumber")) {
+                            int roomNumber = room.get("roomNumber").getAsInt();
+                            roomMap.put(roomNumber, room);
+                        }
                     }
                 }
             }
@@ -73,8 +81,15 @@ public class RoomModel {
         }
 
         // 파일에 저장
-        try (FileWriter writer = new FileWriter(jsonPath)) {
-            gson.toJson(roomMap.values(), writer);
+        File resourceFile = new File(jsonPath);
+        resourceFile.getParentFile().mkdirs();
+        
+        try (FileWriter writer = new FileWriter(resourceFile)) {
+            JsonArray rootArray = new JsonArray();
+            for (JsonObject roomObj : roomMap.values()) {
+                rootArray.add(roomObj);
+            }
+            gson.toJson(rootArray, writer);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -139,8 +154,15 @@ public class RoomModel {
         }
 
         // 파일에 저장
-        try (FileWriter writer = new FileWriter(jsonPath)) {
-            gson.toJson(roomMap.values(), writer);
+        File resourceFile = new File(jsonPath);
+        resourceFile.getParentFile().mkdirs();
+        
+        try (FileWriter writer = new FileWriter(resourceFile)) {
+            JsonArray rootArray = new JsonArray();
+            for (JsonObject roomObj : roomMap.values()) {
+                rootArray.add(roomObj);
+            }
+            gson.toJson(rootArray, writer);
         } catch (IOException e) {
             e.printStackTrace();
         }
