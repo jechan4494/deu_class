@@ -12,6 +12,7 @@ import java.net.Socket;
 import view.ta.featureFrame;
 import model.ta.ReservationModel;
 import controller.ta.ReservationController;
+import view.student.StudentReservationFrame;
 
 public class LoginView extends JFrame {
   private JTextField tfId;
@@ -64,6 +65,10 @@ public class LoginView extends JFrame {
             String response = in.readLine();
             Gson gson = new Gson();
             ServerResponse serverResponse = gson.fromJson(response, ServerResponse.class);
+            
+            // 서버 응답 로그 추가
+            System.out.println("서버 응답: " + response);
+            System.out.println("역할: " + serverResponse.role);
 
             // 3. 응답 처리
             SwingUtilities.invokeLater(() -> {
@@ -75,10 +80,9 @@ public class LoginView extends JFrame {
                 // 역할에 따른 화면 이동
                 switch (serverResponse.role) {
                   case "PROFESSOR":
-                    new ProfessorView().setVisible(true);
                     ProfessorView profView = new ProfessorView();
                     new ProfessorController(profView, new User(id, password, null, null, "PROFESSOR"));
-
+                    profView.setVisible(true);
                     break;
                     
                   case "TA":
@@ -89,7 +93,7 @@ public class LoginView extends JFrame {
                     
                     break;
                   case "STUDENT":
-                    // new StudentView().setVisible(true);
+                    new StudentReservationFrame(id).setVisible(true);
                     break;
                   default:
                     JOptionPane.showMessageDialog(
