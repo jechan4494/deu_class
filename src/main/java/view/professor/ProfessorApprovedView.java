@@ -15,7 +15,7 @@ public class ProfessorApprovedView extends JFrame {
         setSize(700, 200);
         setLocationRelativeTo(null);
 
-        String[] columns = {"role", "roomNumber", "name", "timeSlots", "state", "day", "roomType"};
+        String[] columns = {"직책", "방번호", "이름", "예약한 시간대", "예약 상태", "요일", "실습실/일반실"};
         DefaultTableModel tableModel = new DefaultTableModel(columns, 0);
         JTable table = new JTable(tableModel);
 

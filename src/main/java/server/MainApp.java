@@ -1,3 +1,5 @@
+package server;
+
 import view.login.LoginView;
 import javax.swing.*;
 

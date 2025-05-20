@@ -43,5 +43,23 @@
     "state": "승인",
     "day": "화요일",
     "roomType": "실습실"
+  },
+  {
+    "role": "PROFESSOR",
+    "roomNumber": 918,
+    "name": "정찬",
+    "timeSlots": ["09:00-09:50"],
+    "state": "승인",
+    "day": "월요일",
+    "roomType": "실습실"
+  },
+  {
+    "role": "PROFESSOR",
+    "roomNumber": 918,
+    "name": "정찬",
+    "timeSlots": ["10:00-10:50"],
+    "state": "승인",
+    "day": "월요일",
+    "roomType": "실습실"
   }
 ]

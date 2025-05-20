@@ -175,6 +175,7 @@ public class RoomModel {
 
     public void saveToFile(String jsonPath) {
         try (java.io.FileWriter writer = new java.io.FileWriter(jsonPath, false)) {
+            originalData.put("rooms", this.rooms);
             JSONArray outArr = new JSONArray();
             outArr.put(this.originalData);
             writer.write(outArr.toString(4));

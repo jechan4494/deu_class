@@ -34,5 +34,14 @@
     "state": "거절",
     "day": "월요일",
     "roomType": "일반실"
+  },
+  {
+    "role": "PROFESSOR",
+    "roomNumber": 912,
+    "name": "정찬",
+    "timeSlots": ["14:00-14:50"],
+    "state": "거절",
+    "day": "화요일",
+    "roomType": "일반실"
   }
 ]

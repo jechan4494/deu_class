@@ -78,8 +78,8 @@ public static boolean cancelMyReservation(
 
     toCancel.setState("취소");
 
-    // 4. 일반실일 경우 room 상태 복원
-    if ("일반실".equals(toCancel.getRoomType())) {
+    // 4. room 상태 복원
+    if ("일반실".equals(toCancel.getRoomType()) || "실습실".equals(toCancel.getRoomType())) {
         int roomNo = toCancel.getRoomNumber();
         String day = toCancel.getDay();
         List<String> timeSlots = toCancel.getTimeSlots();

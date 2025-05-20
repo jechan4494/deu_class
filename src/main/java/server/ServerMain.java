@@ -3,10 +3,15 @@ package server;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-// studentMain 클래스 import (클래스가 같은 프로젝트에 있어야 함)
+import javax.swing.*;
 
 public class ServerMain {
   public static void main(String[] args) {
+    // 서버 실행 시 로그인(MainApp) UI도 동시에 실행
+    SwingUtilities.invokeLater(() -> {
+      MainApp.main(new String[0]);
+    });
+
     final int PORT = 12345;
     try (ServerSocket serverSocket = new ServerSocket(PORT)) {
       System.out.println("서버가 " + PORT + " 포트에서 시작되었습니다.");
