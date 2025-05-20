@@ -1,14 +1,17 @@
 package view.student;
 
+import com.google.gson.JsonObject;
 import controller.student.ReservationService;
 import model.student.Reservation;
 import util.student.JsonDataHandler;
+import view.login.LoginView;
+import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.io.FileReader;
 import java.time.LocalDateTime;
@@ -20,6 +23,8 @@ import java.util.HashMap;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.UUID;
+import java.util.Arrays;
 
 // 학생 예약 UI 프레임 클래스
 public class StudentReservationFrame extends JFrame {
@@ -29,30 +34,79 @@ public class StudentReservationFrame extends JFrame {
     private JComboBox<String> timeComboBox;
     private JTextField purposeField;
     private JTextArea reservationListArea;
-    private Map<String, JsonObject> roomSchedules;
+    private Map<String, List<String>> roomSchedules;
+    private JButton cancelButton;
+    private List<Reservation> currentReservations;
+    private JLabel roomTypeLabel;
+    private JTable reservationTable;
+    private DefaultTableModel tableModel;
+    private String studentId;
+    private String studentName;
+    private String studentRole;
+    private List<JsonObject> roomList = new ArrayList<>();
+    private JPanel mainPanel;
+    private JPanel userInfoPanel;
 
-    public StudentReservationFrame(String studentId) {
+    public StudentReservationFrame(String studentId, String studentName, String studentRole) {
+        this.studentId = studentId;
+        this.studentName = studentName;
+        this.studentRole = studentRole;
         this.reservationService = new ReservationService();
         this.roomSchedules = new HashMap<>();
+        this.currentReservations = new ArrayList<>();
         setTitle("강의실 예약 시스템 - 학생");
-        setSize(600, 400);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setSize(800, 600);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
 
         initializeComponents();
-        displayReservations(studentId);
-
-        // 요일 선택 시 시간대 업데이트
-        dayComboBox.addActionListener(e -> updateTimeSlots());
+        loadRoomSchedules();
+        updateReservationTable();
     }
 
     private void initializeComponents() {
-        JPanel mainPanel = new JPanel(new BorderLayout());
+        // 메인 패널 설정
+        mainPanel = new JPanel(new BorderLayout());
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        add(mainPanel);
+
+        // 상단 패널 (사용자 정보 + 로그아웃 버튼)
+        JPanel topPanel = new JPanel(new BorderLayout());
+        userInfoPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        userInfoPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 0));
+        
+        // 사용자 정보 표시
+        userInfoPanel.add(new JLabel("사용자 정보: "));
+        userInfoPanel.add(new JLabel("이름: " + studentName));
+        userInfoPanel.add(new JLabel("역할: " + studentRole));
+        userInfoPanel.add(new JLabel("학번: " + studentId));
+        
+        topPanel.add(userInfoPanel, BorderLayout.WEST);
+
+        // 로그아웃 버튼 추가
+        JButton logoutButton = new JButton("로그아웃");
+        logoutButton.addActionListener(e -> {
+            int choice = JOptionPane.showConfirmDialog(
+                this,
+                "로그아웃 하시겠습니까?",
+                "로그아웃",
+                JOptionPane.YES_NO_OPTION
+            );
+            if (choice == JOptionPane.YES_OPTION) {
+                dispose(); // 현재 창 닫기
+                new LoginView(); // 로그인 화면으로 돌아가기
+            }
+        });
+        topPanel.add(logoutButton, BorderLayout.EAST);
+        mainPanel.add(topPanel, BorderLayout.NORTH);
+
+        // 예약 패널 설정
         JPanel inputPanel = new JPanel(new GridLayout(5, 2, 5, 5));
+        inputPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
         // 강의실 선택
         inputPanel.add(new JLabel("강의실:"));
-        roomComboBox = new JComboBox<>(getRoomNumbers());
+        roomComboBox = new JComboBox<>();
         inputPanel.add(roomComboBox);
 
         // 요일 선택
@@ -71,118 +125,271 @@ public class StudentReservationFrame extends JFrame {
         inputPanel.add(purposeField);
 
         // 예약 버튼
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         JButton reserveButton = new JButton("예약하기");
+        JButton cancelButton = new JButton("예약취소");
+        buttonPanel.add(reserveButton);
+        buttonPanel.add(cancelButton);
+
+        // 예약 내역 테이블
+        String[] columnNames = {"예약 ID", "강의실", "날짜", "시작 시간", "종료 시간", "상태", "예약자 이름"};
+        tableModel = new DefaultTableModel(columnNames, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+        reservationTable = new JTable(tableModel);
+        JScrollPane tableScrollPane = new JScrollPane(reservationTable);
+        tableScrollPane.setPreferredSize(new Dimension(700, 300));
+
+        // 이벤트 리스너
+        roomComboBox.addActionListener(e -> {
+            updateTimeSlots();
+            updateReservationTable();
+        });
+
+        dayComboBox.addActionListener(e -> {
+            updateTimeSlots();
+            updateReservationTable();
+        });
+
         reserveButton.addActionListener(e -> makeReservation());
-        inputPanel.add(reserveButton);
+        cancelButton.addActionListener(e -> cancelReservation());
 
-        mainPanel.add(inputPanel, BorderLayout.NORTH);
-
-        // 예약 목록 표시 영역
-        reservationListArea = new JTextArea();
-        reservationListArea.setEditable(false);
-        JScrollPane scrollPane = new JScrollPane(reservationListArea);
-        mainPanel.add(scrollPane, BorderLayout.CENTER);
-
-        add(mainPanel);
+        // 레이아웃 구성
+        mainPanel.add(inputPanel, BorderLayout.CENTER);
         
-        // 초기 시간 슬롯 업데이트
-        updateTimeSlots();
+        // 버튼 패널과 테이블을 포함할 패널
+        JPanel bottomPanel = new JPanel(new BorderLayout());
+        bottomPanel.add(buttonPanel, BorderLayout.NORTH);
+        bottomPanel.add(tableScrollPane, BorderLayout.CENTER);
+        mainPanel.add(bottomPanel, BorderLayout.SOUTH);
+
+        loadRoomNumbers();
+    }
+
+    private void loadRoomNumbers() {
+        try {
+            System.out.println("강의실 정보 로딩 시작...");
+            String filePath = "/Users/leeng/Desktop/2025_project/deu_class/Lab_room.json";
+            System.out.println("파일 경로: " + filePath);
+            String content = new String(Files.readAllBytes(Paths.get(filePath)));
+            System.out.println("파일 내용 읽기 성공");
+            JsonArray rootArray = new Gson().fromJson(content, JsonArray.class);
+            System.out.println("강의실 개수: " + rootArray.size());
+            roomList.clear();
+            roomComboBox.removeAllItems();
+            
+            // 이미 로드된 강의실 번호를 추적하기 위한 Set
+            java.util.Set<String> loadedRoomNumbers = new java.util.HashSet<>();
+            
+            for (JsonElement elem : rootArray) {
+                JsonObject room = elem.getAsJsonObject();
+                String roomNumber = room.get("roomNumber").getAsString();
+                
+                // 중복된 강의실 번호는 건너뛰기
+                if (!loadedRoomNumbers.contains(roomNumber)) {
+                    loadedRoomNumbers.add(roomNumber);
+                    roomList.add(room);
+                    roomComboBox.addItem(roomNumber);
+                }
+            }
+            System.out.println("강의실 정보 로딩 완료");
+        } catch (IOException e) {
+            System.out.println("강의실 정보 로딩 실패: " + e.getMessage());
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "강의실 정보를 불러오는데 실패했습니다: " + e.getMessage());
+        }
+    }
+
+    private void loadRoomSchedules() {
+        try {
+            System.out.println("강의실 일정 로딩 시작...");
+            String filePath = "/Users/leeng/Desktop/2025_project/deu_class/Lab_room.json";
+            System.out.println("파일 경로: " + filePath);
+            String content = new String(Files.readAllBytes(Paths.get(filePath)));
+            System.out.println("파일 내용 읽기 성공");
+            JsonArray rootArray = new Gson().fromJson(content, JsonArray.class);
+            System.out.println("강의실 개수: " + rootArray.size());
+            
+            roomSchedules.clear();
+            for (JsonElement elem : rootArray) {
+                JsonObject room = elem.getAsJsonObject();
+                String roomNumber = room.get("roomNumber").getAsString();
+                String day = room.get("day").getAsString();
+                String state = room.get("state").getAsString();
+                
+                if (state.equals("O")) {
+                    JsonArray timeSlots = room.getAsJsonArray("timeSlots");
+                    List<String> slots = new ArrayList<>();
+                    for (JsonElement slotElem : timeSlots) {
+                        slots.add(slotElem.getAsString());
+                    }
+                    
+                    if (!roomSchedules.containsKey(roomNumber)) {
+                        roomSchedules.put(roomNumber, new ArrayList<>());
+                    }
+                    roomSchedules.get(roomNumber).addAll(slots);
+                }
+            }
+            System.out.println("강의실 일정 로딩 완료");
+        } catch (IOException e) {
+            System.out.println("강의실 일정 로딩 실패: " + e.getMessage());
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "강의실 일정을 불러오는데 실패했습니다: " + e.getMessage());
+        }
     }
 
     private void updateTimeSlots() {
+        timeComboBox.removeAllItems();
         String selectedRoom = (String) roomComboBox.getSelectedItem();
         String selectedDay = (String) dayComboBox.getSelectedItem();
         
         if (selectedRoom != null && selectedDay != null) {
-            JsonObject roomSchedule = roomSchedules.get(selectedRoom);
-            if (roomSchedule != null) {
-                JsonObject schedule = roomSchedule.getAsJsonObject("schedule");
-                JsonArray timeSlots = schedule.getAsJsonArray(selectedDay);
-                
-                timeComboBox.removeAllItems();
-                for (JsonElement slot : timeSlots) {
-                    JsonObject timeSlot = slot.getAsJsonObject();
-                    if (timeSlot.get("state").getAsString().equals("O")) {
-                        timeComboBox.addItem(timeSlot.get("time").getAsString());
+            for (JsonObject room : roomList) {
+                if (room.get("roomNumber").getAsString().equals(selectedRoom) &&
+                    room.get("day").getAsString().equals(selectedDay) &&
+                    room.get("state").getAsString().equals("O")) {
+                    
+                    JsonArray timeSlots = room.getAsJsonArray("timeSlots");
+                    for (JsonElement slotElem : timeSlots) {
+                        timeComboBox.addItem(slotElem.getAsString());
                     }
                 }
             }
         }
     }
 
-    private String[] getRoomNumbers() {
-        try {
-            String jsonContent = new String(Files.readAllBytes(Paths.get("src/main/java/Lab_room.json")));
-            JsonArray roomsArray = JsonParser.parseString(jsonContent).getAsJsonArray()
-                .get(0).getAsJsonObject().getAsJsonArray("rooms");
-            
-            String[] roomNumbers = new String[roomsArray.size()];
-            for (int i = 0; i < roomsArray.size(); i++) {
-                JsonObject room = roomsArray.get(i).getAsJsonObject();
-                String roomNumber = room.get("roomNumber").getAsString();
-                roomNumbers[i] = roomNumber;
-                roomSchedules.put(roomNumber, room);
+    private void updateReservationTable() {
+        tableModel.setRowCount(0);
+        List<Reservation> reservations = reservationService.getReservationsByStudentId(studentId);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        
+        for (Reservation reservation : reservations) {
+            // 취소된 예약은 표시하지 않음
+            if ("취소".equals(reservation.getState())) {
+                continue;
             }
-            return roomNumbers;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return new String[]{"911", "915"};
+            
+            Object[] rowData = {
+                reservation.getId(),
+                reservation.getRoomNumber(),
+                reservation.getStartTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")),
+                reservation.getStartTime().format(DateTimeFormatter.ofPattern("HH:mm")),
+                reservation.getEndTime().format(DateTimeFormatter.ofPattern("HH:mm")),
+                reservation.getState(),
+                studentName
+            };
+            tableModel.addRow(rowData);
         }
     }
 
     private void makeReservation() {
-        try {
-            String roomNumber = (String) roomComboBox.getSelectedItem();
-            String selectedTime = (String) timeComboBox.getSelectedItem();
-            String purpose = purposeField.getText();
+        String selectedRoom = (String) roomComboBox.getSelectedItem();
+        String selectedDay = (String) dayComboBox.getSelectedItem();
+        String selectedTime = (String) timeComboBox.getSelectedItem();
+        String purpose = purposeField.getText().trim();
 
-            if (roomNumber == null || selectedTime == null || purpose.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "모든 필드를 입력해주세요.");
-                return;
-            }
+        if (selectedRoom == null || selectedDay == null || selectedTime == null || purpose.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "모든 필드를 입력해주세요.");
+            return;
+        }
 
-            // 시간 문자열 파싱 (예: "09:00-09:50")
-            String[] timeRange = selectedTime.split("-");
-            String startTimeStr = timeRange[0];
-            String endTimeStr = timeRange[1];
+        // 예약 시간 계산
+        String[] timeParts = selectedTime.split("~");
+        if (timeParts.length != 2) {
+            JOptionPane.showMessageDialog(this, "시간 형식이 올바르지 않습니다.");
+            return;
+        }
+        
+        String startTimeStr = timeParts[0].trim();
+        String endTimeStr = timeParts[1].trim();
 
-            // 현재 날짜와 선택된 시간을 조합
-            LocalDateTime now = LocalDateTime.now();
-            LocalDateTime startTime = now.withHour(Integer.parseInt(startTimeStr.split(":")[0]))
-                                       .withMinute(Integer.parseInt(startTimeStr.split(":")[1]));
-            LocalDateTime endTime = now.withHour(Integer.parseInt(endTimeStr.split(":")[0]))
-                                     .withMinute(Integer.parseInt(endTimeStr.split(":")[1]));
+        // 현재 날짜 기준으로 예약 날짜 설정
+        LocalDateTime now = LocalDateTime.now();
+        int dayOfWeek = now.getDayOfWeek().getValue();
+        int targetDay = getDayNumber(selectedDay);
+        int daysToAdd = (targetDay - dayOfWeek + 7) % 7;
+        LocalDateTime reservationDate = now.plusDays(daysToAdd);
 
-            Reservation reservation = new Reservation(
-                    String.valueOf(System.currentTimeMillis()),
-                    roomNumber,
-                    startTime,
-                    endTime,
-                    purpose,
-                    "student123"
-            );
+        // 시작 시간과 종료 시간 설정
+        LocalDateTime startTime = reservationDate
+                .withHour(Integer.parseInt(startTimeStr.split(":")[0]))
+                .withMinute(Integer.parseInt(startTimeStr.split(":")[1]));
+        LocalDateTime endTime = reservationDate
+                .withHour(Integer.parseInt(endTimeStr.split(":")[0]))
+                .withMinute(Integer.parseInt(endTimeStr.split(":")[1]));
 
-            if (reservationService.makeReservation(reservation)) {
-                JOptionPane.showMessageDialog(this, "예약이 완료되었습니다.");
-                displayReservations("student123");
-            } else {
-                JOptionPane.showMessageDialog(this, "해당 시간에 이미 예약이 있습니다.");
-            }
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "예약 중 오류가 발생했습니다: " + e.getMessage());
+        Reservation reservation = new Reservation(
+                UUID.randomUUID().toString(),
+                selectedRoom,
+                startTime,
+                endTime,
+                purpose,
+                studentId
+        );
+
+        if (reservationService.makeReservation(reservation)) {
+            JOptionPane.showMessageDialog(this, "예약이 완료되었습니다.");
+            updateReservationTable();
+            purposeField.setText("");  // 목적 필드 초기화
+        } else {
+            JOptionPane.showMessageDialog(this, "해당 시간에 이미 예약이 있습니다.");
         }
     }
 
-    private void displayReservations(String studentId) {
-        List<Reservation> reservations = reservationService.getReservationsByStudentId(studentId);
-        StringBuilder sb = new StringBuilder();
-        for (Reservation r : reservations) {
-            sb.append(String.format("강의실: %s, 시작: %s, 종료: %s, 목적: %s\n",
-                    r.getRoomNumber(),
-                    r.getStartTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
-                    r.getEndTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
-                    r.getPurpose()));
+    private void cancelReservation() {
+        int selectedRow = reservationTable.getSelectedRow();
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "취소할 예약을 선택해주세요.");
+            return;
         }
-        reservationListArea.setText(sb.toString());
+
+        String reservationId = (String) tableModel.getValueAt(selectedRow, 0);
+        String state = (String) tableModel.getValueAt(selectedRow, 5);
+        
+        if (!"승인".equals(state)) {
+            JOptionPane.showMessageDialog(this, "승인된 예약만 취소할 수 있습니다.");
+            return;
+        }
+
+        System.out.println("취소할 예약 ID: " + reservationId);
+        
+        if (reservationId == null) {
+            System.out.println("예약 ID가 null입니다.");
+            JOptionPane.showMessageDialog(this, "예약 ID를 찾을 수 없습니다.");
+            return;
+        }
+
+        int confirm = JOptionPane.showConfirmDialog(
+            this,
+            "선택한 예약을 취소하시겠습니까?",
+            "예약 취소 확인",
+            JOptionPane.YES_NO_OPTION
+        );
+
+        if (confirm == JOptionPane.YES_OPTION) {
+            boolean result = reservationService.cancelReservation(reservationId);
+            System.out.println("예약 취소 결과: " + result);
+            
+            if (result) {
+                JOptionPane.showMessageDialog(this, "예약이 취소되었습니다.");
+                updateReservationTable();
+            } else {
+                JOptionPane.showMessageDialog(this, "예약 취소에 실패했습니다.");
+            }
+        }
+    }
+
+    private int getDayNumber(String day) {
+        switch (day) {
+            case "월요일": return 1;
+            case "화요일": return 2;
+            case "수요일": return 3;
+            case "목요일": return 4;
+            case "금요일": return 5;
+            default: return 1;
+        }
     }
 } 

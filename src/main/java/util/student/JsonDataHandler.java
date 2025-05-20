@@ -5,9 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import model.student.Reservation;
 
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.lang.reflect.Type;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -18,22 +16,39 @@ import java.util.List;
 public class JsonDataHandler {
     private static final Gson gson = new GsonBuilder()
             .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
+            .setPrettyPrinting()
             .create();
+    
+    private static final String BASE_PATH = "/Users/leeng/Desktop/2025_project/deu_class/";
 
-    public static List<Reservation> loadReservations(String filename) {
-        try (FileReader reader = new FileReader(filename)) {
-            Type type = new TypeToken<ArrayList<Reservation>>(){}.getType();
-            return gson.fromJson(reader, type);
+    public static List<Reservation> loadReservations(String fileName) {
+        try {
+            File file = new File(BASE_PATH + fileName);
+            if (!file.exists()) {
+                return new ArrayList<>();
+            }
+            
+            try (Reader reader = new FileReader(file)) {
+                Type type = new TypeToken<List<Reservation>>(){}.getType();
+                List<Reservation> reservations = gson.fromJson(reader, type);
+                return reservations != null ? reservations : new ArrayList<>();
+            }
         } catch (IOException e) {
+            e.printStackTrace();
             return new ArrayList<>();
         }
     }
 
-    public static void saveReservations(List<Reservation> reservations, String filename) {
-        try (FileWriter writer = new FileWriter(filename)) {
-            gson.toJson(reservations, writer);
+    public static boolean saveReservations(List<Reservation> reservations, String fileName) {
+        try {
+            File file = new File(BASE_PATH + fileName);
+            try (Writer writer = new FileWriter(file)) {
+                gson.toJson(reservations, writer);
+                return true;
+            }
         } catch (IOException e) {
             e.printStackTrace();
+            return false;
         }
     }
 
