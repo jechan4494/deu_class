@@ -12,6 +12,7 @@ import java.net.Socket;
 import view.ta.featureFrame;
 import controller.ta.ReservationController;
 import model.ta.ReservationModel;
+import view.student.StudentView;
 
 public class LoginView extends JFrame {
   private JTextField tfId;
@@ -89,7 +90,7 @@ public class LoginView extends JFrame {
                     break;
 
                   case "STUDENT":
-                    // new StudentView().setVisible(true);
+                    new StudentView(loginUser).setVisible(true);
                     break;
                   case "TA":
                     featureFrame taView = new featureFrame();
