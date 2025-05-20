@@ -80,9 +80,6 @@ public class ProfessorReserveController {
             }
         });
 
-        professorView.getBtnCancelReservation().addActionListener(e -> {
-            JOptionPane.showMessageDialog(null, "예약 취소 기능은 아직 구현되지 않았습니다.");
-        });
         professorView.getBtnLogout().addActionListener(e -> {
             int confirm = JOptionPane.showConfirmDialog(null, "로그아웃하시겠습니까?", "로그아웃", JOptionPane.YES_NO_OPTION);
             if (confirm == JOptionPane.YES_OPTION) {

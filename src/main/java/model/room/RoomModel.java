@@ -18,24 +18,21 @@ public class RoomModel {
 
     public RoomModel(String jsonPath) {
         try (InputStream inputStream = new FileInputStream(jsonPath)) {
+            // 기존 코드 (JSON 파일 정상적으로 읽기)
             JSONTokener tokener = new JSONTokener(inputStream);
             Object parsed = tokener.nextValue();
-
-            this.rooms = new org.json.JSONArray();
+            this.rooms = new JSONArray();
             this.originalData = new JSONObject();
-            this.roomMap = new java.util.HashMap<>();
-
-            if (parsed instanceof org.json.JSONArray) {
-                org.json.JSONArray arr = (org.json.JSONArray) parsed;
-                // 각 배열 원소의 rooms를 모두 합치기
+            this.roomMap = new HashMap<>();
+            if (parsed instanceof JSONArray) {
+                JSONArray arr = (JSONArray) parsed;
                 for (int i = 0; i < arr.length(); i++) {
                     JSONObject obj = arr.getJSONObject(i);
                     if (obj.has("rooms")) {
-                        org.json.JSONArray subRooms = obj.getJSONArray("rooms");
+                        JSONArray subRooms = obj.getJSONArray("rooms");
                         for (int j = 0; j < subRooms.length(); j++) {
                             JSONObject room = subRooms.getJSONObject(j);
                             this.rooms.put(room);
-                            // 룸 넘버 맵에 등록
                             this.roomMap.put(room.getInt("roomNumber"), room);
                         }
                     }
@@ -44,6 +41,14 @@ public class RoomModel {
             } else {
                 throw new org.json.JSONException("최상위 JSON은 반드시 배열이어야 합니다.");
             }
+        } catch (java.io.FileNotFoundException fnfe) {
+            // 파일이 없을 때는 안전한 초기화 & 사용자 안내
+            JOptionPane.showMessageDialog(null,
+                "강의실 데이터 파일을 찾을 수 없습니다: " + jsonPath + "\n" +
+                "빈 강의실 데이터로 시작합니다.", "파일 없음", JOptionPane.WARNING_MESSAGE);
+            this.rooms = new JSONArray();
+            this.originalData = new JSONObject().put("rooms", this.rooms);
+            this.roomMap = new HashMap<>();
         } catch (Exception e) {
             e.printStackTrace();
             rooms = null;
@@ -154,11 +159,24 @@ public class RoomModel {
         }
         saveToFile(jsonPath); // 변경 후 파일에 저장
     }
+    public void markCancelled(int roomNumber, String day, String time, String jsonPath) {
+        JSONObject room = roomMap.get(roomNumber);
+        if (room == null || !room.has("schedule")) return;
+        JSONObject schedule = room.getJSONObject("schedule");
+        JSONArray dayArray = schedule.optJSONArray(day);
+        if (dayArray == null) return;
+        for (int i = 0; i < dayArray.length(); i++) {
+            JSONObject timeSlot = dayArray.getJSONObject(i);
+            if (timeSlot.has("time") && timeSlot.getString("time").equals(time)) {
+                timeSlot.put("state", "O");
+            }
+        }
+    }
 
     public void saveToFile(String jsonPath) {
         try (java.io.FileWriter writer = new java.io.FileWriter(jsonPath, false)) {
             JSONArray outArr = new JSONArray();
-            outArr.put(this.originalData); // originalData는 항상 { "rooms": [...] } 형태임
+            outArr.put(this.originalData);
             writer.write(outArr.toString(4));
         } catch (Exception e) {
             e.printStackTrace();

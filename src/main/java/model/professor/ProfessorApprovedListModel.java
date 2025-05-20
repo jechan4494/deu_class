@@ -8,13 +8,27 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class ProfessorApprovedListModel {
-    private List<ProfessorApprovedModel> schedules;
+    private final List<ProfessorApprovedModel> schedules;
 
     public ProfessorApprovedListModel(String jsonFilePath) throws Exception {
         ObjectMapper mapper = new ObjectMapper();
         schedules = mapper.readValue(
             new File(jsonFilePath),
-            new TypeReference<List<ProfessorApprovedModel>>() {});
+                new TypeReference<>() {
+                });
+    }
+
+    // 전체 예약 목록 반환
+    public List<ProfessorApprovedModel> getList() {
+        return schedules;
+    }
+
+    // 파일로 저장
+    public void save(String jsonFilePath) throws Exception {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.writerWithDefaultPrettyPrinter().writeValue(
+            new File(jsonFilePath), schedules
+        );
     }
 
     // 사용자의 이름, 역할로 필터링

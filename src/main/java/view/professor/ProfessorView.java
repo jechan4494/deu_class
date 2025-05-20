@@ -6,15 +6,16 @@ import view.login.LoginView;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.util.List;
 import java.util.Set;
 
 public class ProfessorView extends JFrame {
     private final JButton btnStartReservation;
-    private final JButton btnCancelReservation;
-    private final JButton btnViewReservation; // 추가
+    private final JButton btnCancelManageReservation; // [변경] 취소/관리 통합
+
+    private final JButton btnViewReservation;
     private final JButton btnLogout;
-    // ... (기존 필드 동일)
 
     private JComboBox<Integer> roomCombo;
     private JComboBox<String> dayCombo;
@@ -22,7 +23,46 @@ public class ProfessorView extends JFrame {
 
     public RoomModel roomModel;
     private String roomType;
-    private final User loginUser;
+    private static User loginUser;
+
+    private static void actionPerformed(ActionEvent e) {
+        // 1. 실습실/일반실 선택 다이얼로그 표시
+        String[] options = {"실습실", "일반실"};
+        int sel = JOptionPane.showOptionDialog(
+                null,
+                "어떤 종류의 예약을 관리하시겠습니까?",
+                "실습실/일반실 선택",
+                JOptionPane.DEFAULT_OPTION,
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                options,
+                options[0]
+        );
+
+        if (sel == JOptionPane.CLOSED_OPTION) return;
+
+        String reservationFile;
+        String roomJsonPath;
+        if (sel == 0) { // 실습실
+            reservationFile = "reservations.json";
+            roomJsonPath = "src/lab_room.json";
+        } else { // 일반실
+            reservationFile = "reservations.json";
+            roomJsonPath = "src/normal_room.json";
+        }
+
+        RoomModel tempRoomModel = new RoomModel(roomJsonPath);
+
+        // 실제 예약취소 관리 View 띄우기 (사용자 정보 등 전달 필요 시 인자 추가!)
+        ProfessorRejectedView view = new ProfessorRejectedView(
+                reservationFile,
+                tempRoomModel,
+                roomJsonPath,
+                loginUser.getName(),
+                loginUser.getRole()
+        );
+        view.setVisible(true);
+    }
 
     public interface ReservationHandler {
         void onReserve(Integer room, String day, List<String> timeSlots, String roomType);
@@ -46,28 +86,22 @@ public class ProfessorView extends JFrame {
         JLabel lblWelcome = new JLabel(welcomeMsg, SwingConstants.CENTER);
         add(lblWelcome, BorderLayout.NORTH);
 
-        // 중앙: 버튼 3개를 가로로 좌우에 배치
+        // 중앙: 버튼들
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
 
         btnStartReservation = new JButton("예약하기");
-        btnCancelReservation = new JButton("예약 취소하기");
+        btnCancelManageReservation = new JButton("예약 취소/관리"); // [변경]
         btnViewReservation = new JButton("예약 내역 조회");
 
-        Dimension btnSize = new Dimension(150, 60);
+        Dimension btnSize = new Dimension(140, 50);
         btnStartReservation.setPreferredSize(btnSize);
-        btnStartReservation.setMaximumSize(btnSize);
-        btnStartReservation.setMinimumSize(btnSize);
-        btnCancelReservation.setPreferredSize(btnSize);
-        btnCancelReservation.setMaximumSize(btnSize);
-        btnCancelReservation.setMinimumSize(btnSize);
+        btnCancelManageReservation.setPreferredSize(btnSize);
         btnViewReservation.setPreferredSize(btnSize);
-        btnViewReservation.setMaximumSize(btnSize);
-        btnViewReservation.setMinimumSize(btnSize);
 
         buttonPanel.add(btnStartReservation);
         buttonPanel.add(Box.createHorizontalGlue());
-        buttonPanel.add(btnCancelReservation);
+        buttonPanel.add(btnCancelManageReservation);
         buttonPanel.add(Box.createHorizontalGlue());
         buttonPanel.add(btnViewReservation);
 
@@ -80,12 +114,6 @@ public class ProfessorView extends JFrame {
 
         add(logoutPanel, BorderLayout.SOUTH);
 
-        Dimension btnDim = new Dimension(240, 50);
-        btnStartReservation.setPreferredSize(btnDim);
-        btnCancelReservation.setPreferredSize(btnDim);
-        btnViewReservation.setPreferredSize(btnDim); // 추가
-        btnLogout.setPreferredSize(btnDim);
-
         btnViewReservation.addActionListener(e -> {
             controller.professor.ProfessorapprovedController.openUserReservation(loginUser);
         });
@@ -93,17 +121,35 @@ public class ProfessorView extends JFrame {
         // 로그아웃 액션
         btnLogout.addActionListener(e -> {
             dispose();
-            new view.login.LoginView().setVisible(true);
+            new LoginView().setVisible(true);
         });
+        
+        btnCancelManageReservation.addActionListener(e -> {
+            // (선택창 없이 바로 생성)
+            String reservationFile = "reservations.json";
+            String labRoomJsonPath = "src/lab_room.json";
+            String normalRoomJsonPath = "src/normal_room.json";
+            
+            RoomModel labRoomModel = new RoomModel(labRoomJsonPath);
+            RoomModel normalRoomModel = new RoomModel(normalRoomJsonPath);
 
+            ProfessorRejectedView view = new ProfessorRejectedView(
+                    reservationFile,
+                    "src/lab_room.json",
+                    "src/normal_room.json",
+                    loginUser.getName(),
+                    loginUser.getRole()
+            );
+            view.setVisible(true);
+        });
         setVisible(true);
     }
 
     public JButton getBtnStartReservation() {
         return btnStartReservation;
     }
-    public JButton getBtnCancelReservation() {
-        return btnCancelReservation;
+    public JButton getBtnCancelManageReservation() { // [변경]
+        return btnCancelManageReservation;
     }
     public JButton getBtnViewReservation() {
         return btnViewReservation;
@@ -111,7 +157,7 @@ public class ProfessorView extends JFrame {
     public JButton getBtnLogout() {
         return btnLogout;
     }
-
+    
     public void setReservationHandler(ReservationHandler handler) {
         this.reservationHandler = handler;
     }

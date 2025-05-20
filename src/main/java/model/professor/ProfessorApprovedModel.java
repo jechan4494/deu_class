@@ -31,7 +31,7 @@ public class ProfessorApprovedModel {
     public void setRoomNumber(int roomNumber) { this.roomNumber = roomNumber; }
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
-    public List<String> getTimeSlots() { return timeSlots; }
+    public List<String> getTimeSlots() {return timeSlots;}
     public void setTimeSlots(List<String> timeSlots) { this.timeSlots = timeSlots; }
     public String getState() { return state; }
     public void setState(String state) { this.state = state; }
