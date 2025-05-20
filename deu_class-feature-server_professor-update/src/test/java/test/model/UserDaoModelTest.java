@@ -6,7 +6,7 @@ import org.junit.jupiter.api.*;
 import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
-class UserDaoModelTest {
+class gitUserDaoModelTest {
 
   @BeforeEach
   void resetUsers() {
