@@ -1,7 +1,7 @@
 package server;
 
 import com.google.gson.Gson;
-import controller.login.AuthController;
+import controller.AuthController;
 import model.user.User;
 
 import java.io.*;

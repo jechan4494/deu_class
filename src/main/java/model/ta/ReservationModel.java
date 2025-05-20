@@ -37,7 +37,10 @@ public class ReservationModel {
             String name = obj.getString("name");
             String role = obj.getString("role");
             String type = obj.getString("roomType");
-            int roomNumber = Integer.parseInt(obj.getString("roomNumber"));
+            Object roomObj = obj.get("roomNumber");
+            int roomNumber = (roomObj instanceof Integer)
+            ? (int) roomObj
+            : Integer.parseInt(roomObj.toString());
             String day = obj.getString("day");
 
             JSONArray slotArray = obj.getJSONArray("timeSlots");
@@ -120,5 +123,108 @@ public class ReservationModel {
 
     System.out.println("✅ rejected_reservations.json 항목 수: " + list.size());
     return list;
+}
+    public List<String[]> loadUsers() {
+    List<String[]> users = new ArrayList<>();
+    File file = new File("users.json");
+
+    try (FileReader reader = new FileReader(file)) {
+        JSONArray arr = new JSONArray(new JSONTokener(reader));
+        for (int i = 0; i < arr.length(); i++) {
+            JSONObject obj = arr.getJSONObject(i);
+            String[] row = {
+                obj.optString("id", ""),
+                obj.optString("name", ""),
+                obj.optString("department", ""),
+                obj.optString("role", "")
+            };
+            users.add(row);
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+
+    return users;
+}
+    public boolean deleteUser(String userId) {
+    File file = new File("users.json");
+
+    try (FileReader reader = new FileReader(file)) {
+        JSONArray arr = new JSONArray(new JSONTokener(reader));
+        JSONArray updated = new JSONArray();
+
+        boolean deleted = false;
+
+        for (int i = 0; i < arr.length(); i++) {
+            JSONObject user = arr.getJSONObject(i);
+            if (!user.getString("id").equals(userId)) {
+                updated.put(user);
+            } else {
+                deleted = true;
+            }
+        }
+
+        if (deleted) {
+            try (FileWriter writer = new FileWriter(file)) {
+                writer.write(updated.toString(4)); // pretty print
+            }
+        }
+
+        return deleted;
+    } catch (Exception e) {
+        e.printStackTrace();
+        return false;
+    }
+    }
+    public void saveApprovedReservation(Reservation reservation) {
+    try {
+        File file = new File("approved_reservations.json");
+        JSONArray arr = file.exists()
+            ? new JSONArray(new JSONTokener(new FileReader(file)))
+            : new JSONArray();
+
+        JSONObject obj = new JSONObject();
+        obj.put("name", reservation.getName());
+        obj.put("role", reservation.getRole());
+        obj.put("roomType", reservation.getType());
+        obj.put("roomNumber", reservation.getRoomNumber());
+        obj.put("day", reservation.getDay());
+        obj.put("timeSlots", reservation.getTimeSlots());
+        obj.put("state", reservation.getState());
+
+        arr.put(obj);
+
+        try (FileWriter writer = new FileWriter(file)) {
+            writer.write(arr.toString(4)); // pretty print
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+}
+
+public void saveRejectedReservation(Reservation reservation) {
+    try {
+        File file = new File("rejected_reservations.json");
+        JSONArray arr = file.exists()
+            ? new JSONArray(new JSONTokener(new FileReader(file)))
+            : new JSONArray();
+
+        JSONObject obj = new JSONObject();
+        obj.put("name", reservation.getName());
+        obj.put("role", reservation.getRole());
+        obj.put("roomType", reservation.getType());
+        obj.put("roomNumber", reservation.getRoomNumber());
+        obj.put("day", reservation.getDay());
+        obj.put("timeSlots", reservation.getTimeSlots());
+        obj.put("state", reservation.getState());
+
+        arr.put(obj);
+
+        try (FileWriter writer = new FileWriter(file)) {
+            writer.write(arr.toString(4));
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
 }
 }
