@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="Encoding">
+<<<<<<< HEAD
     <file url="file://$PROJECT_DIR$/deu_class-feature-server_professor-update/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/deu_class-feature-server_professor-update/src/main/resources" charset="UTF-8" />
+=======
+    <file url="file://$PROJECT_DIR$/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/resources" charset="UTF-8" />
+>>>>>>> aa4ee0f0ae07af8f97647f6bf15b3650039a19b9
   </component>
 </project>

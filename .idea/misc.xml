@@ -4,7 +4,11 @@
   <component name="MavenProjectsManager">
     <option name="originalFiles">
       <list>
+<<<<<<< HEAD
         <option value="$PROJECT_DIR$/deu_class-feature-server_professor-update/pom.xml" />
+=======
+        <option value="$PROJECT_DIR$/pom.xml" />
+>>>>>>> aa4ee0f0ae07af8f97647f6bf15b3650039a19b9
       </list>
     </option>
   </component>
