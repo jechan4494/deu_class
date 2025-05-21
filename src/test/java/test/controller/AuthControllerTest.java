@@ -1,7 +1,8 @@
 package test.controller;
 
-import controller.professor.ProfessorReserveController;
-import model.user.User;
+import client.view.professor.ProfessorView;
+import server.controller.professor.ProfessorReserveController;
+import server.model.user.User;
 import org.junit.jupiter.api.*;
 
 import java.io.File;
@@ -11,8 +12,8 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 // DummyProfessorView에서 스윙 사용하지 않음
-class DummyProfessorViewTest extends view.professor.ProfessorView {
-  public DummyProfessorViewTest(model.user.User loginUser) { super(loginUser); }
+class DummyProfessorViewTest extends ProfessorView {
+  public DummyProfessorViewTest(User loginUser) { super(loginUser); }
   public void setReservationHandler(java.util.function.Consumer<java.util.List<String>> handler) {}
 }
 

@@ -1,7 +1,7 @@
 package util;
 
-import model.student.Reservation;
-import util.student.JsonDataHandler;
+import server.model.student.Reservation;
+import server.util.student.JsonDataHandler;
 import org.junit.jupiter.api.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;

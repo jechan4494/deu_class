@@ -3,9 +3,9 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package org.example.controller;
-import model.ta.ReservationModel;
-import controller.ta.LogController;
-import model.ta.Reservation;
+import server.model.ta.ReservationModel;
+import server.controller.ta.LogController;
+import server.model.ta.Reservation;
 
 import org.junit.jupiter.api.Test;
 
