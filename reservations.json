@@ -318,4 +318,20 @@
   "state" : "취소",
   "day" : "월요일",
   "roomType" : "일반실"
+}, {
+  "role" : "PROFESSOR",
+  "roomNumber" : 918,
+  "name" : "정찬",
+  "timeSlots" : [ "14:00-14:50" ],
+  "state" : "취소",
+  "day" : "월요일",
+  "roomType" : "실습실"
+}, {
+  "role" : "PROFESSOR",
+  "roomNumber" : 918,
+  "name" : "정찬",
+  "timeSlots" : [ "15:00-15:50" ],
+  "state" : "취소",
+  "day" : "월요일",
+  "roomType" : "실습실"
 } ]
