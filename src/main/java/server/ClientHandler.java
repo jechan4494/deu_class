@@ -1,8 +1,8 @@
 package server;
 
 import com.google.gson.Gson;
-import controller.login.AuthController;
-import model.user.User;
+import server.controller.login.AuthController;
+import server.model.user.User;
 
 import java.io.*;
 import java.net.Socket;
@@ -67,4 +67,3 @@ public class ClientHandler implements Runnable {
     }
   }
 }
-

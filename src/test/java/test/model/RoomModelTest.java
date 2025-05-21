@@ -1,7 +1,6 @@
 package test.model;
 
-import model.room.RoomModel;
-import model.room.RoomReservation;
+import server.model.room.RoomModel;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.jupiter.api.*;
@@ -82,7 +81,7 @@ class RoomModelTest {
 
     @Test
     void saveReservation_테스트() {
-        model.room.RoomReservation reservation = new model.room.RoomReservation(
+        server.model.room.RoomReservation reservation = new server.model.room.RoomReservation(
                 101, "월요일", List.of("10:00"), "실습실", "대기", "정찬", "교수");
         roomModel.saveReservation(reservation);
         List<String> result = roomModel.getTimeSlots(101, "월요일");

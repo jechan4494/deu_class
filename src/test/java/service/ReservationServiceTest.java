@@ -1,12 +1,10 @@
 package service;
 
-import model.student.Reservation;
-import model.user.User;
-import controller.student.ReservationService;
+import server.model.student.Reservation;
+import server.model.user.User;
+import server.controller.student.ReservationService;
 import org.junit.jupiter.api.*;
 import java.io.File;
-import java.io.FileWriter;
-import java.nio.file.Files;
 import java.time.LocalDateTime;
 import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;

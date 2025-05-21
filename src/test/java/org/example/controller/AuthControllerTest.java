@@ -1,9 +1,8 @@
 package org.example.controller;
 
-import controller.AuthController;
-import model.user.User;
+import server.controller.login.AuthController;
+import server.model.user.User;
 import org.junit.jupiter.api.*;
-
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
@@ -18,8 +17,11 @@ class AuthControllerTest {
 
   @Test
   void testRegisterUserAndLoginSuccess() {
-    User user = new User("testid", "testpw", "홍길동", "컴퓨터", "STUDENT");
-    assertTrue(AuthController.registerUser(user.getId(), user.getPassword(), user.getName(), user.getDepartment(), user.getRole()));
+    boolean isRegistered = AuthController.registerUser(
+        "testid", "testpw", "홍길동", "컴퓨터공학과", "STUDENT"
+    );
+    assertTrue(isRegistered);
+
     User loggedIn = AuthController.login("testid", "testpw");
     assertNotNull(loggedIn);
     assertEquals("홍길동", loggedIn.getName());
@@ -27,17 +29,24 @@ class AuthControllerTest {
 
   @Test
   void testDuplicateId() {
-    User user1 = new User("dup", "pw1", "A", "컴공", "STUDENT");
-    User user2 = new User("dup", "pw2", "B", "전자", "PROFESSOR");
-    assertTrue(AuthController.registerUser(user1.getId(), user1.getPassword(), user1.getName(), user1.getDepartment(), user1.getRole()));
-    assertFalse(AuthController.registerUser(user2.getId(), user2.getPassword(), user2.getName(), user2.getDepartment(), user2.getRole())); // 중복 ID로 실패해야 함
+    boolean firstRegister = AuthController.registerUser(
+        "dupId", "pw1", "김학생", "전자공학과", "STUDENT"
+    );
+    assertTrue(firstRegister);
+
+    boolean secondRegister = AuthController.registerUser(
+        "dupId", "pw2", "이교수", "컴퓨터공학과", "PROFESSOR"
+    );
+    assertFalse(secondRegister);
   }
 
   @Test
   void testLoginFail() {
-    User user = new User("loginfail", "pw", "이름", "학과", "TA");
-    AuthController.registerUser(user.getId(), user.getPassword(), user.getName(), user.getDepartment(), user.getRole());
-    User fail = AuthController.login("loginfail", "wrongpw");
-    assertNull(fail); // 비밀번호 틀렸으니 로그인 실패
+    AuthController.registerUser(
+        "failUser", "correctPw", "이름", "학과", "TA"
+    );
+
+    User result = AuthController.login("failUser", "wrongPw");
+    assertNull(result);
   }
 }

@@ -1,5 +1,7 @@
 package server;
 
+import client.swing.test.MainApp;
+
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -26,4 +28,6 @@ public class ServerMain {
       e.printStackTrace();
     }
   }
+
+  // TODO: 서버 실행 부분에서 클라이언트가 실행이 되는 구조는 틀린 구조임, 즉 단순히 서버만 실행이 되어야함
 }

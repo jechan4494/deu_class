@@ -1,7 +1,7 @@
 package test.model;
 
-import model.professor.ProfessorApprovedListModel;
-import model.professor.ProfessorApprovedModel;
+import server.model.professor.ProfessorApprovedListModel;
+import server.model.professor.ProfessorApprovedModel;
 import org.junit.jupiter.api.*;
 import java.io.*;
 import java.nio.file.*;
