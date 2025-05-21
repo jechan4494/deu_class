@@ -5,27 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b5ce78d1-dd4b-44a5-82f2-422ec8daa996" name="변경" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/uiDesigner.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProfessorController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/approved_reservations.json" beforeDir="false" afterPath="$PROJECT_DIR$/approved_reservations.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/rejected_reservations.json" beforeDir="false" afterPath="$PROJECT_DIR$/rejected_reservations.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/reservations.json" beforeDir="false" afterPath="$PROJECT_DIR$/reservations.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Lab_room.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/Lab_room.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/controller/login/AuthController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controller/login/AuthController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/controller/professor/ProfessorRejectedController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controller/professor/ProfessorRejectedController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/model/room/RoomModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/room/RoomModel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/server/ClientHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/server/ClientHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/view/professor/ProfessorRejectedView.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/view/professor/ProfessorRejectedView.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/view/professor/ProfessorView.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/view/professor/ProfessorView.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/org/example/controller/taTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/test/taTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/service/ReservationServiceTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/test/service/ReservationServiceTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ta_log.json" beforeDir="false" afterPath="$PROJECT_DIR$/ta_log.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/users.json" beforeDir="false" afterPath="$PROJECT_DIR$/users.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/normal_room.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/normal_room.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -234,6 +219,9 @@
       <workItem from="1747786744003" duration="328000" />
       <workItem from="1747789574359" duration="1439000" />
       <workItem from="1747791791552" duration="81000" />
+      <workItem from="1747792139987" duration="159000" />
+      <workItem from="1747794087097" duration="304000" />
+      <workItem from="1747836589256" duration="2587000" />
     </task>
     <task id="LOCAL-00001">
       <option name="closed" value="true" />

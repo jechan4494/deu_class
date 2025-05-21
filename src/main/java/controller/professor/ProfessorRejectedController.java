@@ -8,6 +8,9 @@ import model.professor.ProfessorApprovedModel;
 import model.user.User;
 import view.professor.ProfessorApprovedView;
 
+// import 문 추가
+import model.room.RoomModel;
+
 import javax.swing.*;
 import java.io.File;
 import java.util.ArrayList;
@@ -63,18 +66,16 @@ public class ProfessorRejectedController {
             if (success) {
                 allList.save(reservationFile);
 
-                String filePath = RoomType;
-                if ("normal_room.json".equals(RoomType)) {
-                    filePath = "normal_room.json";
-                } else if ("Lab_room.json".equals(RoomType)) {
-                    filePath = "Lab_room.json";
-                }
-                if (RoomType != null && RoomType.contains("Lab_room.json") && RoomType != null) {
-                    updateLabRoomState(RoomType, roomNumber, day, timeSlots);
-                } else if (RoomType != null && !RoomType.contains("normal_room.json") && RoomType != null) {
-                    updateRoomState(RoomType, roomNumber, day, timeSlots);
-                } else {
+                String roomTypeKR = "일반실".equals(RoomType) || "강의실".equals(RoomType) ? "src/normal_room.json"
+                        : "실습실".equals(RoomType) ? "src/Lab_room.json"
+                        : null;
+                if (roomTypeKR == null)
                     throw new IllegalArgumentException("알 수 없는 RoomType 입력: " + RoomType);
+
+                if ("src/Lab_room.json".equals(roomTypeKR)) {
+                    updateLabRoomState(roomTypeKR, roomNumber, day, timeSlots);
+                } else if ("src/normal_room.json".equals(roomTypeKR)) {
+                    updateRoomState(roomTypeKR, roomNumber, day, timeSlots);
                 }
             }
             return success;
@@ -84,55 +85,17 @@ public class ProfessorRejectedController {
         }
     }
 
-    // 실습실(Lab_room.json)용
-    private static void updateLabRoomState(String labRoomJsonPath, int roomNumber, String day, List<String> timeSlots) throws Exception {
-        ObjectMapper mapper = new ObjectMapper();
-        JsonNode root = mapper.readTree(new File(labRoomJsonPath));
-        JsonNode roomsNode = root.get(0).get("rooms");
-        boolean modified = false;
-        for (JsonNode roomNode : roomsNode) {
-            if (roomNode.get("roomNumber").asInt() == roomNumber) {
-                JsonNode dayArray = roomNode.get("schedule").get(day);
-                if (dayArray != null && dayArray.isArray()) {
-                    for (JsonNode slot : dayArray) {
-                        String time = slot.get("time").asText();
-                        if (timeSlots.contains(time)) {
-                            ((ObjectNode) slot).put("state", "O");
-                            modified = true;
-                        }
-                    }
-                }
-                break;
-            }
-        }
-        if (modified) {
-            mapper.writerWithDefaultPrettyPrinter().writeValue(new File(labRoomJsonPath), root);
+    private static void updateLabRoomState(String labRoomJsonPath, int roomNumber, String day, List<String> timeSlots) {
+        RoomModel roomModel = new RoomModel(labRoomJsonPath); // 실습실 json 파일 경로
+        for (String time : timeSlots) {
+            roomModel.markCancelled(roomNumber, day, time, labRoomJsonPath);
         }
     }
 
-    // 일반실(Room.json)용 - Lab_room.json 구조와 다르다면 여기에 맞춰서 구현
-    private static void updateRoomState(String roomJsonPath, int roomNumber, String day, List<String> timeSlots) throws Exception {
-        ObjectMapper mapper = new ObjectMapper();
-        JsonNode root = mapper.readTree(new File(roomJsonPath));
-        JsonNode roomsNode = root.get("rooms");
-        boolean modified = false;
-        for (JsonNode roomNode : roomsNode) {
-            if (roomNode.get("roomNumber").asInt() == roomNumber) {
-                JsonNode dayArray = roomNode.get("schedule").get(day);
-                if (dayArray != null && dayArray.isArray()) {
-                    for (JsonNode slot : dayArray) {
-                        String time = slot.get("time").asText();
-                        if (timeSlots.contains(time)) {
-                            ((ObjectNode) slot).put("state", "O");
-                            modified = true;
-                        }
-                    }
-                }
-                break;
-            }
-        }
-        if (modified) {
-            mapper.writerWithDefaultPrettyPrinter().writeValue(new File(roomJsonPath), root);
+    private static void updateRoomState(String roomJsonPath, int roomNumber, String day, List<String> timeSlots) {
+        RoomModel roomModel = new RoomModel(roomJsonPath); // 일반실 json 파일 경로
+        for (String time : timeSlots) {
+            roomModel.markCancelled(roomNumber, day, time, roomJsonPath);
         }
     }
 
