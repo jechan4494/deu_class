@@ -1,0 +1,1 @@
+[{"id":"student","password":"1234","name":"홍길동","department":"컴퓨터공학과","role":"STUDENT"},{"id":"prof","password":"1234","name":"김교수","department":"전자공학과","role":"PROFESSOR"},{"id":"12","password":"12","name":"12","department":"12","role":"STUDENT"}]

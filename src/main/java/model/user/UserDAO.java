@@ -2,29 +2,39 @@ package model.user;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.google.gson.JsonSyntaxException;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class UserDAO {
-  private static final String FILE_PATH = "users.json";
+  private static final String FILE_PATH = System.getProperty("user.dir") + "/deu_class/users.json";
 
-  // 파일이 비어 있을 때만 테스트 데이터 추가
   static {
-    List<User> existingUsers = getAllUsers();
-    if (existingUsers.isEmpty()) {
-      saveUser(new User("student", "1234", "홍길동", "컴퓨터공학과", "STUDENT"));
-      saveUser(new User("prof", "1234", "김교수", "전자공학과", "PROFESSOR"));
+    try {
+      File file = new File(FILE_PATH);
+      if (!file.exists()) {
+        file.getParentFile().mkdirs();
+        file.createNewFile();
+        List<User> initialUsers = new ArrayList<>();
+        initialUsers.add(new User("student", "1234", "홍길동", "컴퓨터공학과", "STUDENT"));
+        initialUsers.add(new User("prof", "1234", "김교수", "전자공학과", "PROFESSOR"));
+        try (Writer writer = new FileWriter(file)) {
+          new Gson().toJson(initialUsers, writer);
+        }
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
     }
   }
 
-  // 기존 코드 유지 (아래는 변경 없음)
   public static List<User> getAllUsers() {
     try (Reader reader = new FileReader(FILE_PATH)) {
       List<User> users = new Gson().fromJson(reader, new TypeToken<List<User>>(){}.getType());
       return users == null ? new ArrayList<>() : users;
-    } catch (IOException e) {
+    } catch (IOException | JsonSyntaxException e) {
+      e.printStackTrace();
       return new ArrayList<>();
     }
   }
