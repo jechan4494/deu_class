@@ -1,4 +1,4 @@
-package controller;
+package controller.login;
 
 import model.user.User;
 import model.user.UserDAO;

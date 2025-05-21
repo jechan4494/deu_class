@@ -53,10 +53,11 @@ public class ProfessorView extends JFrame {
 
         RoomModel tempRoomModel = new RoomModel(roomJsonPath);
 
-        // 실제 예약취소 관리 View 띄우기 (사용자 정보 등 전달 필요 시 인자 추가!)
+        // 실제 예약취소 관리 View 띄우기
         ProfessorRejectedView view = new ProfessorRejectedView(
                 reservationFile,
                 tempRoomModel,
+                roomJsonPath,
                 roomJsonPath,
                 loginUser.getName(),
                 loginUser.getRole()
@@ -107,6 +108,16 @@ public class ProfessorView extends JFrame {
 
         buttonPanel.setBorder(BorderFactory.createEmptyBorder(40, 20, 40, 20));
         add(buttonPanel, BorderLayout.CENTER);
+        btnCancelManageReservation.addActionListener(e -> {
+            new view.professor.ProfessorRejectedView(
+                    "reservations.json",
+                    new model.room.RoomModel("src/lab_room.json"),
+                    "src/lab_room.json",
+                    "src/normal_room.json",
+                    loginUser.getName(),
+                    loginUser.getRole()
+            );
+        });
 
         JPanel logoutPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         btnLogout = new JButton("로그아웃");
@@ -122,25 +133,6 @@ public class ProfessorView extends JFrame {
         btnLogout.addActionListener(e -> {
             dispose();
             new LoginView().setVisible(true);
-        });
-        
-        btnCancelManageReservation.addActionListener(e -> {
-            // (선택창 없이 바로 생성)
-            String reservationFile = "reservations.json";
-            String labRoomJsonPath = "src/lab_room.json";
-            String normalRoomJsonPath = "src/normal_room.json";
-            
-            RoomModel labRoomModel = new RoomModel(labRoomJsonPath);
-            RoomModel normalRoomModel = new RoomModel(normalRoomJsonPath);
-
-            ProfessorRejectedView view = new ProfessorRejectedView(
-                    reservationFile,
-                    "src/lab_room.json",
-                    "src/normal_room.json",
-                    loginUser.getName(),
-                    loginUser.getRole()
-            );
-            view.setVisible(true);
         });
         setVisible(true);
     }

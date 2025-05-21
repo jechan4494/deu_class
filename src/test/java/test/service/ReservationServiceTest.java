@@ -1,4 +1,4 @@
-package service;
+package test.service;
 
 import model.student.Reservation;
 import model.user.User;

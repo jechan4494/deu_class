@@ -55,6 +55,9 @@ public class RoomModel {
         }
     }
 
+    public RoomModel(String jsonPath_lab, String jsonPath_normal) {
+    }
+
     public void saveReservation(RoomReservation reservation) {
         JSONObject room = roomMap.get(reservation.getRoomNumber());
         if (room == null) return;

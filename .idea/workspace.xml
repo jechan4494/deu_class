@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="b5ce78d1-dd4b-44a5-82f2-422ec8daa996" name="변경" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/uiDesigner.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProfessorController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/approved_reservations.json" beforeDir="false" afterPath="$PROJECT_DIR$/approved_reservations.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rejected_reservations.json" beforeDir="false" afterPath="$PROJECT_DIR$/rejected_reservations.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/reservations.json" beforeDir="false" afterPath="$PROJECT_DIR$/reservations.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Lab_room.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/Lab_room.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/controller/login/AuthController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controller/login/AuthController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/controller/professor/ProfessorRejectedController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controller/professor/ProfessorRejectedController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/model/room/RoomModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/room/RoomModel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/server/ClientHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/server/ClientHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/view/professor/ProfessorRejectedView.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/view/professor/ProfessorRejectedView.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/view/professor/ProfessorView.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/view/professor/ProfessorView.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/org/example/controller/taTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/test/taTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/service/ReservationServiceTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/test/service/ReservationServiceTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ta_log.json" beforeDir="false" afterPath="$PROJECT_DIR$/ta_log.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/users.json" beforeDir="false" afterPath="$PROJECT_DIR$/users.json" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="package-info" />
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="professor_login" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 2
+}</component>
+  <component name="ProjectId" id="2vUhBVoL38A4oygzH2RrpAqpDcU" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;JUnit.AuthControllerTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.ProfessorApprovedListModelTest.executor&quot;: &quot;Debug&quot;,
+    &quot;JUnit.ProfessorApprovedViewTest.executor&quot;: &quot;Debug&quot;,
+    &quot;JUnit.ProfessorControllerTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.ProfessorReserveControllerTest.executor&quot;: &quot;Debug&quot;,
+    &quot;JUnit.ProfessorTest.executor&quot;: &quot;Debug&quot;,
+    &quot;JUnit.ProfessorTest.testSaveReservationEntry.executor&quot;: &quot;Debug&quot;,
+    &quot;JUnit.RoomModelTest.executor&quot;: &quot;Debug&quot;,
+    &quot;JUnit.taTest.executor&quot;: &quot;Run&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;feature/server__professor-update&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/deu_class/deu_class&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;모듈&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
+    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;,
+    &quot;애플리케이션.Main.executor&quot;: &quot;Debug&quot;,
+    &quot;애플리케이션.MainApp.executor&quot;: &quot;Debug&quot;,
+    &quot;애플리케이션.ProfessorView.executor&quot;: &quot;Debug&quot;,
+    &quot;애플리케이션.ProfessorapprovedController.executor&quot;: &quot;Run&quot;,
+    &quot;애플리케이션.ServerMain.executor&quot;: &quot;Run&quot;,
+    &quot;애플리케이션.org.example.Main.executor&quot;: &quot;Debug&quot;,
+    &quot;애플리케이션.studentMain.executor&quot;: &quot;Run&quot;
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\deu_class\deu_class\src" />
+      <recent name="D:\deu_class\deu_class\.idea" />
+      <recent name="D:\deu_class\deu_class" />
+      <recent name="D:\deu_class\deu_class\src\main" />
+      <recent name="D:\deu_class\deu_class\src\main\java" />
+    </key>
+    <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
+      <recent name="" />
+    </key>
+  </component>
+  <component name="RunManager" selected="애플리케이션.ServerMain">
+    <configuration name="MainApp" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="server.MainApp" />
+      <module name="deu_class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ServerMain" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="server.ServerMain" />
+      <module name="deu_class" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="server.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ProfessorTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="deu_class" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="test.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="org.example.controller" />
+      <option name="MAIN_CLASS_NAME" value="org.example.controller.ProfessorTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="RoomModelTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="deu_class" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="test.model.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="test.model" />
+      <option name="MAIN_CLASS_NAME" value="test.model.RoomModelTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="taTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="deu_class" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="test.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="test" />
+      <option name="MAIN_CLASS_NAME" value="test.taTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="애플리케이션.ServerMain" />
+        <item itemvalue="애플리케이션.MainApp" />
+        <item itemvalue="JUnit.taTest" />
+        <item itemvalue="JUnit.RoomModelTest" />
+        <item itemvalue="JUnit.ProfessorTest" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9823dce3aa75-fbdcb00ec9e3-intellij.indexing.shared.core-IU-251.25410.129" />
+        <option value="bundled-js-predefined-d6986cc7102b-6a121458b545-JavaScript-IU-251.25410.129" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="애플리케이션 수준" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="디폴트 작업">
+      <changelist id="b5ce78d1-dd4b-44a5-82f2-422ec8daa996" name="변경" comment="" />
+      <created>1744205426912</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1744205426912</updated>
+      <workItem from="1744205427888" duration="2137000" />
+      <workItem from="1744549909268" duration="540000" />
+      <workItem from="1744623475308" duration="9346000" />
+      <workItem from="1744724174250" duration="2693000" />
+      <workItem from="1744728365179" duration="71000" />
+      <workItem from="1745886039330" duration="531000" />
+      <workItem from="1746095480693" duration="10118000" />
+      <workItem from="1746427094572" duration="20761000" />
+      <workItem from="1746854613350" duration="5446000" />
+      <workItem from="1746943484044" duration="1738000" />
+      <workItem from="1746945243168" duration="11787000" />
+      <workItem from="1746977228056" duration="3651000" />
+      <workItem from="1747061517805" duration="5918000" />
+      <workItem from="1747137912663" duration="3373000" />
+      <workItem from="1747143978729" duration="2141000" />
+      <workItem from="1747146242359" duration="432000" />
+      <workItem from="1747146688278" duration="2308000" />
+      <workItem from="1747150804690" duration="2915000" />
+      <workItem from="1747231468575" duration="238000" />
+      <workItem from="1747231722824" duration="7737000" />
+      <workItem from="1747242612735" duration="137000" />
+      <workItem from="1747275023880" duration="463000" />
+      <workItem from="1747275965297" duration="625000" />
+      <workItem from="1747279393340" duration="190000" />
+      <workItem from="1747303024765" duration="12742000" />
+      <workItem from="1747419839853" duration="291000" />
+      <workItem from="1747666290387" duration="5566000" />
+      <workItem from="1747738074477" duration="3194000" />
+      <workItem from="1747741324337" duration="3185000" />
+      <workItem from="1747744547302" duration="26000" />
+      <workItem from="1747744671537" duration="8044000" />
+      <workItem from="1747786744003" duration="328000" />
+      <workItem from="1747789574359" duration="1439000" />
+      <workItem from="1747791791552" duration="81000" />
+    </task>
+    <task id="LOCAL-00001">
+      <option name="closed" value="true" />
+      <created>1746428471051</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1746428471051</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/deu_class$AuthControllerTest.ic" NAME="AuthControllerTest 커버리지 결과" MODIFIED="1747668011273" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true">
+      <FILTER>test.controller.*</FILTER>
+    </SUITE>
+    <SUITE FILE_PATH="coverage/deu_class$MainApp.ic" NAME="MainApp 커버리지 결과" MODIFIED="1747740580986" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true" />
+  </component>
+</project>
