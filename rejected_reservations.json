@@ -43,5 +43,23 @@
     "state": "거절",
     "day": "화요일",
     "roomType": "일반실"
+  },
+  {
+    "role": "PROFESSOR",
+    "roomNumber": 915,
+    "name": "정찬",
+    "timeSlots": ["17:00-17:50"],
+    "state": "거절",
+    "day": "화요일",
+    "roomType": "실습실"
+  },
+  {
+    "role": "PROFESSOR",
+    "roomNumber": 915,
+    "name": "rrg",
+    "timeSlots": ["14:00-14:50"],
+    "state": "거절",
+    "day": "금요일",
+    "roomType": "실습실"
   }
 ]
