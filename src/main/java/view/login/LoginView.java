@@ -3,6 +3,7 @@ package view.login;
 import com.google.gson.Gson;
 // ProfessorView import 추가
 import controller.professor.ProfessorReserveController;
+import controller.student.StudentReserveController;
 import view.professor.ProfessorView;
 import model.user.User;
 import javax.swing.*;
@@ -90,7 +91,9 @@ public class LoginView extends JFrame {
                     break;
 
                   case "STUDENT":
-                    new StudentView(loginUser).setVisible(true);
+                    StudentView studentView = new StudentView(loginUser);
+                    new StudentReserveController(studentView,loginUser);
+                    studentView.setVisible(true);
                     break;
                   case "TA":
                     featureFrame taView = new featureFrame();

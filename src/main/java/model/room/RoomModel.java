@@ -6,7 +6,7 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import javax.swing.*;
-import java.io.FileInputStream; // 수정: 파일시스템에서 직접 읽기
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.*;
 
@@ -59,9 +59,6 @@ public class RoomModel {
             e.printStackTrace();
             rooms = null;
         }
-    }
-
-    public RoomModel(String jsonPath_lab, String jsonPath_normal) {
     }
 
     public void saveReservation(RoomReservation reservation) {

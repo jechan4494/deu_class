@@ -14,13 +14,6 @@
         "department": "qwe"
     },
     {
-        "password": "1234",
-        "role": "PROFESSOR",
-        "name": "정찬",
-        "id": "jos1234",
-        "department": "교수"
-    },
-    {
         "password": "12",
         "role": "STUDENT",
         "name": "12",

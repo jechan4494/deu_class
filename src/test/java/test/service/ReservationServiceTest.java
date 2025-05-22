@@ -1,8 +1,9 @@
 package test.service;
 
-import model.student.Reservation;
+import model.student.StudentReservation;
+import model.student.StudentReservationService;
+import model.ta.Reservation;
 import model.user.User;
-import controller.student.ReservationService;
 import org.junit.jupiter.api.*;
 import java.io.File;
 import java.io.FileWriter;
@@ -13,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class ReservationServiceTest {
-    private ReservationService service;
+    private StudentReservationService service;
     private User studentUser;
     private static final String TEST_FILE = "student_test_reservations.json";
 
@@ -24,7 +25,7 @@ class ReservationServiceTest {
         new File(TEST_FILE).delete();
         // 학생 역할의 User 객체 생성
         studentUser = new User("S1234", "1234", "홍길동", "컴소", "학생");
-        service = new ReservationService(TEST_FILE);
+        service = new StudentReservationService();
         System.out.println("[setUp] 테스트 준비 완료");
     }
 
@@ -40,7 +41,7 @@ class ReservationServiceTest {
     @Order(1)
     void testMakeReservation() {
         System.out.println("[testMakeReservation] 테스트 시작");
-        Reservation reservation = new Reservation("911", "911", LocalDateTime.now(), LocalDateTime.now().plusHours(1), "스터디", studentUser.getId());
+        StudentReservation reservation = new StudentReservation("911", "911", LocalDateTime.now(), LocalDateTime.now().plusHours(1), "스터디", studentUser.getId());
         assertTrue(service.makeReservation(reservation));
         System.out.println("[testMakeReservation] 완료");
     }
@@ -49,10 +50,10 @@ class ReservationServiceTest {
     @Order(2)
     void testGetReservationsByStudentId() {
         System.out.println("[testGetReservationsByStudentId] 시작");
-        Reservation reservation = new Reservation("915", "915", LocalDateTime.now(), LocalDateTime.now().plusHours(1), "스터디", studentUser.getId());
+        StudentReservation reservation = new StudentReservation("915", "915", LocalDateTime.now(), LocalDateTime.now().plusHours(1), "스터디", studentUser.getId());
         service.makeReservation(reservation);
         List<Reservation> list = service.getReservationsByStudentId(studentUser.getId());
         assertFalse(list.isEmpty());
         System.out.println("[testGetReservationsByStudentId] 완료");
     }
-} 
+}
