@@ -1,6 +1,8 @@
-package model.user;
+package client.model;
 
-public class User {
+import java.io.Serializable;
+
+public class User implements Serializable {
   private String id;
   private String password;
   private String name;
@@ -15,7 +17,6 @@ public class User {
     this.role = role;
   }
 
-  // Getter 메서드 추가
   public String getId() { return id; }
   public String getPassword() { return password; }
   public String getName() { return name; }
