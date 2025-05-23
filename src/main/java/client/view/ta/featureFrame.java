@@ -3,8 +3,10 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package client.view.ta;
+import client.controller.AuthController;
 import client.controller.ta.ReservationController;
-import client.view.login.LoginView;
+import client.network.ServerConnector;
+import client.view.LoginView;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.io.*;
@@ -208,26 +210,28 @@ public class featureFrame extends javax.swing.JFrame {
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
     try {
-            // 🔌 로그아웃 요청 전송
-            JSONObject logout = new JSONObject();
-            logout.put("type", "logout");
-            out.println(logout.toString());
-            out.flush();
+        // 🔌 로그아웃 요청 전송
+        JSONObject logout = new JSONObject();
+        logout.put("type", "logout");
+        out.println(logout.toString());
+        out.flush();
 
-            System.out.println("🔌 로그아웃 요청 전송 완료");
+        System.out.println("🔌 로그아웃 요청 전송 완료");
 
-            // ✅ 스트림 및 소켓 닫기
-            in.close();
-            out.close();
-            socket.close();
+        // ✅ 스트림 및 소켓 닫기
+        in.close();
+        out.close();
+        socket.close();
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        // ✅ 로그인 창 다시 열기 (★ 수정된 부분)
+        ServerConnector connector = new ServerConnector("localhost", 12345);  // IP와 포트는 실제 서버 기준
+        AuthController controller = new AuthController(connector);
+        new LoginView(controller).setVisible(true);
 
-        // 로그인 창 다시 열기
-        new LoginView().setVisible(true);
-        this.dispose();
+        this.dispose();  // 현재 창 닫기
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed

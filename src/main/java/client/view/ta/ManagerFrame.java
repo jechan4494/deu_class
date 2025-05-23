@@ -4,7 +4,6 @@
  */
 package client.view.ta;
 import client.controller.ta.ManagerController;
-import server.model.ta.ReservationModel;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
