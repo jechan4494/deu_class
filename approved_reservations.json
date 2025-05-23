@@ -88,5 +88,14 @@
     "state": "승인",
     "day": "수요일",
     "roomType": "실습실"
+  },
+  {
+    "role": "PROFESSOR",
+    "roomNumber": 913,
+    "name": "rrg",
+    "timeSlots": ["11:00-11:50"],
+    "state": "승인",
+    "day": "수요일",
+    "roomType": "일반실"
   }
 ]

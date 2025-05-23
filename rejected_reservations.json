@@ -61,5 +61,14 @@
     "state": "거절",
     "day": "금요일",
     "roomType": "실습실"
+  },
+  {
+    "role": "PROFESSOR",
+    "roomNumber": 918,
+    "name": "rrg",
+    "timeSlots": ["16:00-16:50"],
+    "state": "거절",
+    "day": "목요일",
+    "roomType": "실습실"
   }
 ]
