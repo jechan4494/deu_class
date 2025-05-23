@@ -1,99 +1,115 @@
 package controller.professor;
 
-import model.professor.ProfessorApprovedModel;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import model.professor.ProfessorApprovedListModel;
+import model.professor.ProfessorApprovedModel;
+import model.user.User;
+import view.professor.ProfessorApprovedView;
+
+// import 문 추가
 import model.room.RoomModel;
 
+import javax.swing.*;
+import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ProfessorRejectedController {
 
-    public static boolean cancelReservation(
-            int reservationId,
-            String reservationFile,
-            RoomModel roomModel,
-            String roomJsonPath
-    ) {
-        // 예약 리스트를 바로 가져와서 처리
-        ProfessorApprovedListModel reservationList = null;
-        try {
-            reservationList = new ProfessorApprovedListModel(reservationFile);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+    public static void openUserReservation(User user) {
+        if (!"PROFESSOR".equals(user.getRole())) {
+            System.out.println("교수만 이용 가능합니다.");
+            return;
         }
-        List<ProfessorApprovedModel> list = reservationList.getList();
 
-        for (ProfessorApprovedModel model : list) {
-            if (model.getRoomNumber() == reservationId && "대기".equals(model.getState())) {
-                // 상태 변경
-                model.setState("취소");
+        String jsonFilePath = "reservation.json";
 
-                // 방 상태 복구
-                int roomNo = model.getRoomNumber();
-                String day = model.getDay();
-                List<String> timeSlots = model.getTimeSlots();
+        try {
+            ProfessorApprovedListModel model = new ProfessorApprovedListModel(jsonFilePath);
+            List<ProfessorApprovedModel> mySchedules = model.getMySchedules(user.getName(), user.getRole());
 
-                for (String time : timeSlots) {
-                    roomModel.markCancelled(roomNo, day, time, roomJsonPath);
+            SwingUtilities.invokeLater(() -> {
+                ProfessorApprovedView view = new ProfessorApprovedView(mySchedules);
+                view.setVisible(true);
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static boolean cancelReservation(
+            String reservationFile,
+            int roomNumber,
+            String userName,
+            String userRole,
+            List<String> timeSlots,
+            String day,
+            String RoomType // 실습실 파일
+    ) {
+        try {
+            ProfessorApprovedListModel allList = new ProfessorApprovedListModel(reservationFile);
+            boolean success = false;
+            for (ProfessorApprovedModel m : allList.getList()) {
+                if (m.getRoomNumber() == roomNumber
+                        && userName.equals(m.getName())
+                        && userRole.equals(m.getRole())
+                        && m.getTimeSlots().equals(timeSlots)
+                        && day.equals(m.getDay())
+                        && ("승인".equals(m.getState()) || "대기".equals(m.getState()))) {
+                    m.setState("취소");
+                    success = true;
+                    break;
                 }
+            }
+            if (success) {
+                allList.save(reservationFile);
 
-                try {
-                    reservationList.save(reservationFile); // 변경사항 저장
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
+                String roomTypeKR = "일반실".equals(RoomType) || "강의실".equals(RoomType) ? "src/normal_room.json"
+                        : "실습실".equals(RoomType) ? "src/Lab_room.json"
+                        : null;
+                if (roomTypeKR == null)
+                    throw new IllegalArgumentException("알 수 없는 RoomType 입력: " + RoomType);
+
+                if ("src/Lab_room.json".equals(roomTypeKR)) {
+                    updateLabRoomState(roomTypeKR, roomNumber, day, timeSlots);
+                } else if ("src/normal_room.json".equals(roomTypeKR)) {
+                    updateRoomState(roomTypeKR, roomNumber, day, timeSlots);
                 }
-                return true;
+            }
+            return success;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return false;
+        }
+    }
+
+    private static void updateLabRoomState(String labRoomJsonPath, int roomNumber, String day, List<String> timeSlots) {
+        RoomModel roomModel = new RoomModel(labRoomJsonPath); // 실습실 json 파일 경로
+        for (String time : timeSlots) {
+            roomModel.markCancelled(roomNumber, day, time, labRoomJsonPath);
+        }
+    }
+
+    private static void updateRoomState(String roomJsonPath, int roomNumber, String day, List<String> timeSlots) {
+        RoomModel roomModel = new RoomModel(roomJsonPath); // 일반실 json 파일 경로
+        for (String time : timeSlots) {
+            roomModel.markCancelled(roomNumber, day, time, roomJsonPath);
+        }
+    }
+
+    public static List<ProfessorApprovedModel> getMyPendingOrApprovedReservations(
+            String reservationFile, String loginUserName, String loginUserRole) throws Exception {
+        ProfessorApprovedListModel allList = new ProfessorApprovedListModel(reservationFile);
+        List<ProfessorApprovedModel> filtered = new ArrayList<>();
+        for (ProfessorApprovedModel m : allList.getList()) {
+            if (loginUserRole.equals(m.getRole()) &&
+                    loginUserName.equals(m.getName()) &&
+                    ("승인".equals(m.getState()) || "대기".equals(m.getState()))) {
+                filtered.add(m);
             }
         }
-        return false;
+        return filtered;
     }
-
-public static boolean cancelMyReservation(
-        String loginUserName,
-        String loginUserRole,
-        String reservationFile,
-        RoomModel roomModel,
-        String roomJsonPath // 예: "normal_room.json"
-) {
-    ProfessorApprovedListModel reservationList;
-    try {
-        reservationList = new ProfessorApprovedListModel(reservationFile);
-    } catch (Exception e) {
-        throw new RuntimeException("예약 목록을 불러오는 데 실패했습니다.", e);
-    }
-
-    // 1. 내 예약만 조회 (승인 상태만)
-    List<ProfessorApprovedModel> myReservations = reservationList.getMySchedules(loginUserName, loginUserRole)
-            .stream()
-            .filter(r -> "승인".equals(r.getState()))
-            .toList();
-
-    if (myReservations.isEmpty()) {
-        System.out.println("취소할 수 있는 예약이 없습니다.");
-        return false;
-    }
-
-    // 2. 사용자에게 목록을 보여주고, 취소할 예약을 선택한다고 가정(여기선 첫 번째 내역을 취소)
-    ProfessorApprovedModel toCancel = myReservations.get(0); // 실제로는 사용자 입력에 따라 선택
-
-    toCancel.setState("취소");
-
-    // 4. room 상태 복원
-    if ("일반실".equals(toCancel.getRoomType()) || "실습실".equals(toCancel.getRoomType())) {
-        int roomNo = toCancel.getRoomNumber();
-        String day = toCancel.getDay();
-        List<String> timeSlots = toCancel.getTimeSlots();
-        for (String time : timeSlots) {
-            roomModel.markCancelled(roomNo, day, time, roomJsonPath);
-        }
-    }
-
-    // 5. 변경된 예약 내역을 파일에 저장
-    try {
-        reservationList.save(reservationFile);
-    } catch (Exception e) {
-        throw new RuntimeException("예약 내역 저장에 실패했습니다.", e);
-    }
-    return true;
-}
 }

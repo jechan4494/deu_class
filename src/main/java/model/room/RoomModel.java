@@ -10,6 +10,12 @@ import java.io.FileInputStream; // 수정: 파일시스템에서 직접 읽기
 import java.io.InputStream;
 import java.util.*;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
+import java.io.File;
+
 public class RoomModel {
     private JSONArray rooms;
     private JSONObject originalData;
@@ -53,6 +59,9 @@ public class RoomModel {
             e.printStackTrace();
             rooms = null;
         }
+    }
+
+    public RoomModel(String jsonPath_lab, String jsonPath_normal) {
     }
 
     public void saveReservation(RoomReservation reservation) {
@@ -144,20 +153,42 @@ public class RoomModel {
     }
 
     // 해당 시간의 state를 "X"로 변경한 뒤 파일에 저장
-    public void markReserved(int roomNumber, String day, String time, String jsonPath) {
-        JSONObject room = roomMap.get(roomNumber);
-        if (room == null || !room.has("schedule")) return;
-        JSONObject schedule = room.getJSONObject("schedule");
-        JSONArray dayArray = schedule.optJSONArray(day);
-        if (dayArray == null) return;
-        for (int i = 0; i < dayArray.length(); i++) {
-            JSONObject timeSlot = dayArray.getJSONObject(i);
-            if (timeSlot.has("time") && timeSlot.getString("time").equals(time)) {
-                timeSlot.put("state", "X");
-                break;
+    public void markReserved(int roomNumber, String day, String timeSlot, String jsonPath) {
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode rootNode = mapper.readTree(new File(jsonPath));
+            JsonNode roomsArray = null;
+
+            // 최상위가 배열이면 배열의 0번 인덱스 rooms 필드에 접근
+            if (rootNode.isArray()) {
+                JsonNode first = rootNode.get(0);
+                if (first != null && first.has("rooms")) {
+                    roomsArray = first.get("rooms");
+                }
+            } else if (rootNode.has("rooms")) {
+                roomsArray = rootNode.get("rooms");
             }
+
+            if (roomsArray != null && roomsArray.isArray()) {
+                for (JsonNode roomNode : roomsArray) {
+                    if (roomNode.get("roomNumber") != null
+                            && roomNode.get("roomNumber").asInt() == roomNumber) {
+                        JsonNode dayArray = roomNode.get("schedule").get(day);
+                        if (dayArray != null && dayArray.isArray()) {
+                            for (JsonNode slot : dayArray) {
+                                if (slot.get("time") != null && timeSlot.equals(slot.get("time").asText())) {
+                                    ((ObjectNode) slot).put("state", "X");
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            // 파일 저장
+            mapper.writerWithDefaultPrettyPrinter().writeValue(new File(jsonPath), rootNode);
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
-        saveToFile(jsonPath); // 변경 후 파일에 저장
     }
     public void markCancelled(int roomNumber, String day, String time, String jsonPath) {
         JSONObject room = roomMap.get(roomNumber);
@@ -171,6 +202,7 @@ public class RoomModel {
                 timeSlot.put("state", "O");
             }
         }
+        saveToFile(jsonPath); // 상태 변경 후 반드시 파일로 저장!
     }
 
     public void saveToFile(String jsonPath) {

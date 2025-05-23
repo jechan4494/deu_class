@@ -1,1 +1,37 @@
-[{"id":"ta12","password":"1234","name":"rrg","department":"21","role":"TA"},{"id":"po12","password":"1234","name":"rrg","department":"qwe","role":"PROFESSOR"},{"id":"jos1234","password":"1234","name":"정찬","department":"교수","role":"PROFESSOR"},{"id":"jos12","password":"12","name":"12","department":"12","role":"STUDENT"},{"id":"ta11","password":"11","name":"TA","department":"TA","role":"TA"},{"id":"po123","password":"1234","name":"ㄱㄱㅎ","department":"ㅋㅅ","role":"STUDENT"}]
+[
+    {
+        "password": "1234",
+        "role": "TA",
+        "name": "rrg",
+        "id": "ta12",
+        "department": "21"
+    },
+    {
+        "password": "1234",
+        "role": "PROFESSOR",
+        "name": "rrg",
+        "id": "po12",
+        "department": "qwe"
+    },
+    {
+        "password": "1234",
+        "role": "PROFESSOR",
+        "name": "정찬",
+        "id": "jos1234",
+        "department": "교수"
+    },
+    {
+        "password": "12",
+        "role": "STUDENT",
+        "name": "12",
+        "id": "jos12",
+        "department": "12"
+    },
+    {
+        "password": "11",
+        "role": "TA",
+        "name": "TA",
+        "id": "ta11",
+        "department": "TA"
+    }
+]
