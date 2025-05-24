@@ -29,7 +29,7 @@
             <artifactId>shared-model</artifactId>
             <version>1.0</version>
             <scope>system</scope>
-            <systemPath>${project.basedir}/lib/ServerProject-1.0-SNAPSHOT.jar</systemPath>
+            <systemPath>${project.basedir}/lib/SharedProject-1.0-SNAPSHOT.jar</systemPath>
         </dependency>
     </dependencies>
 
