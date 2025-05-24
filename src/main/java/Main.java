@@ -8,7 +8,7 @@ public class Main {
     public static void main(String[] args) {
         try {
             // 1. 소켓 및 Object 스트림 생성
-            Socket socket = new Socket("localhost", 9876);
+            Socket socket = new Socket("localhost", 9877);
             ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
             ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
 
