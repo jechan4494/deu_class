@@ -1,4 +1,8 @@
+package view;
+
 import model.User;
+
+import controller.AuthController;
 
 import javax.swing.*;
 import java.awt.*;

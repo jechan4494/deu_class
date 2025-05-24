@@ -1,3 +1,6 @@
+package controller;
+
+import network.ServerConnector;
 import model.User;
 
 public class AuthController {
