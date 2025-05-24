@@ -6,10 +6,12 @@ package shared.model.ta;
 import java.io.Serializable;
 import java.util.List;
 
-public class Reservation implements Serializable {  // ✅ Serializable 구현 추가
+public class Reservation implements Serializable {
+    private static final long serialVersionUID = 1L;  // 직렬화 ID (선택적이지만 권장)
+
     private String name;
     private String role;
-    private String type;
+    private String type;              // roomType
     private int roomNumber;
     private String day;
     private List<String> timeSlots;
@@ -26,13 +28,32 @@ public class Reservation implements Serializable {  // ✅ Serializable 구현 �
         this.state = state;
     }
 
-    // Getter/Setter들
-    public String getName() { return name; }
-    public String getRole() { return role; }
-    public String getType() { return type; }
-    public void setType(String type) { this.type = type; }
-    public int getRoomNumber() { return roomNumber; }
-    public String getDay() { return day; }
-    public List<String> getTimeSlots() { return timeSlots; }
-    public String getState() { return state; }
+    // Getter들
+    public String getName() {
+        return name;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public int getRoomNumber() {
+        return roomNumber;
+    }
+
+    public String getDay() {
+        return day;
+    }
+
+    public List<String> getTimeSlots() {
+        return timeSlots;
+    }
+
+    public String getState() {
+        return state;
+    }
 }
